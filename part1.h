@@ -14,13 +14,14 @@
 typedef struct 
 {
 	Object super;
-	int period;	//Period measuered in us
-	int volume; //Value between 0-20
-	int mute;	//If mute=0 then quiet and 0xFFFFFFFF else
-	int deadline; //If set to 1, deadlines will be used
+	int period;		//Period measuered in us
+	int volume; 	//Value between 0-20
+	int mute;		//If mute=0 then quiet and 0xFFFFFFFF else
+	int deadline;	//If set to 1, deadlines will be used
+	int silence;	//Check if we are in end of beat. Currently not the same as mute! Should be the same as mute maybe?
 } ToneGenerator;
 
-#define initToneGenerator(period) {initObject(), period >> 1, 5, 0xFFFFFFFF, 1}
+#define initToneGenerator(period) {initObject(), period >> 1, 5, 0xFFFFFFFF, 1, 0}
 
 int toggleDeadlinesToneGenerator(ToneGenerator*, int);
 void toggleMute(ToneGenerator*, int);

@@ -23,7 +23,8 @@
 #define UNUSED 0
 
 //#define LAB0
-#define LAB1
+//#define LAB1
+#define LAB2
 
 #ifdef LAB0
 #include "part0.h"
@@ -34,10 +35,18 @@
 #include "part1.h"
 #endif
 
+#ifdef LAB2
+#include "part0.h"
+#include "part1.h"
+#include "part2.h"
+#endif
+
 //Brother John melody
 const int length = 32;
-const int brotherJohn[32] = 
-		{0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
+const int brotherJohn[32] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
+const char brotherJohnBeatLength[32] = "aaaaaaaaaabaabccccaaccccaaaabaab";
+const char brotherJohnBeatLength1[32] =  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
 
 void print(char*, int);
 
@@ -64,6 +73,16 @@ void runTest();
 ToneGenerator toneGenerator = initToneGenerator(1000);  //1000Hz = 1000us, 769Hz = 1300us, 537Hz = 1862
 BackgroundTask backgroundTask = initBackgroundTask();
 #endif
+
+#ifdef LAB2
+void recieveBPM();
+void receiveKey();
+Melody melody = initMelody(brotherJohn, length);
+MusicPlayer musicPlayer = initMusicPlayer(500, 50, brotherJohnBeatLength);
+#endif
+
+
+
 
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
 
@@ -137,6 +156,28 @@ void keyHandler(App* self, int c)
  			break;
 		}
 		#endif
+		#ifdef LAB2
+		case '0'...'9': //Add character to readbuffer
+		case '-':
+			ASYNC(&readBuffer, readBufferAdd, c);
+			break;
+		case 'c': //Lower volume
+			print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, -1));
+			break;
+		case 'v': //Raise volume
+			print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, 1));
+			break;
+		case 'k':	//A key was received
+			receiveKey();
+			break;
+		case 'm': //Toggle muting
+			ASYNC(&musicPlayer.TG, toggleMute, UNUSED);
+			break;
+		case 't':
+			recieveBPM();
+			break;
+//SYNC(&melody, setMelodyPeriods, (int)(musicPlayer.notePeriods));
+		#endif
 	}
 }
 
@@ -206,6 +247,35 @@ void runTest()
 }
 #endif
 
+#ifdef LAB2
+void receiveKey() 
+{
+	//Get key, print it and set it
+	const int key = SYNC(&readBuffer, endBuffer, UNUSED);
+	char output[50];
+	sprintf(output, "Key: %d\n", key);
+	SCI_WRITE(&sci0, output);
+	SYNC(&melody, setKey, key);
+	
+	int melodyPeriods[length];
+	
+	SYNC(&melody, setMelodyPeriods, (int) melodyPeriods);
+	ASYNC(&musicPlayer, setPeriods, (int) melodyPeriods);
+}
+
+void recieveBPM() 
+{
+	//Get key, print it and set it
+	const int bpm = SYNC(&readBuffer, endBuffer, UNUSED);
+	char output[50];
+	sprintf(output, "BPM: %d\n", bpm);
+	SCI_WRITE(&sci0, output);
+	ASYNC(&musicPlayer, setTempo, bpm);
+}
+
+
+#endif
+
 void startApp(App *self, int arg) 
 {
     //CANMsg msg;
@@ -230,6 +300,11 @@ void startApp(App *self, int arg)
 	//runTest();
 	ASYNC(&toneGenerator, setDAC, 0); 
 	ASYNC(&backgroundTask, runLoad, 1000);
+	#endif
+	
+	#ifdef LAB2
+	// Verri Naice
+	ASYNC(&musicPlayer, nextBeat, 0);
 	#endif
 }
 
