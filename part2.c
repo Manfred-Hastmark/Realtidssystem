@@ -2,21 +2,28 @@
 
 void nextBeat(MusicPlayer* self, int index)
 {
-	self->TG.silence = 0;
+	
+	// Sets a period to the toneGenerator and turns it on.
+	self->TG.silence = 0;						
 	self->TG.period = self->notePeriods[index];
 	ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+	
+	// Sleep until it should silence the toneGenerator
 	const int toneDuration = MSEC(getBeatLenght(self->beatLength[index], self->tempo, self->silenceDuration));
-	SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, (index + 1) % 32); // (samma som index + 1 % 32)
+	SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, (index+1) & ~32); 	// (same as (index + 1) % 32)
 }
 
 void nextSilence(MusicPlayer* self, int index)
 {
-	self->TG.silence = 1;
+	// Turns of the tone generator
+	self->TG.silence = 1;	
+
+	// Sleep until the next note
 	const int silenceDuration = MSEC(self->silenceDuration);
 	SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, index);
 }
 
-int getBeatLenght(char c, int ms, int silenceDuration) 
+static inline int getBeatLenght(char c, int ms, int silenceDuration) 
 {
 	switch(c)
 	{

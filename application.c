@@ -78,7 +78,7 @@ BackgroundTask backgroundTask = initBackgroundTask();
 void recieveBPM();
 void receiveKey();
 Melody melody = initMelody(brotherJohn, length);
-MusicPlayer musicPlayer = initMusicPlayer(500, 50, brotherJohnBeatLength);
+MusicPlayer musicPlayer = initMusicPlayer(500, brotherJohnBeatLength);
 #endif
 
 
