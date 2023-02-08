@@ -45,7 +45,7 @@ typedef struct
  * @return void.
  */
 
-void nextBeat(MusicPlayer*, int);
+void nextBeat(MusicPlayer* self, int index);
 
 /**
  * @brief Do not call this funtion. Internal only! Stops the tone generator and tells it to silence the DAC. Then sleeps until the next note should start.
@@ -54,7 +54,7 @@ void nextBeat(MusicPlayer*, int);
  * @param int index. Current note index.
  * @return void.
  */
-void nextSilence(MusicPlayer*, int);
+void nextSilence(MusicPlayer* self, int index);
 
 
 /**
@@ -65,7 +65,7 @@ void nextSilence(MusicPlayer*, int);
  * @param int silenceDuration. How much of the note should be silent in MS.
  * @return int. Returns the length of a given note in ms.
  */
-static inline int getBeatLenght(char, int, int);
+static inline int getBeatLenght(char c, int ms, int silenceDuration);
 
 
 /**
@@ -75,7 +75,7 @@ static inline int getBeatLenght(char, int, int);
  * @param int BPM. New BPM.
  * @return void.
  */
-void setTempo(MusicPlayer*, int);
+void setTempo(MusicPlayer* self, int bpm);
 
 
 /**
@@ -85,6 +85,6 @@ void setTempo(MusicPlayer*, int);
  * @param (int) int* array. Takes an array with new precalculated periods (currently hard coded to a size of 32).
  * @return void.
  */
-void setPeriods(MusicPlayer*, int);
+void setPeriods(MusicPlayer* self, int arrIn);
 
 #endif

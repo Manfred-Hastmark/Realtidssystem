@@ -28,11 +28,17 @@ static inline int getBeatLenght(char c, int ms, int silenceDuration)
 	switch(c)
 	{
 		case 'a': return (ms - silenceDuration);
-		case 'b': return ((ms<<1) - silenceDuration);
-		case 'c': return ((ms>>1) - silenceDuration);
+		case 'b': return ((ms<<1) - silenceDuration);	// Why has "-" higher priority than "<<" ?!
+		case 'c': return ((ms>>1) - silenceDuration);	// Why has "-" higher priority than "<<" ?!
 	}
 	// Should crash the programm;
 	return -1;
+}
+
+void setTempo(MusicPlayer* self, int bpm)
+{	
+	self->tempo = 60000 / bpm;	
+	self->silenceDuration = self->tempo / 10;
 }
 
 void setPeriods(MusicPlayer* self, int arrIn)
@@ -44,8 +50,3 @@ void setPeriods(MusicPlayer* self, int arrIn)
 	}
 }
 
-void setTempo(MusicPlayer* self, int bpm)
-{	
-	self->tempo = 60000 / bpm;	
-	self->silenceDuration = self->tempo / 10;
-}
