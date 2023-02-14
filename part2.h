@@ -10,7 +10,7 @@
 
 /**
  * How to run this lib:
- * - Create an int array of size 32 with 32 notes.
+ * - Create an int array of size 32 with 32 notes.clTabCtrl
  * 		- TODO: Make it take any size of list.
  * 
  * - Create a char array of size 32 with beat length that corresponds to each note:
@@ -32,10 +32,11 @@ typedef struct
 	int silenceDuration;	// 60000 / bpm * 10 which is 10% of the note
 	char* beatLength;		// How long every beat should be
 	int notePeriods[32];	// A char array with 32 notePeriods
+	int playing;
 } MusicPlayer;
 
 
-#define initMusicPlayer(BPM, beatLength) {initToneGenerator(1000), 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }}
+#define initMusicPlayer(BPM, beatLength) {initToneGenerator(1000), 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the note ends.
@@ -86,5 +87,7 @@ void setTempo(MusicPlayer* self, int bpm);
  * @return void.
  */
 void setPeriods(MusicPlayer* self, int arrIn);
+
+int togglePlaying(MusicPlayer* self, int unused);
 
 #endif

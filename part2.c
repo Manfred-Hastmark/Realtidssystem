@@ -19,8 +19,15 @@ void nextSilence(MusicPlayer* self, int index)
 	self->TG.silence = 1;	
 
 	// Sleep until the next note
-	const int silenceDuration = MSEC(self->silenceDuration);
-	SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, index);
+	if(self->playing == -1)
+	{
+		const int silenceDuration = MSEC(self->silenceDuration);
+		SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, index);
+	}
+	else
+	{
+		self->playing = index;
+	}
 }
 
 static inline int getBeatLenght(char c, int ms, int silenceDuration) 
@@ -50,3 +57,16 @@ void setPeriods(MusicPlayer* self, int arrIn)
 	}
 }
 
+int togglePlaying(MusicPlayer* self, int unused)
+{
+	if(self->playing == -1)
+	{
+		self->playing = 0;
+	}
+	else
+	{
+		ASYNC(self, nextBeat, self->playing);	// This cannot happen before -1 :)
+		self->playing = -1;
+	}
+	return self->playing;
+}
