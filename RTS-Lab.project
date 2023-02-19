@@ -52,6 +52,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="part2.h"/>
+    <File Name="part2.c"/>
     <File Name="part1.h"/>
     <File Name="part1.c"/>
     <File Name="part0.h"/>

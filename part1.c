@@ -26,6 +26,13 @@ int volume(ToneGenerator* self, int change)
 
 void setDAC(ToneGenerator* self, int val)
 {
+	
+	if(self->silence)
+	{
+		DAC_DATA = 0;
+		return;
+	}
+	
 	DAC_DATA = val & self->volume & self->mute; 
 	const int nextBaseline = USEC(self->period); 
 	if(self->deadline)
