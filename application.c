@@ -28,8 +28,8 @@
 //#define LAB1
 #define LAB2
 
-#define CONDUCTOR
-#define MUSICIAN
+//#define CONDUCTOR
+//#define MUSICIAN
 
 
 #ifdef LAB0
@@ -83,8 +83,9 @@ BackgroundTask backgroundTask = initBackgroundTask();
 #ifdef LAB2
 void recieveBPM();
 void receiveKey();
+ToneGenerator toneGenerator = initToneGenerator(1000);
 Melody melody = initMelody(brotherJohn, length);
-MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength);
+MusicPlayer musicPlayer = initMusicPlayer(&toneGenerator, 120, brotherJohnBeatLength);
 void sendCANMsg(int, int);
 void CANHandler(char, int);
 #endif
@@ -173,7 +174,7 @@ void CANHandler(char id, int data)
 
 void keyHandler(App* self, int c)
 {
-	#if !defined CONDUCTOR || !defined MUSICIAN
+	#if !defined CONDUCTOR && !defined MUSICIAN
 	switch (c)
 	{
 		#ifdef LAB0
@@ -397,7 +398,7 @@ void startApp(App *self, int arg)
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Hello, hello...\n");
 	
-	sendCANMsg(0, 12345678);
+	//sendCANMsg(0, 12345678);
 	
 	#ifdef LAB1
 	//runTest();

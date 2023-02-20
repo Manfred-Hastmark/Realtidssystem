@@ -82,7 +82,14 @@ void dummySetDac(ToneGenerator* self, int arr)
 	res[1] = USEC_OF(avg) / 500;
 } 
 
-
+void setSilence(ToneGenerator* self, int silence)
+{
+	self->silence = silence;
+}
+void setPeriod(ToneGenerator* self, int period)
+{
+	self->period = period;
+}
 
 //Functions for class BackgroundTask
 

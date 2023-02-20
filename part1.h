@@ -28,7 +28,8 @@ void toggleMute(ToneGenerator*, int);
 int volume(ToneGenerator*, int);
 void setDAC(ToneGenerator*, int);
 void dummySetDac(ToneGenerator*, int); 
-
+void setSilence(ToneGenerator*, int);
+void setPeriod(ToneGenerator*, int);
 
 //Defintion for class BackgroundTask
 
@@ -45,6 +46,8 @@ int toggleDeadlinesBackgroundTask(BackgroundTask*, int);
 int load(BackgroundTask*, int);
 void runLoad(BackgroundTask*, int);
 void dummyRunLoad(BackgroundTask*, int);
+
+
 
 
 #endif
