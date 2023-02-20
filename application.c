@@ -18,6 +18,12 @@
  * 'd' toggles deadlines on/off
  * 'x' increase backgroundload by 500
  * 'z' decreases backgroundload by 500
+ * 
+ * LAB2
+ * 'v' is used to increase volume
+ * 'c' is used to decrease volume
+ * 'm' toggles mute on/off
+ * 'k' Changes key
  * 'b' sets bpm
  * 's' start / pause
  */
@@ -133,10 +139,10 @@ void CANHandler(char id, int data)
 	switch(id)
 	{
 		case 'c': //Lower volume
-			print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, -1));
+			print("Volume changed to: %d\n", SYNC(&toneGenerator, volume, -1));
 			break;
 		case 'v': //Raise volume
-			print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, 1));
+			print("Volume changed to: %d\n", SYNC(&toneGenerator, volume, 1));
 			break;
 		case 'k':	//A key was received
 			{
@@ -152,7 +158,7 @@ void CANHandler(char id, int data)
 			}
 			break;
 		case 'm': //Toggle muting
-			ASYNC(&musicPlayer.TG, toggleMute, UNUSED);
+			ASYNC(&toneGenerator, toggleMute, UNUSED);
 			break;
 		case 'b':
 			{
@@ -226,16 +232,16 @@ void keyHandler(App* self, int c)
 			ASYNC(&readBuffer, readBufferAdd, c);
 			break;
 		case 'c': //Lower volume
-			print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, -1));
+			print("Volume changed to: %d\n", SYNC(&toneGenerator, volume, -1));
 			break;
 		case 'v': //Raise volume
-			print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, 1));
+			print("Volume changed to: %d\n", SYNC(&toneGenerator, volume, 1));
 			break;
 		case 'k':	//A key was received
 			receiveKey();
 			break;
 		case 'm': //Toggle muting
-			ASYNC(&musicPlayer.TG, toggleMute, UNUSED);
+			ASYNC(&toneGenerator, toggleMute, UNUSED);
 			break;
 		case 'b':
 			recieveBPM();
@@ -359,7 +365,7 @@ void receiveKey()
 	int melodyPeriods[length];
 	
 	SYNC(&melody, setMelodyPeriods, (int) melodyPeriods);
-	ASYNC(&musicPlayer, setPeriods, (int) melodyPeriods);
+	SYNC(&musicPlayer, setPeriods, (int) melodyPeriods);
 }
 
 void recieveBPM() 

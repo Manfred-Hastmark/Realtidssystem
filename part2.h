@@ -10,7 +10,7 @@
 
 /**
  * How to run this lib:
- * - Create an int array of size 32 with 32 notes.clTabCtrl
+ * - Create an int array of size 32 with 32 notes.
  * 		- TODO: Make it take any size of list.
  * 
  * - Create a char array of size 32 with beat length that corresponds to each note:
@@ -37,7 +37,7 @@ typedef struct
 } MusicPlayer;
 
 
-#define initMusicPlayer(TG,BPM, beatLength) {initObject(), (ToneGenerator*)TG, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
+#define initMusicPlayer(TG ,BPM, beatLength) {initObject(), (ToneGenerator*)TG, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the note ends.

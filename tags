@@ -1,26 +1,16 @@
-PART1	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^#define PART1$/;"	macro	line:2
-DAC_DATA	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^#define DAC_DATA *((unsigned char *) 0x4000741C)$/;"	macro	line:10
-super	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	Object super;$/;"	member	line:16	struct:__anon1	access:public
-period	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	int period;		\/\/Period measuered in us$/;"	member	line:17	struct:__anon1	access:public
-volume	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	int volume; 	\/\/Value between 0-20$/;"	member	line:18	struct:__anon1	access:public
-mute	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	int mute;		\/\/If mute=0 then quiet and 0xFFFFFFFF else$/;"	member	line:19	struct:__anon1	access:public
-deadline	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	int deadline;	\/\/If set to 1, deadlines will be used$/;"	member	line:20	struct:__anon1	access:public
-silence	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	int silence;	\/\/Check if we are in end of beat. Currently not the same as mute! Should be the same as mute maybe?$/;"	member	line:21	struct:__anon1	access:public
-ToneGenerator	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^typedef struct  { 	Object super; 	int period;		\/\/Period measuered in us 	int volume; 	\/\/Value between 0-20 	int mute;		\/\/If mute=0 then quiet and 0xFFFFFFFF else 	int deadline;	\/\/If set to 1, deadlines will be used 	int silence;	\/\/Check if we are in end of beat. Currently not the same as mute! Should be the same as mute maybe? } ToneGenerator; $/;"	typedef	line:22	typeref:struct:__anon1
-initToneGenerator	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^#define initToneGenerator(period) {initObject(), period >> 1, 5, 0xFFFFFFFF, 1, 0}$/;"	macro	line:24
-toggleDeadlinesToneGenerator	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^int toggleDeadlinesToneGenerator(ToneGenerator*, int);$/;"	prototype	line:26	signature:(ToneGenerator*, int)	returns:int 
-toggleMute	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^void toggleMute(ToneGenerator*, int);$/;"	prototype	line:27	signature:(ToneGenerator*, int)	returns:void 
-volume	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^int volume(ToneGenerator*, int);$/;"	prototype	line:28	signature:(ToneGenerator*, int)	returns:int 
-setDAC	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^void setDAC(ToneGenerator*, int);$/;"	prototype	line:29	signature:(ToneGenerator*, int)	returns:void 
-dummySetDac	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^void dummySetDac(ToneGenerator*, int); $/;"	prototype	line:30	signature:(ToneGenerator*, int)	returns:void 
-setSilence	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^void setSilence(ToneGenerator*, int);$/;"	prototype	line:31	signature:(ToneGenerator*, int)	returns:void 
-setPeriod	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^void setPeriod(ToneGenerator*, int);$/;"	prototype	line:32	signature:(ToneGenerator*, int)	returns:void 
-super	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	Object super;$/;"	member	line:38	struct:__anon2	access:public
-backgroundLoopRange	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	int backgroundLoopRange;$/;"	member	line:39	struct:__anon2	access:public
-deadline	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^	int deadline; \/\/If = 1, deadlines will be used$/;"	member	line:40	struct:__anon2	access:public
-BackgroundTask	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^typedef struct { 	Object super; 	int backgroundLoopRange; 	int deadline; \/\/If = 1, deadlines will be used } BackgroundTask; $/;"	typedef	line:41	typeref:struct:__anon2
-initBackgroundTask	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^#define initBackgroundTask() {initObject(), 1000, 1}$/;"	macro	line:43
-toggleDeadlinesBackgroundTask	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^int toggleDeadlinesBackgroundTask(BackgroundTask*, int);$/;"	prototype	line:45	signature:(BackgroundTask*, int)	returns:int 
-load	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^int load(BackgroundTask*, int);$/;"	prototype	line:46	signature:(BackgroundTask*, int)	returns:int 
-runLoad	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^void runLoad(BackgroundTask*, int);$/;"	prototype	line:47	signature:(BackgroundTask*, int)	returns:void 
-dummyRunLoad	C:\Users\isakha\Desktop\RTS\Realtidssystem\part1.h	/^void dummyRunLoad(BackgroundTask*, int);$/;"	prototype	line:48	signature:(BackgroundTask*, int)	returns:void 
+PART2	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^#define PART2$/;"	macro	line:2
+super	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	Object super;$/;"	member	line:30	struct:__anon1	access:public
+TG	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	ToneGenerator* TG;		\/\/ ToneGenerator$/;"	member	line:31	struct:__anon1	access:public
+tempo	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int tempo;				\/\/ 60000 \/ bpm represended in ms$/;"	member	line:32	struct:__anon1	access:public
+silenceDuration	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int silenceDuration;	\/\/ 60000 \/ bpm * 10 which is 10% of the note$/;"	member	line:33	struct:__anon1	access:public
+beatLength	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	char* beatLength;		\/\/ How long every beat should be$/;"	member	line:34	struct:__anon1	access:public
+notePeriods	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int notePeriods[32];	\/\/ A char array with 32 notePeriods$/;"	member	line:35	struct:__anon1	access:public
+playing	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int playing;$/;"	member	line:36	struct:__anon1	access:public
+MusicPlayer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^typedef struct  { 	Object super; 	ToneGenerator* TG;		\/\/ ToneGenerator 	int tempo;				\/\/ 60000 \/ bpm represended in ms 	int silenceDuration;	\/\/ 60000 \/ bpm * 10 which is 10% of the note 	char* beatLength;		\/\/ How long every beat should be 	int notePeriods[32];	\/\/ A char array with 32 notePeriods 	int playing; } MusicPlayer; $/;"	typedef	line:37	typeref:struct:__anon1
+initMusicPlayer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^#define initMusicPlayer(TG ,BPM, beatLength) {initObject(), (ToneGenerator*)TG, 60000 \/ (int)BPM, 6000 \/ (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}$/;"	macro	line:40
+nextBeat	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void nextBeat(MusicPlayer* self, int index);$/;"	prototype	line:50	signature:(MusicPlayer* self, int index)	returns:void 
+nextSilence	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void nextSilence(MusicPlayer* self, int index);$/;"	prototype	line:59	signature:(MusicPlayer* self, int index)	returns:void 
+getBeatLenght	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^static inline int getBeatLenght(char c, int ms, int silenceDuration);$/;"	prototype	line:70	signature:(char c, int ms, int silenceDuration)	returns:inline int 
+setTempo	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void setTempo(MusicPlayer* self, int bpm);$/;"	prototype	line:80	signature:(MusicPlayer* self, int bpm)	returns:void 
+setPeriods	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void setPeriods(MusicPlayer* self, int arrIn);$/;"	prototype	line:90	signature:(MusicPlayer* self, int arrIn)	returns:void 
+togglePlaying	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^int togglePlaying(MusicPlayer* self, int unused);$/;"	prototype	line:92	signature:(MusicPlayer* self, int unused)	returns:int 
