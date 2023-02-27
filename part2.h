@@ -28,6 +28,8 @@
 typedef struct 
 {
 	Object super;
+	int index;
+	int exist;
 	ToneGenerator* TG;		// ToneGenerator
 	int tempo;				// 60000 / bpm represended in ms
 	int silenceDuration;	// 60000 / bpm * 10 which is 10% of the note
@@ -37,7 +39,7 @@ typedef struct
 } MusicPlayer;
 
 
-#define initMusicPlayer(TG ,BPM, beatLength) {initObject(), (ToneGenerator*)TG, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
+#define initMusicPlayer(TG ,BPM, beatLength) {initObject(), 0, 0, (ToneGenerator*)TG, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the note ends.
@@ -90,5 +92,19 @@ void setTempo(MusicPlayer* self, int bpm);
 void setPeriods(MusicPlayer* self, int arrIn);
 
 int togglePlaying(MusicPlayer* self, int unused);
+
+
+typedef struct
+{
+	Object super;
+	Time time;
+	Time jitterTime;
+	int pressed;
+} UserButton;
+
+#define initUserButton() {initObject(), 0, 0, 0}
+
+int setButtonAction(UserButton* self, int time);
+
 
 #endif

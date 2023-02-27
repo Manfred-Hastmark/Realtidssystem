@@ -1,6 +1,7 @@
 #include "TinyTimber.h"
 #include "sciTinyTimber.h"
 #include "canTinyTimber.h"
+#include "sioTinyTimber.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -37,7 +38,6 @@
 //#define CONDUCTOR
 //#define MUSICIAN
 
-
 #ifdef LAB0
 #include "part0.h"
 #endif
@@ -59,7 +59,6 @@ const int brotherJohn[32] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 
 const char brotherJohnBeatLength[32] = "aaaaaaaaaabaabccccaaccccaaaabaab";
 const char brotherJohnBeatLength1[32] =  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
-
 void print(char*, int);
 
 typedef struct {
@@ -72,9 +71,10 @@ App app = { initObject(), 0, 'X' };
 void reader(App*, int);
 void receiver(App*, int);
 void keyHandler(App*, int);
+void tapTheTempo(App*, int);
 
 #ifdef LAB0
-void receiveKey(App*, int);
+int receiveKey(App*, int);
 void receiveInt(App*, int);
 ThreeHist threeHist = initThreeHist();
 Melody melody = initMelody(brotherJohn, length);
@@ -87,24 +87,55 @@ BackgroundTask backgroundTask = initBackgroundTask();
 #endif
 
 #ifdef LAB2
-void recieveBPM();
-void receiveKey();
+int recieveBPM();
+int receiveKey();
 ToneGenerator toneGenerator = initToneGenerator(1000);
 Melody melody = initMelody(brotherJohn, length);
+UserButton userButton = initUserButton();
 MusicPlayer musicPlayer = initMusicPlayer(&toneGenerator, 120, brotherJohnBeatLength);
 void sendCANMsg(int, int);
 void CANHandler(char, int);
+
+#define FALLING_TRIGGER 1
+#define RISING_TRIGGER 0
+#endif
+
+#if !defined(CONDUCTOR) && !defined(MUSICIAN)
+void defaultLab(int c);
+#endif
+
+#if defined(CONDUCTOR) || defined(MUSICIAN)
+void CANkeyReceiver(int c);
 #endif
 
 
 
-
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
+SysIO sysIO = initSysIO(SIO_PORT0, &app, tapTheTempo);
 
 ReadBuffer readBuffer = initReadBuffer();
 
 Can can0 = initCan(CAN_PORT0, &app, receiver);
 
+
+void tapTheTempo(App *self, int unused)
+{
+	Timer timer = initTimer();
+	Time time = T_SAMPLE(&timer);
+	if(SYNC(&userButton, setButtonAction, time))
+	{
+		SIO_TRIG(&sysIO, RISING_TRIGGER);
+	}
+	else
+	{
+		SIO_TRIG(&sysIO, FALLING_TRIGGER);
+	}
+	
+	
+	
+	
+	SCI_WRITE(&sci0, "Hello fuckers!");
+}
 
 void receiver(App *self, int unused) 
 {
@@ -119,8 +150,9 @@ void receiver(App *self, int unused)
 	print("Can ID: %c, ", msg.msgId);
 	print("DATA: %d\n", rcv);
 	
+	#ifdef MUSICIAN
 	CANHandler(msg.msgId, rcv);
-	
+	#endif
 }
 
 void reader(App *self, int c) 
@@ -180,7 +212,86 @@ void CANHandler(char id, int data)
 
 void keyHandler(App* self, int c)
 {
-	#if !defined CONDUCTOR && !defined MUSICIAN
+	#if !defined(CONDUCTOR) && !defined(MUSICIAN)
+	defaultLab(c);
+	#endif
+	
+	#if defined(CONDUCTOR) || defined(MUSICIAN)
+	CANkeyReceiver(c);
+	#endif
+}
+
+#if defined(CONDUCTOR) || defined(MUSICIAN)
+void CANkeyReceiver(int c)
+{
+	#if defined(CONDUCTOR)
+	switch (c)
+	{
+		case '0'...'9': //Add character to readbuffer
+		case '-':
+			ASYNC(&readBuffer, readBufferAdd, c);
+			break;
+		case 'c': //Lower volume
+			print("Volume changed to: %d\n", SYNC(&toneGenerator, volume, -1));
+			sendCANMsg('c',0);
+			break;
+		case 'v': //Raise volume
+			print("Volume changed to: %d\n", SYNC(&toneGenerator, volume, 1));	
+			sendCANMsg('v',0);
+			break;
+		case 'k':	// A key was received
+			sendCANMsg('k', receiveKey()); //
+			break;
+		case 'm': 	// Toggle muting
+			ASYNC(&toneGenerator, toggleMute, UNUSED);
+			sendCANMsg('m',0);
+			break;
+		case 'b':	// BPM
+			sendCANMsg('b', recieveBPM());
+			break;
+		case 's':	// Start / stop
+			if(SYNC(&musicPlayer, togglePlaying, UNUSED))
+				SCI_WRITE(&sci0, "Playing\n");
+			else
+				SCI_WRITE(&sci0, "Paused\n");
+			sendCANMsg('s',0);
+			break;
+	}
+	#endif
+	
+	#if defined(MUSICIAN)
+	switch (c)
+	{
+		case '0'...'9': //Add character to readbuffer
+		case '-':
+			ASYNC(&readBuffer, readBufferAdd, c);
+			break;
+		case 'c': //Lower volume
+			sendCANMsg('c',0);
+			break;
+		case 'v': //Raise volume
+			sendCANMsg('v',0);
+			break;
+		case 'k':	// A key was received
+			sendCANMsg('k', SYNC(&readBuffer, endBuffer, UNUSED)); //
+			break;
+		case 'm': 	// Toggle muting
+			sendCANMsg('m',0);
+			break;
+		case 'b':	// BPM
+			sendCANMsg('b', SYNC(&readBuffer, endBuffer, UNUSED));
+			break;
+		case 's':	// Start / stop
+			sendCANMsg('s',0);
+			break;
+	}
+	#endif
+}
+#endif
+
+#if !defined(CONDUCTOR) && !defined(MUSICIAN)
+void defaultLab(int c)
+{
 	switch (c)
 	{
 		#ifdef LAB0
@@ -255,36 +366,8 @@ void keyHandler(App* self, int c)
 //SYNC(&melody, setMelodyPeriods, (int)(musicPlayer.notePeriods));
 		#endif
 	}
-	#elif defined(CONDUCTOR)
-	switch (c)
-	{
-		case '0'...'9': //Add character to readbuffer
-		case '-':
-			ASYNC(&readBuffer, readBufferAdd, c);
-			break;
-		case 'c': //Lower volume
-			sendCANMsg('c',0);
-			break;
-		case 'v': //Raise volume
-			sendCANMsg('v',0);
-			break;
-		case 'k':	// A key was received
-			sendCANMsg('k', SYNC(&readBuffer, endBuffer, UNUSED)); //
-			break;
-		case 'm': 	// Toggle muting
-			sendCANMsg('m',0);
-			break;
-		case 'b':	// BPM
-			sendCANMsg('b', SYNC(&readBuffer, endBuffer, UNUSED));
-			break;
-		case 's':	// Start / stop
-			sendCANMsg('s',0);
-			break;
-			
-	}
-	#endif
-	
 }
+#endif
 
 void print(char* string, int val)
 {
@@ -353,7 +436,7 @@ void runTest()
 #endif
 
 #ifdef LAB2
-void receiveKey() 
+int receiveKey() 
 {
 	//Get key, print it and set it
 	const int key = SYNC(&readBuffer, endBuffer, UNUSED);
@@ -366,9 +449,10 @@ void receiveKey()
 	
 	SYNC(&melody, setMelodyPeriods, (int) melodyPeriods);
 	SYNC(&musicPlayer, setPeriods, (int) melodyPeriods);
+	return key;
 }
 
-void recieveBPM() 
+int recieveBPM() 
 {
 	//Get key, print it and set it
 	const int bpm = SYNC(&readBuffer, endBuffer, UNUSED);
@@ -376,10 +460,10 @@ void recieveBPM()
 	sprintf(output, "BPM: %d\n", bpm);
 	SCI_WRITE(&sci0, output);
 	ASYNC(&musicPlayer, setTempo, bpm);
+	return bpm;
 }
 #endif
 
-#ifdef CONDUCTOR
 void sendCANMsg(int id, int data)
 {
 	CANMsg msg;
@@ -394,12 +478,10 @@ void sendCANMsg(int id, int data)
     CAN_SEND(&can0, &msg);
 }
 
-
-#endif
-
 void startApp(App *self, int arg) 
 {
 
+	SIO_INIT(&sysIO);
     CAN_INIT(&can0);
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Hello, hello...\n");
@@ -420,6 +502,7 @@ void startApp(App *self, int arg)
 
 int main() 
 {
+	INSTALL(&sysIO, sio_interrupt, SIO_IRQ0);
     INSTALL(&sci0, sci_interrupt, SCI_IRQ0);
 	INSTALL(&can0, can_interrupt, CAN_IRQ0);
     TINYTIMBER(&app, startApp, 0);

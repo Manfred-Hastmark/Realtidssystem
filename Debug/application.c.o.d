@@ -9,6 +9,9 @@ Debug/application.c.o: application.c TinyTimber.h \
  C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_usart.h \
  canTinyTimber.h \
  C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_can.h \
+ sioTinyTimber.h \
+ C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_gpio.h \
+ C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_exti.h \
  part0.h part1.h part2.h
 
 TinyTimber.h:
@@ -32,6 +35,12 @@ C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_usart.h:
 canTinyTimber.h:
 
 C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_can.h:
+
+sioTinyTimber.h:
+
+C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_gpio.h:
+
+C:/Users/isakha/Desktop/RTS/Realtidssystem/driver/inc/stm32f4xx_exti.h:
 
 part0.h:
 

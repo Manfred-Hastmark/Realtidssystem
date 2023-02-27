@@ -1,16 +1,7 @@
-PART2	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^#define PART2$/;"	macro	line:2
-super	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	Object super;$/;"	member	line:30	struct:__anon1	access:public
-TG	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	ToneGenerator* TG;		\/\/ ToneGenerator$/;"	member	line:31	struct:__anon1	access:public
-tempo	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int tempo;				\/\/ 60000 \/ bpm represended in ms$/;"	member	line:32	struct:__anon1	access:public
-silenceDuration	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int silenceDuration;	\/\/ 60000 \/ bpm * 10 which is 10% of the note$/;"	member	line:33	struct:__anon1	access:public
-beatLength	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	char* beatLength;		\/\/ How long every beat should be$/;"	member	line:34	struct:__anon1	access:public
-notePeriods	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int notePeriods[32];	\/\/ A char array with 32 notePeriods$/;"	member	line:35	struct:__anon1	access:public
-playing	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^	int playing;$/;"	member	line:36	struct:__anon1	access:public
-MusicPlayer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^typedef struct  { 	Object super; 	ToneGenerator* TG;		\/\/ ToneGenerator 	int tempo;				\/\/ 60000 \/ bpm represended in ms 	int silenceDuration;	\/\/ 60000 \/ bpm * 10 which is 10% of the note 	char* beatLength;		\/\/ How long every beat should be 	int notePeriods[32];	\/\/ A char array with 32 notePeriods 	int playing; } MusicPlayer; $/;"	typedef	line:37	typeref:struct:__anon1
-initMusicPlayer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^#define initMusicPlayer(TG ,BPM, beatLength) {initObject(), (ToneGenerator*)TG, 60000 \/ (int)BPM, 6000 \/ (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}$/;"	macro	line:40
-nextBeat	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void nextBeat(MusicPlayer* self, int index);$/;"	prototype	line:50	signature:(MusicPlayer* self, int index)	returns:void 
-nextSilence	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void nextSilence(MusicPlayer* self, int index);$/;"	prototype	line:59	signature:(MusicPlayer* self, int index)	returns:void 
-getBeatLenght	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^static inline int getBeatLenght(char c, int ms, int silenceDuration);$/;"	prototype	line:70	signature:(char c, int ms, int silenceDuration)	returns:inline int 
-setTempo	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void setTempo(MusicPlayer* self, int bpm);$/;"	prototype	line:80	signature:(MusicPlayer* self, int bpm)	returns:void 
-setPeriods	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^void setPeriods(MusicPlayer* self, int arrIn);$/;"	prototype	line:90	signature:(MusicPlayer* self, int arrIn)	returns:void 
-togglePlaying	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.h	/^int togglePlaying(MusicPlayer* self, int unused);$/;"	prototype	line:92	signature:(MusicPlayer* self, int unused)	returns:int 
+sio_init	C:\Users\isakha\Desktop\RTS\Realtidssystem\sioTinyTimber.c	/^void sio_init(SysIO *self, int unused) {$/;"	function	line:4	signature:(SysIO *self, int unused)	returns:void 
+sio_read	C:\Users\isakha\Desktop\RTS\Realtidssystem\sioTinyTimber.c	/^int sio_read(SysIO *self, int unused) {$/;"	function	line:12	signature:(SysIO *self, int unused)	returns:int 
+sio_write	C:\Users\isakha\Desktop\RTS\Realtidssystem\sioTinyTimber.c	/^void sio_write(SysIO *self, int val) {$/;"	function	line:16	signature:(SysIO *self, int val)	returns:void 
+sio_toggle	C:\Users\isakha\Desktop\RTS\Realtidssystem\sioTinyTimber.c	/^void sio_toggle(SysIO *self, int unused) {$/;"	function	line:20	signature:(SysIO *self, int unused)	returns:void 
+sio_trig	C:\Users\isakha\Desktop\RTS\Realtidssystem\sioTinyTimber.c	/^void sio_trig(SysIO *self, int rise) {$/;"	function	line:24	signature:(SysIO *self, int rise)	returns:void 
+DUMP	C:\Users\isakha\Desktop\RTS\Realtidssystem\sioTinyTimber.c	/^void DUMP(char *s);$/;"	prototype	line:35	signature:(char *s)	returns:void 
+sio_interrupt	C:\Users\isakha\Desktop\RTS\Realtidssystem\sioTinyTimber.c	/^int sio_interrupt(SysIO *self, int unused) {$/;"	function	line:37	signature:(SysIO *self, int unused)	returns:int 

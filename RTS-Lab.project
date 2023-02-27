@@ -52,6 +52,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="sioTinyTimber.h"/>
+    <File Name="sioTinyTimber.c"/>
     <File Name="part2.h"/>
     <File Name="part2.c"/>
     <File Name="part1.h"/>
