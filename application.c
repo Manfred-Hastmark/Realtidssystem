@@ -49,6 +49,10 @@
 
 //Brother John melody
 const int length = 32;
+//D D (Oct. Higher) D A G# G F D F G C C (Oct. Higher) D A G# G F D F G B B (Oct. Higher) D A G# G F D F G A# A# (Oct. Higher) 
+//D A G# G F D F G F F F F D D D F F F G G# G F D F G F F F G G# A C A D D D A D C A A A A G G G A A A A G A C A G D A G F C G F E D D D D F C F D F G G# G F
+const int megalovania[] = {5, 5, 17, 0, 11, 10, 8, 5, 8, 10, 3, 3, 17, 0, 11, 10, 8, 5, 8, 10, 2, 2, 17, 0, 11, 10, 8, 5, 8, 10, 1, 1, 17, 0, 11, 10, 8, 5, 8, 10, 8, 8, 8, 8, 5, 5, 5,
+ 8, 8, 8, 10, 11, 10, 8, 5, 8, 10, 8, 8, 8, 10, 11, 0, 3, 0, 5, 5, 5, 0, 5, 3, 0, 0, 0, 0, 10, 10, 10, 0, 0, 0, 0, 10, 0, 3, 0, 10, 5, 0, 10, 8, 3, 10, 8, 7, 5, 5, 5, 5, 8, 3, 8, 5, 10, 11, 10, 8};
 const int brotherJohn[32] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
 const char brotherJohnBeatLength[32] = "aaaaaaaaaabaabccccaaccccaaaabaab";
 const char brotherJohnBeatLength1[32] =  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";

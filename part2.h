@@ -27,7 +27,8 @@
 
 typedef struct 
 {
-	ToneGenerator TG;		// ToneGenerator
+	Object super;
+	ToneGenerator* TG;		// ToneGenerator
 	int tempo;				// 60000 / bpm represended in ms
 	int silenceDuration;	// 60000 / bpm * 10 which is 10% of the note
 	char* beatLength;		// How long every beat should be

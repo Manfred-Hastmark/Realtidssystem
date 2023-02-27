@@ -1,109 +1,26 @@
-DUMPC	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void DUMPC(char);$/;"	prototype	line:47	signature:(char)	returns:void 
-DUMP	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void DUMP(char *s) {$/;"	function	line:49	signature:(char *s)	returns:void 
-hex	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^char hex[] = "0123456789ABCDEF";$/;"	variable	line:58
-DUMPH	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void DUMPH(unsigned int val) {$/;"	function	line:60	signature:(unsigned int val)	returns:void 
-DUMPD	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void DUMPD(int val) {$/;"	function	line:71	signature:(int val)	returns:void 
-__CURRENT_PRIORITY	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define __CURRENT_PRIORITY ((__get_BASEPRI() >> (8 - __NVIC_PRIO_BITS)))$/;"	macro	line:92
-sei	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void sei( void)			{ __set_BASEPRI(__DISABLED_PRIORITY << (8 - __NVIC_PRIO_BITS)); }$/;"	function	line:94	signature:( void)	returns:void 
-cli	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void cli( void)			{ __set_BASEPRI(__ENABLED_PRIORITY << (8 - __NVIC_PRIO_BITS)); }$/;"	function	line:95	signature:( void)	returns:void 
-PROTECTED	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define PROTECTED()		(__CURRENT_PRIORITY == __DISABLED_PRIORITY)	$/;"	macro	line:97
-__CURRENT_EXCEPTION	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define __CURRENT_EXCEPTION (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk)$/;"	macro	line:99
-THREADMODE	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define THREADMODE()	(__CURRENT_EXCEPTION == 0)$/;"	macro	line:101
-ENABLED	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define ENABLED()      	(!PROTECTED())$/;"	macro	line:103
-DISABLE	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define DISABLE()      	{ sei(); }$/;"	macro	line:104
-ENABLE	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define ENABLE(s)	    { if (s) cli(); }$/;"	macro	line:105
-SLEEP	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define SLEEP()         { __asm volatile ("     wfi\\n"); }$/;"	macro	line:106
-RED_ALERT	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define RED_ALERT()     { GPIO_WriteBit(GPIOB, GPIO_Pin_1, (BitAction) 0); }  \/\/ Red LED On$/;"	macro	line:108
-PANIC	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define PANIC(s)         { DUMP("PANIC!!! "); RED_ALERT(); DUMP(s); while (1) SLEEP(); }$/;"	macro	line:110
-__heap_end	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^char *__heap_end;$/;"	variable	line:115
-_sbrk	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void *_sbrk (int incr)$/;"	function	line:117	signature:(int incr)	returns:void 
-NMSGS	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define NMSGS           30$/;"	macro	line:138
-NTHREADS	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define NTHREADS        4$/;"	macro	line:139
-CONTEXTSIZE	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define CONTEXTSIZE		(2+16+8+16+10)$/;"	macro	line:141
-CONTEXT_T	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define CONTEXT_T uint32_t$/;"	macro	line:143
-STACKSIZE	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define STACKSIZE       1024$/;"	macro	line:145
-STACK_T	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define STACK_T long long$/;"	macro	line:147
-CONTEXT_xPSR_OFF	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	CONTEXT_xPSR_OFF	33$/;"	macro	line:167
-CONTEXT_PC_OFF	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	CONTEXT_PC_OFF		32$/;"	macro	line:168
-CONTEXT_BASEPRI_OFF	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	CONTEXT_BASEPRI_OFF	1$/;"	macro	line:169
-CONTEXT_EXC_OFF	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	CONTEXT_EXC_OFF		0$/;"	macro	line:170
-HW32_REG	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define HW32_REG(ADDRESS) (*((volatile unsigned long *)(ADDRESS)))$/;"	macro	line:172
-SETCONTEXT	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define SETCONTEXT(c)	$/;"	macro	line:174
-SETSTACK	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void SETSTACK(CONTEXT_T *cp, struct stack *sp) {$/;"	function	line:176	signature:(CONTEXT_T *cp, struct stack *sp)	returns:void 
-SETPC	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void SETPC(CONTEXT_T *cp, void (*fp)(void)) {$/;"	function	line:188	signature:(CONTEXT_T *cp, void (*fp)(void))	returns:void 
-PendSV_IRQ_VECTOR	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	PendSV_IRQ_VECTOR		(0x2001C000+0x38)$/;"	macro	line:193
-PendSV_Exception	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define PendSV_Exception		void vect_PendSV( void ) $/;"	macro	line:194
-SVCall_IRQ_VECTOR	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	SVCall_IRQ_VECTOR		(0x2001C000+0x2C)$/;"	macro	line:198
-SVCall_Exception	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define SVCall_Exception		void vect_SVCall( void ) $/;"	macro	line:199
-TIM5_IRQ_VECTOR	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	TIM5_IRQ_VECTOR			(0x2001C000+0x108)$/;"	macro	line:203
-TIMER_COMPARE_INTERRUPT	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define TIMER_COMPARE_INTERRUPT void vect_TIM5( void ) $/;"	macro	line:204
-TIMER_INIT	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void TIMER_INIT() {$/;"	function	line:208	returns:void 
-TIMER_CCLR	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define TIMER_CCLR()    { TIM_ClearITPendingBit(TIM5, TIM_IT_CC1); }  \/\/ Timer compare interrupt clear$/;"	macro	line:244
-TIMERGET	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define TIMERGET(x)		(x = TIM_GetCounter(TIM5))$/;"	macro	line:246
-TIMERSET	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define TIMERSET(x)		(TIM_SetCompare1(TIM5, x->baseline))$/;"	macro	line:248
-INFINITY	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define INFINITY        0x7fffffffL$/;"	macro	line:250
-DUMPC	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void DUMPC(char c) {$/;"	function	line:252	signature:(char c)	returns:void 
-Thread	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^typedef struct thread_block *Thread; $/;"	typedef	line:259	typeref:struct:thread_block
-INSTALLED_TAG	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define INSTALLED_TAG (Thread)1$/;"	macro	line:261
-msg_block	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^struct msg_block {$/;"	struct	line:263
-next	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Msg next;                \/\/ for use in linked lists$/;"	member	line:264	struct:msg_block	access:public
-baseline	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Time baseline;           \/\/ event time reference point$/;"	member	line:265	struct:msg_block	access:public
-deadline	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Time deadline;           \/\/ absolute deadline (=priority)$/;"	member	line:266	struct:msg_block	access:public
-to	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Object *to;              \/\/ receiving object$/;"	member	line:267	struct:msg_block	access:public
-method	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Method method;           \/\/ code to run$/;"	member	line:268	struct:msg_block	access:public
-arg	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    int arg;                 \/\/ argument to the above$/;"	member	line:269	struct:msg_block	access:public
-thread_block	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^struct thread_block {$/;"	struct	line:272
-context	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^	CONTEXT_T context;     	 \/\/ machine state *\/$/;"	member	line:273	struct:thread_block	access:public
-thread_no	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^	int thread_no;$/;"	member	line:274	struct:thread_block	access:public
-next	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Thread next;             \/\/ for use in linked lists$/;"	member	line:275	struct:thread_block	access:public
-msg	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Msg msg;                 \/\/ message under execution$/;"	member	line:276	struct:thread_block	access:public
-waitsFor	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    Object *waitsFor;        \/\/ deadlock detection link$/;"	member	line:277	struct:thread_block	access:public
-stack	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^struct stack {$/;"	struct	line:280
-stack	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^    STACK_T stack[STACKSIZE];$/;"	member	line:281	struct:stack	access:public
-messages	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^struct msg_block    messages[NMSGS];$/;"	variable	line:284	typeref:struct:msg_block
-threads	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^struct thread_block threads[NTHREADS];$/;"	variable	line:285	typeref:struct:thread_block
-stacks	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^struct stack        stacks[NTHREADS];$/;"	variable	line:286	typeref:struct:stack
-thread0	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^struct thread_block thread0;$/;"	variable	line:288	typeref:struct:thread_block
-msgPool	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Msg msgPool         = messages;$/;"	variable	line:290
-msgQ	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Msg msgQ            = NULL;$/;"	variable	line:291
-timerQ	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Msg timerQ          = NULL;$/;"	variable	line:292
-runAsHardware	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^int runAsHardware	= 0;$/;"	variable	line:293
-doIRQSchedule	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^int doIRQSchedule	= 0;$/;"	variable	line:294
-timestamp	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Time timestamp      = 0;$/;"	variable	line:295
-overflows	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^int overflows       = 0;$/;"	variable	line:296
-threadPool	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Thread threadPool   = threads;$/;"	variable	line:298
-activeStack	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Thread activeStack  = &thread0;$/;"	variable	line:299
-current	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Thread current      = &thread0;$/;"	variable	line:300
-upcoming	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Thread upcoming;$/;"	variable	line:301
-mtable	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Method  mtable[N_VECTORS];$/;"	variable	line:303
-otable	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Object *otable[N_VECTORS];$/;"	variable	line:304
-dispatch	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^static void dispatch( Thread);$/;"	prototype	line:306	returns:void 
-schedule	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^static void schedule( void);$/;"	prototype	line:307	signature:( void)	returns:void 
-USART1_IRQ_VECTOR	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	    USART1_IRQ_VECTOR		(0x2001C000+0xD4)$/;"	macro	line:311
-CAN1_IRQ_VECTOR	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	    CAN1_IRQ_VECTOR			(0x2001C000+0x90)$/;"	macro	line:312
-EXTI9_5_IRQ_VECTOR	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define	    EXTI9_5_IRQ_VECTOR		(0x2001C000+0x9C)$/;"	macro	line:313
-IRQ	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define IRQ(n,v) void v (void) { \\$/;"	macro	line:316
-IRQ	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^#define IRQ(n,v) void v (void) { \\$/;"	macro	line:323
-enqueueByDeadline	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void enqueueByDeadline(Msg p, Msg *queue) {$/;"	function	line:337	signature:(Msg p, Msg *queue)	returns:void 
-enqueueByBaseline	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void enqueueByBaseline(Msg p, Msg *queue) {$/;"	function	line:350	signature:(Msg p, Msg *queue)	returns:void 
-dequeue	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Msg dequeue(Msg *queue) {$/;"	function	line:363	signature:(Msg *queue)	returns:Msg 
-dequeue_pool	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Msg dequeue_pool(Msg *queue) {$/;"	function	line:372	signature:(Msg *queue)	returns:Msg 
-insert	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void insert(Msg m, Msg *queue) {$/;"	function	line:381	signature:(Msg m, Msg *queue)	returns:void 
-push	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void push(Thread t, Thread *stack) {$/;"	function	line:386	signature:(Thread t, Thread *stack)	returns:void 
-pop	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Thread pop(Thread *stack) {$/;"	function	line:391	signature:(Thread *stack)	returns:Thread 
-remove	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^static int remove(Msg m, Msg *queue) {$/;"	function	line:397	signature:(Msg m, Msg *queue)	returns:int 
-__svc_dispatch	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void __svc_dispatch( Thread next ) {$/;"	function	line:457	signature:( Thread next )	returns:void 
-__pendSV_dispatch	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void __pendSV_dispatch( Thread next ) {$/;"	function	line:466	signature:( Thread next )	returns:void 
-dispatch	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void dispatch( Thread next ) {$/;"	function	line:474	signature:( Thread next )	returns:void 
-run	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^static void run(void) {$/;"	function	line:494	signature:(void)	returns:void 
-idle	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^static void idle(void) {$/;"	function	line:539	signature:(void)	returns:void 
-schedule	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^static void schedule(void) {$/;"	function	line:551	signature:(void)	returns:void 
-async	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Msg async(Time bl, Time dl, Object *to, Method meth, int arg) {$/;"	function	line:575	signature:(Time bl, Time dl, Object *to, Method meth, int arg)	returns:Msg 
-sync	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^int sync(Object *to, Method meth, int arg) {$/;"	function	line:643	signature:(Object *to, Method meth, int arg)	returns:int 
-ABORT	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void ABORT(Msg m) {$/;"	function	line:694	signature:(Msg m)	returns:void 
-T_RESET	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void T_RESET(Timer *t) {$/;"	function	line:714	signature:(Timer *t)	returns:void 
-T_SAMPLE	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Time T_SAMPLE(Timer *t) {$/;"	function	line:718	signature:(Timer *t)	returns:Time 
-CURRENT_OFFSET	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^Time CURRENT_OFFSET(void) {$/;"	function	line:722	signature:(void)	returns:Time 
-initialize	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^static void initialize(void) {$/;"	function	line:732	signature:(void)	returns:void 
-install	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^void install(Object *obj, Method m, enum Vector i) {$/;"	function	line:765	signature:(Object *obj, Method m, enum Vector i)	returns:void 
-tinytimber	C:\Users\Ryzen 3600\Documents\Realtidssystem\TinyTimber.c	/^int tinytimber(Object *obj, Method meth, int arg) {$/;"	function	line:792	signature:(Object *obj, Method meth, int arg)	returns:int 
+PART1	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^#define PART1$/;"	macro	line:2
+DAC_DATA	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^#define DAC_DATA *((unsigned char *) 0x4000741C)$/;"	macro	line:10
+super	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	Object super;$/;"	member	line:16	struct:__anon1	access:public
+period	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	int period;		\/\/Period measuered in us$/;"	member	line:17	struct:__anon1	access:public
+volume	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	int volume; 	\/\/Value between 0-20$/;"	member	line:18	struct:__anon1	access:public
+mute	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	int mute;		\/\/If mute=0 then quiet and 0xFFFFFFFF else$/;"	member	line:19	struct:__anon1	access:public
+deadline	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	int deadline;	\/\/If set to 1, deadlines will be used$/;"	member	line:20	struct:__anon1	access:public
+silence	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	int silence;	\/\/Check if we are in end of beat. Currently not the same as mute! Should be the same as mute maybe?$/;"	member	line:21	struct:__anon1	access:public
+ToneGenerator	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^typedef struct  { 	Object super; 	int period;		\/\/Period measuered in us 	int volume; 	\/\/Value between 0-20 	int mute;		\/\/If mute=0 then quiet and 0xFFFFFFFF else 	int deadline;	\/\/If set to 1, deadlines will be used 	int silence;	\/\/Check if we are in end of beat. Currently not the same as mute! Should be the same as mute maybe? } ToneGenerator; $/;"	typedef	line:22	typeref:struct:__anon1
+initToneGenerator	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^#define initToneGenerator(period) {initObject(), period >> 1, 5, 0xFFFFFFFF, 1, 0}$/;"	macro	line:24
+toggleDeadlinesToneGenerator	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^int toggleDeadlinesToneGenerator(ToneGenerator*, int);$/;"	prototype	line:26	signature:(ToneGenerator*, int)	returns:int 
+toggleMute	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^void toggleMute(ToneGenerator*, int);$/;"	prototype	line:27	signature:(ToneGenerator*, int)	returns:void 
+volume	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^int volume(ToneGenerator*, int);$/;"	prototype	line:28	signature:(ToneGenerator*, int)	returns:int 
+setDAC	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^void setDAC(ToneGenerator*, int);$/;"	prototype	line:29	signature:(ToneGenerator*, int)	returns:void 
+dummySetDac	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^void dummySetDac(ToneGenerator*, int); $/;"	prototype	line:30	signature:(ToneGenerator*, int)	returns:void 
+super	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	Object super;$/;"	member	line:37	struct:__anon2	access:public
+backgroundLoopRange	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	int backgroundLoopRange;$/;"	member	line:38	struct:__anon2	access:public
+deadline	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^	int deadline; \/\/If = 1, deadlines will be used$/;"	member	line:39	struct:__anon2	access:public
+BackgroundTask	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^typedef struct { 	Object super; 	int backgroundLoopRange; 	int deadline; \/\/If = 1, deadlines will be used } BackgroundTask; $/;"	typedef	line:40	typeref:struct:__anon2
+initBackgroundTask	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^#define initBackgroundTask() {initObject(), 1000, 1}$/;"	macro	line:42
+toggleDeadlinesBackgroundTask	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^int toggleDeadlinesBackgroundTask(BackgroundTask*, int);$/;"	prototype	line:44	signature:(BackgroundTask*, int)	returns:int 
+load	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^int load(BackgroundTask*, int);$/;"	prototype	line:45	signature:(BackgroundTask*, int)	returns:int 
+runLoad	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^void runLoad(BackgroundTask*, int);$/;"	prototype	line:46	signature:(BackgroundTask*, int)	returns:void 
+dummyRunLoad	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^void dummyRunLoad(BackgroundTask*, int);$/;"	prototype	line:47	signature:(BackgroundTask*, int)	returns:void 
+setSilence	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^void setSilence(ToneGenerator* self, int);$/;"	prototype	line:49	signature:(ToneGenerator* self, int)	returns:void 
+setPeriod	C:\Users\axel0\Documents\RealtidLab2\Realtidssystem\part1.h	/^void setPeriod(ToneGenerator* self, int);$/;"	prototype	line:50	signature:(ToneGenerator* self, int)	returns:void 

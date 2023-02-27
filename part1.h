@@ -46,5 +46,9 @@ int load(BackgroundTask*, int);
 void runLoad(BackgroundTask*, int);
 void dummyRunLoad(BackgroundTask*, int);
 
+void setSilence(ToneGenerator* self, int);
+void setPeriod(ToneGenerator* self, int);
+
+
 
 #endif

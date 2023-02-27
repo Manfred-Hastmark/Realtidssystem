@@ -1,4 +1,4 @@
--IC:\Users\isakl\Desktop\RTS\Realtidssystem
--IC:\Users\isakl\Desktop\RTS\Realtidssystem\device\inc
--IC:\Users\isakl\Desktop\RTS\Realtidssystem\driver\inc
+-IC:\Users\axel0\Documents\RealtidLab2\Realtidssystem
+-IC:\Users\axel0\Documents\RealtidLab2\Realtidssystem\device\inc
+-IC:\Users\axel0\Documents\RealtidLab2\Realtidssystem\driver\inc
 -DSTM32F40_41xxx
