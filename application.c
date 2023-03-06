@@ -86,13 +86,15 @@ ToneGenerator toneGenerator = initToneGenerator(1000);  //1000Hz = 1000us, 769Hz
 BackgroundTask backgroundTask = initBackgroundTask();
 #endif
 
+SysIO sysIO = initSysIO(SIO_PORT0, &app, tapTheTempo);
+
 #ifdef LAB2
 int recieveBPM();
 int receiveKey();
 ToneGenerator toneGenerator = initToneGenerator(1000);
 Melody melody = initMelody(brotherJohn, length);
-UserButton userButton = initUserButton();
-MusicPlayer musicPlayer = initMusicPlayer(&toneGenerator, 120, brotherJohnBeatLength);
+
+MusicPlayer musicPlayer = initMusicPlayer(&toneGenerator, &sysIO, 120, brotherJohnBeatLength);
 void sendCANMsg(int, int);
 void CANHandler(char, int);
 
@@ -111,7 +113,10 @@ void CANkeyReceiver(int c);
 
 
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
-SysIO sysIO = initSysIO(SIO_PORT0, &app, tapTheTempo);
+
+InterBuffer interBuffer = initInterBuffer();
+
+UserButton userButton = initUserButton(&sci0, &interBuffer);
 
 ReadBuffer readBuffer = initReadBuffer();
 
@@ -120,21 +125,22 @@ Can can0 = initCan(CAN_PORT0, &app, receiver);
 
 void tapTheTempo(App *self, int unused)
 {
-	Timer timer = initTimer();
-	Time time = T_SAMPLE(&timer);
-	if(SYNC(&userButton, setButtonAction, time))
+	int value = SYNC(&userButton, setButtonAction, UNUSED);
+	
+	SIO_TRIG(&sysIO, SYNC(&userButton, toggleRisingTrigger, UNUSED));
+	
+	if(value > 2000)
 	{
-		SIO_TRIG(&sysIO, RISING_TRIGGER);
+		// reset
+		SCI_WRITE(&sci0, "RESETTING BPM TO 120\n");
+		ASYNC(&musicPlayer, setTempo, 120);
 	}
-	else
+	else if(30 < value && value < 300)
 	{
-		SIO_TRIG(&sysIO, FALLING_TRIGGER);
+		// set bpm
+		print("SETTING BPM TO: %d\n", value);
+		ASYNC(&musicPlayer, setTempo, value);
 	}
-	
-	
-	
-	
-	SCI_WRITE(&sci0, "Hello fuckers!");
 }
 
 void receiver(App *self, int unused) 

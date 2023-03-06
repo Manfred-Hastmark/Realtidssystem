@@ -5,6 +5,7 @@
 #include "TinyTimber.h"
 #include "sciTinyTimber.h"
 #include "canTinyTimber.h"
+#include "sioTinyTimber.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -31,6 +32,7 @@ typedef struct
 	int index;
 	int exist;
 	ToneGenerator* TG;		// ToneGenerator
+	SysIO* sysIO;
 	int tempo;				// 60000 / bpm represended in ms
 	int silenceDuration;	// 60000 / bpm * 10 which is 10% of the note
 	char* beatLength;		// How long every beat should be
@@ -39,7 +41,7 @@ typedef struct
 } MusicPlayer;
 
 
-#define initMusicPlayer(TG ,BPM, beatLength) {initObject(), 0, 0, (ToneGenerator*)TG, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
+#define initMusicPlayer(TG, sysIO, BPM, beatLength) {initObject(), 0, 0, (ToneGenerator*)TG, (SysIO*)sysIO, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the note ends.
@@ -92,19 +94,41 @@ void setTempo(MusicPlayer* self, int bpm);
 void setPeriods(MusicPlayer* self, int arrIn);
 
 int togglePlaying(MusicPlayer* self, int unused);
+void blinkLed(MusicPlayer* self, int unused);
+
 
 
 typedef struct
 {
 	Object super;
-	Time time;
-	Time jitterTime;
+	int buffer[3];
+	int index;
+	int count;
+} InterBuffer;
+
+#define initInterBuffer() {initObject(), {}, 0, 0}
+
+int addInterBuffer(InterBuffer* self, int number);
+void emptyInterBuffer(InterBuffer* self, int unused);
+int getBpmInterBuffer(InterBuffer* self, int unused);
+
+typedef struct
+{
+	Object super;
+	Timer timer;
+	Timer pressTimer;
 	int pressed;
+	int pressIndex;
+	int mode; //0 for press-momentary, 1 for press and hold
+	Serial* sci;
+	InterBuffer* interBuffer;
 } UserButton;
 
-#define initUserButton() {initObject(), 0, 0, 0}
+#define initUserButton(sci, interBuffer) {initObject(), initTimer(), initTimer(), 0, 0, 0, (Serial*)sci, (InterBuffer*)interBuffer}
 
-int setButtonAction(UserButton* self, int time);
-
+void resetInterTimer(UserButton* self, int unused);
+int setButtonAction(UserButton* self, int unused);
+int toggleRisingTrigger(UserButton* self, int unused);
+void pressAndHold(UserButton* self, int pressIndex);
 
 #endif

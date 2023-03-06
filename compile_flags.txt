@@ -1,4 +1,3 @@
--IC:\Users\isakha\Desktop\RTS\Realtidssystem
--IC:\Users\isakha\Desktop\RTS\Realtidssystem\device\inc
--IC:\Users\isakha\Desktop\RTS\Realtidssystem\driver\inc
+-IC:\Users\Ryzen 3600\Documents\Realtidssystem
+-IC:\Users\Ryzen
 -DSTM32F40_41xxx
