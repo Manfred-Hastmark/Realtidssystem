@@ -2,11 +2,13 @@
 
 void printWithSerial(Serial* sci, char* string, int val);
 
-void nextBeat(MusicPlayer* self, int beatIndex)
+void nextBeat(MusicPlayer* self, int unused)
 {
-	if(beatIndex == 0)
+	if(self->lightExist == 0)
 	{
-		ASYNC(self, blinkLed, 3);
+		self->lightExist = 1;
+		self->lightPlaying = 1;
+		ASYNC(self, blinkLed, 0);
 	}
 	
 	// Sets a period to the toneGenerator and turns it on.
@@ -17,33 +19,23 @@ void nextBeat(MusicPlayer* self, int beatIndex)
 	// Sleep until it should silence the toneGenerator
 	const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
 	self->index = (self->index + 1) & ~ 32;
-	
-	int beatLength;
-	switch(self->beatLength[self->index])
-	{
-		case 'a':
-			beatLength = 2;
-			break;
-		case 'b':
-			beatLength = 4;
-			break;
-		case 'c':
-			beatLength = 1;
-			break;
-	}
-	SEND(toneDuration, toneDuration + USEC(100 * self->tempo >> 5), self, nextSilence, (beatIndex + beatLength) & 3); 	// (same as (index + 1) % 32)
+	SEND(toneDuration, toneDuration + USEC(100 * self->tempo >> 5), self, nextSilence, 0); 	// (same as (index + 1) % 32)
 }
 
-void blinkLed(MusicPlayer* self, int amount)
+void blinkLed(MusicPlayer* self, int onOff)
 {
-	if(amount > 0)
+	if(self->lightPlaying)
 	{
-		SIO_WRITE(self->sysIO, amount % 2);
-		AFTER((self->tempo) >> 1, self, blinkLed, --amount);
-	}	
+		SIO_WRITE(self->sysIO, onOff);
+		AFTER(MSEC((self->tempo) >> 1), self, blinkLed, onOff ^ 1);
+	} 
+	else
+	{
+		self->lightExist = 0;
+	}
 }
 
-void nextSilence(MusicPlayer* self, int ledOn)
+void nextSilence(MusicPlayer* self, int unused)
 {
 	// Turns of the tone generator
 	ASYNC(self->TG, setSilence, 1);
@@ -52,7 +44,7 @@ void nextSilence(MusicPlayer* self, int ledOn)
 	if(self->playing)
 	{
 		const int silenceDuration = MSEC(self->silenceDuration);
-		SEND(silenceDuration, silenceDuration + USEC(900 * self->tempo >> 5), self, nextBeat, ledOn);
+		SEND(silenceDuration, silenceDuration + USEC(900 * self->tempo >> 5), self, nextBeat, 0);
 	}
 	else
 	{
@@ -74,7 +66,8 @@ static inline int getBeatLenght(char c, int ms, int silenceDuration)
 
 void setTempo(MusicPlayer* self, int bpm)
 {	
-	self->tempo = 60000 / bpm;	
+	self->tempo = 60000 / bpm;
+	self->lightPlaying = 0;
 	self->silenceDuration = self->tempo / 10;
 }
 
@@ -91,12 +84,13 @@ int togglePlaying(MusicPlayer* self, int unused)
 {
 	if(self->playing)
 	{
+		self->lightPlaying = 0;
 		self->playing = 0;
 	}
 	else
 	{
 		//Note to ourselves, add semaphore if we have time!!!
-		
+		self->lightPlaying = 0;
 		self->playing = 1;
 		if(!self->exist)
 		{
@@ -123,7 +117,7 @@ void resetInterTimer(UserButton* self, int unused)
 	}
 }
 
-void pressAndHold(UserButton* self, int pressIndex)
+void pressAndHold(UserButton* self, int unused)
 {
 	//SCI_WRITE(self->sci, "We are trying to go to press and hold\n");
 	if(T_SAMPLE(&self->pressTimer) >= SEC(1) && self->pressed)
@@ -141,8 +135,10 @@ int setButtonAction(UserButton* self, int unused)
 	{
 		Time interArrival = T_SAMPLE(&self->timer); 
 		
+		const int milliseconds = MSEC_OF(interArrival) + 1000 * SEC_OF(interArrival);
+		
 		//Avoid jitter
-		if(MSEC_OF(interArrival) > 100)
+		if(milliseconds > 100)
 		{
 			self->pressIndex++;
 			T_RESET(&self->pressTimer);
@@ -150,8 +146,7 @@ int setButtonAction(UserButton* self, int unused)
 			T_RESET(&self->timer);
 			if(self->pressIndex != 1)
 			{
-				const int milliseconds = MSEC_OF(interArrival) + 1000 * SEC_OF(interArrival);
-				
+
 				printWithSerial(self->sci, "The inter-arrival time was: %d\n", milliseconds);
 				if(!SYNC(self->interBuffer, addInterBuffer, milliseconds))
 				{

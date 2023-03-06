@@ -38,10 +38,12 @@ typedef struct
 	char* beatLength;		// How long every beat should be
 	int notePeriods[32];	// A char array with 32 notePeriods
 	int playing;
+	int lightPlaying;
+	int lightExist;
 } MusicPlayer;
 
 
-#define initMusicPlayer(TG, sysIO, BPM, beatLength) {initObject(), 0, 0, (ToneGenerator*)TG, (SysIO*)sysIO, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0}
+#define initMusicPlayer(TG, sysIO, BPM, beatLength) {initObject(), 0, 0, (ToneGenerator*)TG, (SysIO*)sysIO, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength, {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851, 758, 902, 851, 758, 758, 676, 758, 851, 902, 1136, 758, 676, 758, 851, 902, 1136, 1136, 1517, 1136, 1136, 1517, 1136 }, 0, 0, 0}
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the note ends.
@@ -94,7 +96,7 @@ void setTempo(MusicPlayer* self, int bpm);
 void setPeriods(MusicPlayer* self, int arrIn);
 
 int togglePlaying(MusicPlayer* self, int unused);
-void blinkLed(MusicPlayer* self, int unused);
+void blinkLed(MusicPlayer* self, int onOff);
 
 
 
@@ -129,6 +131,6 @@ typedef struct
 void resetInterTimer(UserButton* self, int unused);
 int setButtonAction(UserButton* self, int unused);
 int toggleRisingTrigger(UserButton* self, int unused);
-void pressAndHold(UserButton* self, int pressIndex);
+void pressAndHold(UserButton* self, int unused);
 
 #endif

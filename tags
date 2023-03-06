@@ -1,20 +1,16 @@
-SIO_TINYT_H	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define SIO_TINYT_H$/;"	macro	line:2
-super	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^    Object super;$/;"	member	line:9	struct:__anon1	access:public
-port	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^    GPIO_TypeDef *port;$/;"	member	line:10	struct:__anon1	access:public
-obj	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^    Object *obj;$/;"	member	line:11	struct:__anon1	access:public
-meth	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^    Method meth;$/;"	member	line:12	struct:__anon1	access:public
-SysIO	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^typedef struct {     Object super;     GPIO_TypeDef *port;     Object *obj;     Method meth; } SysIO; $/;"	typedef	line:13	typeref:struct:__anon1
-initSysIO	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define initSysIO(port, obj, meth) \\$/;"	macro	line:15
-SIO_PORT0	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define SIO_PORT0   (GPIO_TypeDef *)(GPIOB)$/;"	macro	line:18
-SIO_IRQ0	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define	SIO_IRQ0	IRQ_EXTI9_5$/;"	macro	line:19
-sio_init	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^void sio_init(SysIO *sio, int unused);$/;"	prototype	line:21	signature:(SysIO *sio, int unused)	returns:void 
-sio_read	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^int sio_read(SysIO *sio, int unused);$/;"	prototype	line:22	signature:(SysIO *sio, int unused)	returns:int 
-sio_write	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^void sio_write(SysIO *sio, int val);$/;"	prototype	line:23	signature:(SysIO *sio, int val)	returns:void 
-sio_toggle	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^void sio_toggle(SysIO *sio, int unused);$/;"	prototype	line:24	signature:(SysIO *sio, int unused)	returns:void 
-sio_trig	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^void sio_trig(SysIO *sio, int rise);$/;"	prototype	line:25	signature:(SysIO *sio, int rise)	returns:void 
-SIO_INIT	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define SIO_INIT(sio)       SYNC(sio, sio_init, 0)$/;"	macro	line:27
-SIO_READ	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define SIO_READ(sio)       SYNC(sio, sio_read, 0)$/;"	macro	line:28
-SIO_WRITE	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define SIO_WRITE(sio,val)  SYNC(sio, sio_write, val)$/;"	macro	line:29
-SIO_TOGGLE	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define SIO_TOGGLE(sio)     SYNC(sio, sio_toggle, 0)$/;"	macro	line:30
-SIO_TRIG	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^#define SIO_TRIG(sio,rise)  SYNC(sio, sio_trig, rise)$/;"	macro	line:31
-sio_interrupt	C:\Users\Ryzen 3600\Documents\Realtidssystem\sioTinyTimber.h	/^int sio_interrupt(SysIO *self, int unused);$/;"	prototype	line:33	signature:(SysIO *self, int unused)	returns:int 
+printWithSerial	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void printWithSerial(Serial* sci, char* string, int val);$/;"	prototype	line:3	signature:(Serial* sci, char* string, int val)	returns:void 
+nextBeat	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void nextBeat(MusicPlayer* self, int beatIndex)$/;"	function	line:5	signature:(MusicPlayer* self, int beatIndex)	returns:void 
+blinkLed	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void blinkLed(MusicPlayer* self, int amount)$/;"	function	line:37	signature:(MusicPlayer* self, int amount)	returns:void 
+nextSilence	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void nextSilence(MusicPlayer* self, int ledOn)$/;"	function	line:46	signature:(MusicPlayer* self, int ledOn)	returns:void 
+getBeatLenght	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^static inline int getBeatLenght(char c, int ms, int silenceDuration) $/;"	function	line:63	signature:(char c, int ms, int silenceDuration)	returns:inline int 
+setTempo	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void setTempo(MusicPlayer* self, int bpm)$/;"	function	line:75	signature:(MusicPlayer* self, int bpm)	returns:void 
+setPeriods	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void setPeriods(MusicPlayer* self, int arrIn)$/;"	function	line:81	signature:(MusicPlayer* self, int arrIn)	returns:void 
+togglePlaying	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^int togglePlaying(MusicPlayer* self, int unused)$/;"	function	line:90	signature:(MusicPlayer* self, int unused)	returns:int 
+toggleRisingTrigger	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^int toggleRisingTrigger(UserButton* self, int unused)$/;"	function	line:112	signature:(UserButton* self, int unused)	returns:int 
+resetInterTimer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void resetInterTimer(UserButton* self, int unused)$/;"	function	line:118	signature:(UserButton* self, int unused)	returns:void 
+pressAndHold	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void pressAndHold(UserButton* self, int pressIndex)$/;"	function	line:126	signature:(UserButton* self, int pressIndex)	returns:void 
+setButtonAction	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^int setButtonAction(UserButton* self, int unused)$/;"	function	line:138	signature:(UserButton* self, int unused)	returns:int 
+printWithSerial	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void printWithSerial(Serial* sci, char* string, int val)$/;"	function	line:185	signature:(Serial* sci, char* string, int val)	returns:void 
+addInterBuffer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^int addInterBuffer(InterBuffer* self, int number)$/;"	function	line:194	signature:(InterBuffer* self, int number)	returns:int 
+emptyInterBuffer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^void emptyInterBuffer(InterBuffer* self, int unused)$/;"	function	line:207	signature:(InterBuffer* self, int unused)	returns:void 
+getBpmInterBuffer	C:\Users\isakha\Desktop\RTS\Realtidssystem\part2.c	/^int getBpmInterBuffer(InterBuffer* self, int unused)$/;"	function	line:216	signature:(InterBuffer* self, int unused)	returns:int 
