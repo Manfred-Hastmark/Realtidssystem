@@ -2,13 +2,13 @@
 
 void printWithSerial(Serial* sci, char* string, int val);
 
-void nextBeat(MusicPlayer* self, int unused)
+void nextBeat(MusicPlayer* self, int evenOdd)
 {
 	if(self->lightExist == 0)
 	{
 		self->lightExist = 1;
 		self->lightPlaying = 1;
-		ASYNC(self, blinkLed, 0);
+		ASYNC(self, blinkLed, evenOdd);
 	}
 	
 	// Sets a period to the toneGenerator and turns it on.
@@ -16,10 +16,12 @@ void nextBeat(MusicPlayer* self, int unused)
 	ASYNC(self->TG, setPeriod, self->notePeriods[self->index]);
 	ASYNC(self->TG, setDAC, 0xFFFFFFFF);
 	
+	evenOdd += (self->beatLength[self->index] == 'c') ? 1 : 0;
+	
 	// Sleep until it should silence the toneGenerator
 	const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
 	self->index = (self->index + 1) & ~ 32;
-	SEND(toneDuration, toneDuration + USEC(100 * self->tempo >> 5), self, nextSilence, 0); 	// (same as (index + 1) % 32)
+	SEND(toneDuration, toneDuration + USEC(100 * self->tempo >> 5), self, nextSilence, evenOdd & 1); 	// (same as (index + 1) % 32)
 }
 
 void blinkLed(MusicPlayer* self, int onOff)
@@ -35,7 +37,7 @@ void blinkLed(MusicPlayer* self, int onOff)
 	}
 }
 
-void nextSilence(MusicPlayer* self, int unused)
+void nextSilence(MusicPlayer* self, int evenOdd)
 {
 	// Turns of the tone generator
 	ASYNC(self->TG, setSilence, 1);
@@ -44,7 +46,7 @@ void nextSilence(MusicPlayer* self, int unused)
 	if(self->playing)
 	{
 		const int silenceDuration = MSEC(self->silenceDuration);
-		SEND(silenceDuration, silenceDuration + USEC(900 * self->tempo >> 5), self, nextBeat, 0);
+		SEND(silenceDuration, silenceDuration + USEC(900 * self->tempo >> 5), self, nextBeat, evenOdd);
 	}
 	else
 	{
