@@ -91,4 +91,23 @@ void setPeriods(MusicPlayer* self, int arrIn);
 
 int togglePlaying(MusicPlayer* self, int unused);
 
+
+typedef struct
+{
+	Object super;
+	Time lastPress;
+	int fallingTrigger;
+	int holdMode;
+	int pressTime[3];
+	int pressIndex;
+} UserButton;
+
+#define initUserButton() {initObject(), 0, 0, 0}
+
+int setButtonAction(UserButton* self, int time);
+int getHoldMode(UserButton* self, int unused);
+void setHoldMode(UserButton* self, int unused);
+
+
+
 #endif

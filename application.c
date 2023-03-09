@@ -91,6 +91,9 @@ Melody melody = initMelody(brotherJohn, length);
 MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength);
 void sendCANMsg(int, int);
 void CANHandler(char, int);
+void print_hold(App*, int);
+#define FALLING_TRIGGER 1
+#define RISING_TRIGGER 0
 #endif
 
 
@@ -101,6 +104,42 @@ Serial sci0 = initSerial(SCI_PORT0, &app, reader);
 ReadBuffer readBuffer = initReadBuffer();
 
 Can can0 = initCan(CAN_PORT0, &app, receiver);
+
+
+void tapTheTempo(App *self, int unused)
+{
+	Timer timer = initTimer();
+	Time time = T_SAMPLE(&timer);
+	int res = SYNC(&userButton, setButtonAction, time);
+	if(res == 1)
+	{
+		//Valid key press -> change to rising to get next input
+		SIO_TRIG(&sysIO, RISING_TRIGGER);
+		//Print hold mode after one sec if button is not released
+		AFTER(MSEC(1010), self, print_hold, UNUSED);
+	}
+	else if(res == 2)
+	{
+		//Jitter -> keep falling trigger
+		SIO_TRIG(&sysIO, FALLING_TRIGGER);
+	}
+	else
+	{
+		//Hold mode -> print how long the button was held and get ready for new press
+		print("Button held for: %dms\n", res);
+		SIO_TRIG(&sysIO, RISING_TRIGGER);
+	}
+	
+	
+}
+
+void print_hold(App* self, int unused)
+{
+	if(SYNC(&userButton, getHoldMode, 0) == 1)
+	{
+		SCI_WRITE(&sci0, "We are in hold mode\n");
+	}
+}
 
 
 void receiver(App *self, int unused) 

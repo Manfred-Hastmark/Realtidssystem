@@ -70,3 +70,60 @@ int togglePlaying(MusicPlayer* self, int unused)
 	}
 	return self->playing;
 }
+
+
+
+
+// 0 = change to falling trigger
+// 1 = change to rising trigger
+int setButtonAction(UserButton* self, int time)
+{
+	if(self->fallingTrigger)
+	{
+		//Set to rising trigger
+		self->fallingTrigger = 0;
+		const Time timeSinceToggle = MSEC_OF(time - self->lastPress);
+		
+		if(timeSinceToggle < 100)
+		{
+			//jitter -> keep falling trigger
+			self->fallingTrigger = 1;
+			return 2; 
+		}
+		else if(timeSinceToggle < 1000)
+		{
+			//Valid press -> store in history
+			self->pressTime[self->pressIndex] = self->lastPress;
+			self->pressIndex = (self->pressIndex + 1) % 3;
+			self->holdMode = -1;
+			return 1; //valid press -> switch to rising trigger
+		}
+		else
+		{
+			//return the amount of time the button got held
+			return MSEC_OF(time - self->lastPress);
+		}
+	}
+	else
+	{
+		//Enter falling trigger mode and wait for button release
+		self->fallingTrigger = 1;
+		self->lastPress = time;
+		//Call for hold mode after one second
+		SEND(MSEC(1005), MSEC(1050), self, setHoldMode, 0);
+		return 0;
+	}
+}
+
+
+void setHoldMode(UserButton* self, int unused)
+{
+	//Sets to 1 if the button hasn't been released yet
+	self->holdMode = self->holdMode == -1 ? 0 : 1;
+}
+
+int getHoldMode(UserButton* self, int unused)
+{
+	return self->holdMode;
+}
+	
