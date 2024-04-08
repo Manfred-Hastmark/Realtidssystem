@@ -1,7 +1,12 @@
 
 #ifndef CANMSG
 #define CANMSG
-#include "enums.h"
+
+enum Role
+{
+    Conductor,
+    Musician
+};
 
 typedef unsigned char uint8_t;
 
@@ -13,9 +18,10 @@ typedef unsigned char uint8_t;
 /// (Set baseline to 0)
 ///
 //////////////////////////////////////////////////////////////////////
+#define TIMESYNCID 0
 typedef struct
 {
-    uint8_t id{0};
+    uint8_t id;
 
 } TimeSync;
 
@@ -30,33 +36,27 @@ typedef struct
 /// id: 12
 ///
 //////////////////////////////////////////////////////////////////////
+#define HEARTBEATID 10
 typedef struct
 {
-    uint8_t id{10};
-    Role role{Role::Musician};
+    uint8_t id;
+    enum Role role;
 
 } HeartBeat;
 
-inline void data_to_heart_beat(const uint8_t* data, HeartBeat* heart_beat)
-{
-    heart_beat->role = (Role)data[0];
-}
-
-inline void heart_beat_to_data(uint8_t* data, HeartBeat* heart_beat)
-{
-    // Set all bytes to 0
-    *(unsigned long long*)data = 0;
-    data[0] = heart_beat->role;
-}
+void data_to_heart_beat(const uint8_t* data, HeartBeat* heart_beat);
+void heart_beat_to_data(uint8_t* data, HeartBeat* heart_beat);
 
 //////////////////////////////////////////////////////////////////////
 ///
 /// @brief Claim conductor
+/// id 20
 ///
 //////////////////////////////////////////////////////////////////////
+#define CLAIMCONDUCTORID 20
 typedef struct
 {
-    uint8_t id{20};
+    uint8_t id;
 
 } ClaimConductor;
 
@@ -65,46 +65,30 @@ typedef struct
 /// @brief Notes
 ///
 //////////////////////////////////////////////////////////////////////
+#define NOTESID 29
 typedef struct
 {
-    uint8_t id{29};
-    uint8_t note_index{0};
-    char key{0};
-    uint8_t player{0};
-    uint8_t tempo{0};
-    uint8_t volume{0};
+    uint8_t id;
+    uint8_t note_index;
+    char key;
+    uint8_t player;
+    uint8_t tempo;
+    uint8_t volume;
 
 } Notes;
 
-inline void data_to_notes(const uint8_t* data, Notes* notes)
-{
-    notes->note_index = data[0];
-    notes->key = *(char*)data[1];
-    notes->player = data[2];
-    notes->tempo = data[3];
-    notes->volume = data[4];
-}
-
-inline void notes_to_data(uint8_t* data, Notes* notes)
-{
-    // Set all bytes to 0
-    *(unsigned long long*)data = 0;
-
-    data[0] = notes->note_index;
-    data[1] = *(uint8_t*)notes->key;
-    data[2] = notes->player;
-    data[3] = notes->tempo;
-    data[4] = notes->volume;
-}
+void data_to_notes(const uint8_t* data, Notes* notes);
+void notes_to_data(uint8_t* data, Notes* notes);
 
 //////////////////////////////////////////////////////////////////////
 ///
 /// @brief Note acks
 ///
 //////////////////////////////////////////////////////////////////////
+#define NOTEACKSID 30
 typedef struct
 {
-    uint8_t id{30};
+    uint8_t id;
 
 } NoteAcks;
 
@@ -113,22 +97,15 @@ typedef struct
 /// @brief HandoutConductor
 ///
 //////////////////////////////////////////////////////////////////////
+#define HANDOUTCONDUCTORID 40
 typedef struct
 {
-    uint8_t id{40};
-    uint8_t conductorId{0};
+    uint8_t id;
+    uint8_t conductorId;
 
 } HandoutConductor;
 
-inline void data_to_handout_conductor(uint8_t* data, HandoutConductor* handoutConductor)
-{
-    handoutConductor->conductorId = data[0];
-}
-
-inline void handout_conductor_to_data(uint8_t* data, HandoutConductor* handoutConductor)
-{
-    *(unsigned long long*)data = 0;
-    data[0] = handoutConductor->conductorId;
-}
+void data_to_handout_conductor(uint8_t* data, HandoutConductor* handoutConductor);
+void handout_conductor_to_data(uint8_t* data, HandoutConductor* handoutConductor);
 
 #endif // !CANMSG

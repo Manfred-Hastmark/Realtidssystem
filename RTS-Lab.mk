@@ -61,7 +61,7 @@ AS       := arm-none-eabi-as
 ##
 ## User defined environment variables
 ##
-Objects0=$(IntermediateDirectory)/dispatch.s$(ObjectSuffix) $(IntermediateDirectory)/part1.c$(ObjectSuffix) $(IntermediateDirectory)/sciTinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/application.c$(ObjectSuffix) $(IntermediateDirectory)/part2.c$(ObjectSuffix) $(IntermediateDirectory)/TinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IntermediateDirectory)/canTinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_usart.c$(ObjectSuffix) $(IntermediateDirectory)/part0.c$(ObjectSuffix) \
+Objects0=$(IntermediateDirectory)/dispatch.s$(ObjectSuffix) $(IntermediateDirectory)/part1.c$(ObjectSuffix) $(IntermediateDirectory)/sciTinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/application.c$(ObjectSuffix) $(IntermediateDirectory)/part2.c$(ObjectSuffix) $(IntermediateDirectory)/canMsgs.c$(ObjectSuffix) $(IntermediateDirectory)/TinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IntermediateDirectory)/canTinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_usart.c$(ObjectSuffix) $(IntermediateDirectory)/part0.c$(ObjectSuffix) \
 	$(IntermediateDirectory)/driver_src_stm32f4xx_can.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_syscfg.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_tim.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_rcc.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_exti.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_dac.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(ObjectSuffix) 
 
 
@@ -126,6 +126,12 @@ $(IntermediateDirectory)/part2.c$(ObjectSuffix): part2.c
 	$(CC) $(SourceSwitch) "./part2.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/part2.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/part2.c$(PreprocessSuffix): part2.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/part2.c$(PreprocessSuffix) part2.c
+
+$(IntermediateDirectory)/canMsgs.c$(ObjectSuffix): canMsgs.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/canMsgs.c$(ObjectSuffix) -MF$(IntermediateDirectory)/canMsgs.c$(DependSuffix) -MM canMsgs.c
+	$(CC) $(SourceSwitch) "./canMsgs.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/canMsgs.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/canMsgs.c$(PreprocessSuffix): canMsgs.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/canMsgs.c$(PreprocessSuffix) canMsgs.c
 
 $(IntermediateDirectory)/TinyTimber.c$(ObjectSuffix): TinyTimber.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TinyTimber.c$(ObjectSuffix) -MF$(IntermediateDirectory)/TinyTimber.c$(DependSuffix) -MM TinyTimber.c
@@ -198,6 +204,7 @@ $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(ObjectSuffix): driver/src/
 	$(CC) $(SourceSwitch) "./driver/src/stm32f4xx_gpio.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(PreprocessSuffix): driver/src/stm32f4xx_gpio.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(PreprocessSuffix) driver/src/stm32f4xx_gpio.c
+
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
