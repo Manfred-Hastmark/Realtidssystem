@@ -1,0 +1,26 @@
+CXX=arm-none-eabi-g++
+CFLAGS=-O3 -std=c++17 -w -D STM32F40_41xxx
+
+root=$(shell git rev-parse --show-toplevel)
+src_dir=$(root)
+cache_dir=$(root)/.out/
+
+inc=-I $(root) -I $(root)/device/inc/ -I $(root)/driver/inc/
+SRCS=$(shell find -name "*.c")
+OBJS_=$(patsubst %.c,%.o,$(SRCS))
+OBJS=$(patsubst ./%,$(root)/.out/%,$(OBJS_))
+
+$(cache_dir)%.o : $(src_dir)/%.c
+	@echo $(shell basename $@)
+	@mkdir -p $(shell dirname $@)
+	@$(CXX) $(CFLAGS) -c $^ $(inc) -o $@
+
+all: $(OBJS)
+	@echo "Linking"
+	@$(CXX) $(CFLAGS) $(root)/application.c $(inc) $(OBJS) -o $(cache_dir)/out
+
+clean:
+	@echo $(OBJS)
+	@rm -rf .out/
+	@echo Done
+
