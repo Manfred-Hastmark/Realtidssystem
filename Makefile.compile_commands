@@ -1,5 +1,5 @@
-CXX=arm-none-eabi-g++
-CFLAGS=-O3 -std=c++17 -w -D STM32F40_41xxx
+CXX=arm-none-eabi-gcc
+CFLAGS= -w -D STM32F40_41xxx
 
 root=$(shell git rev-parse --show-toplevel)
 src_dir=$(root)
