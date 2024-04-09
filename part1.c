@@ -17,7 +17,9 @@ int volume(ToneGenerator* self, int change)
 {
     // Do a check so that we are in range
     if (self->volume + change > 20 || self->volume + change < 0)
+    {
         return self->volume;
+    }
 
     self->volume += change;
     return self->volume;
@@ -25,7 +27,6 @@ int volume(ToneGenerator* self, int change)
 
 void setDAC(ToneGenerator* self, int val)
 {
-
     if (self->silence)
     {
         DAC_DATA = 0;

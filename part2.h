@@ -29,6 +29,7 @@ typedef struct
     char* beatLength;    // How long every beat should be
     int notePeriods[32]; // A char array with 32 notePeriods
     int playing;
+    int index;
 } MusicPlayer;
 
 #define initMusicPlayer(BPM, beatLength)                                                                                                   \
@@ -38,6 +39,8 @@ typedef struct
              758,  851,  902, 1136, 758,  676,  758, 851,  902, 1136, 1136, 1517, 1136, 1136, 1517, 1136},                                 \
             0                                                                                                                              \
     }
+
+static inline int getBeatLenght(char c, int ms, int silenceDuration);   
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the
@@ -61,18 +64,6 @@ void nextBeat(MusicPlayer* self, int index);
 void nextSilence(MusicPlayer* self, int index);
 
 /**
- * @brief Takes some parameters and calculates the correct beat length.
- *
- * @param char beatLength. How long the note should be.
- * @param int tempo. The time it takes to play a normal note (a) in MS.
- * @param int silenceDuration. How much of the note should be silent in MS.
- * @return int. Returns the length of a given note in ms.
- */
-static inline int getBeatLenght(char c, int ms, int silenceDuration);
-
-/**
- * @brief Changes the BPM of the song.
- *
  * @param MusicPlayer* musicPlayer.
  * @param int BPM. New BPM.
  * @return void.
@@ -80,14 +71,24 @@ static inline int getBeatLenght(char c, int ms, int silenceDuration);
 void setTempo(MusicPlayer* self, int bpm);
 
 /**
+ * @brief Sets the current index
+ */
+void set_index(MusicPlayer* self, int index);
+
+/**
  * @brief Changes all the periods of a given array.
  *
  * @param MusicPlayer* musicPlayer.
  * @param (int) int* array. Takes an array with new precalculated periods (currently hard coded to a size of 32).
  * @return void.
- * 
+ */
 void setPeriods(MusicPlayer* self, int arrIn);
 
 int togglePlaying(MusicPlayer* self, int unused);
+
+/**
+ * @brief returns -1 if playing
+ */
+int is_playing(MusicPlayer* self);
 
 #endif

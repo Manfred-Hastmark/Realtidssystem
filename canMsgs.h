@@ -19,6 +19,7 @@ typedef unsigned char uint8_t;
 ///
 //////////////////////////////////////////////////////////////////////
 #define TIMESYNCID 0
+#define TIMESYNDTO 0
 typedef struct
 {
     uint8_t id;
@@ -37,6 +38,8 @@ typedef struct
 ///
 //////////////////////////////////////////////////////////////////////
 #define HEARTBEATID 10
+#define HEARTBEATTO MSEC(40)
+#define HEARTBEATDL MSEC(41)
 typedef struct
 {
     uint8_t id;
@@ -98,6 +101,7 @@ typedef struct
 ///
 //////////////////////////////////////////////////////////////////////
 #define HANDOUTCONDUCTORID 40
+#define HANDOUTCONDUCTORTO 1
 typedef struct
 {
     uint8_t id;

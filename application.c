@@ -1,10 +1,13 @@
+#include "application.h"
 #include "TinyTimber.h"
+#include "canHandler.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
 #include "part0.h"
 #include "part1.h"
 #include "part2.h"
 #include "sciTinyTimber.h"
+#include "software_defines.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,49 +44,17 @@ const char brotherJohnBeatLength1[32] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
 void print(char*, int);
 
-typedef struct
-{
-    Object super;
-    int count;
-    char c;
-} App;
-
-App app = {initObject(), 0, 'X'};
 void reader(App*, int);
-void receiver(App*, int);
 void keyHandler(App*, int);
 
 void recieveBPM();
 void receiveKey();
 Melody melody = initMelody(brotherJohn, length);
 MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength);
-void sendCANMsg(int, int);
-void CANHandler(char, int);
+void notes_hanlder(Notes* msg);
 
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
-
 ReadBuffer readBuffer = initReadBuffer();
-
-Can can0 = initCan(CAN_PORT0, &app, receiver);
-
-void receiver(App* self, int unused)
-{
-    CANMsg msg;
-    CAN_RECEIVE(&can0, &msg);
-    int rcv = 0;
-    rcv += msg.buff[0];
-    rcv += msg.buff[1] << 8;
-    rcv += msg.buff[2] << 16;
-    rcv += msg.buff[3] << 24;
-
-    HeartBeat dkas;
-    heart_beat_to_data(msg.buff, &dkas);
-
-    print("Can ID: %c, ", msg.msgId);
-    print("DATA: %d\n", rcv);
-
-    CANHandler(msg.msgId, rcv);
-}
 
 void reader(App* self, int c)
 {
@@ -95,45 +66,17 @@ void reader(App* self, int c)
     ASYNC(&app, keyHandler, c);
 }
 
-void CANHandler(char id, int data)
+void notes_handler(Notes* msg)
 {
-    switch (id)
+    if (msg->player == RANK_SELF)
     {
-    case 'c': // Lower volume
-        print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, -1));
-        break;
-    case 'v': // Raise volume
-        print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, 1));
-        break;
-    case 'k': // A key was received
-    {
-        char output[50];
-        sprintf(output, "Key: %d\n", data);
-        SCI_WRITE(&sci0, output);
-        SYNC(&melody, setKey, data);
-
+        SYNC(&melody, setKey, msg->key);
         int melodyPeriods[length];
-
         SYNC(&melody, setMelodyPeriods, (int)melodyPeriods);
-        ASYNC(&musicPlayer, setPeriods, (int)melodyPeriods);
-    }
-    break;
-    case 'm': // Toggle muting
-        ASYNC(&musicPlayer.TG, toggleMute, UNUSED);
-        break;
-    case 'b': {
-        char output[50];
-        sprintf(output, "BPM: %d\n", data);
-        SCI_WRITE(&sci0, output);
-        ASYNC(&musicPlayer, setTempo, data);
-    }
-    break;
-    case 's':
-        if (SYNC(&musicPlayer, togglePlaying, UNUSED))
-            SCI_WRITE(&sci0, "Playing\n");
-        else
-            SCI_WRITE(&sci0, "Paused\n");
-        break;
+        SYNC(&musicPlayer, setPeriods, (int)melodyPeriods);
+        SYNC(&musicPlayer.TG, volume, msg->volume);
+        SYNC(&musicPlayer.TG, set_index, msg->note_index);
+        ASYNC(&musicPlayer, nextBeat, 0);
     }
 }
 
@@ -229,36 +172,34 @@ void recieveBPM()
     ASYNC(&musicPlayer, setTempo, bpm);
 }
 
-#ifdef CONDUCTOR
-void sendCANMsg(int id, int data)
-{
-    CANMsg msg;
-    msg.msgId = id;
-    msg.nodeId = 1;
-    msg.length = 4;
-
-    msg.buff[0] = data;
-    msg.buff[1] = data >> 8;
-    msg.buff[2] = data >> 16;
-    msg.buff[3] = data >> 24;
-    CAN_SEND(&can0, &msg);
-}
-#endif
-
 void startApp(App* self, int arg)
 {
-    CAN_INIT(&can0);
     SCI_INIT(&sci0);
+    init_can_handler();
     SCI_WRITE(&sci0, "Hello, hello...\n");
-
-    sendCANMsg(0, 12345678);
     ASYNC(&musicPlayer, nextBeat, 0);
 }
 
 int main()
 {
     INSTALL(&sci0, sci_interrupt, SCI_IRQ0);
-    INSTALL(&can0, can_interrupt, CAN_IRQ0);
+    install_can_handler();
     TINYTIMBER(&app, startApp, 0);
     return 0;
+}
+
+void heartbeat_tmo_check_1(App* self, int call_time_p)
+{
+    Time call_time = *((int*)call_time_p);
+    if (CURRENT_OFFSET() - call_time > HEARTBEATTO)
+    {
+    }
+}
+
+void heartbeat_tmo_check_2(App* self, int call_time_p)
+{
+    Time call_time = *((int*)call_time_p);
+    if (CURRENT_OFFSET() - call_time > HEARTBEATTO)
+    {
+    }
 }

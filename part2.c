@@ -1,36 +1,33 @@
 #include "part2.h"
 
-void nextBeat(MusicPlayer* self, int index)
+void nextBeat(MusicPlayer* self, int unused)
 {
-
     // Sets a period to the toneGenerator and turns it on.
     self->TG.silence = 0;
-    self->TG.period = self->notePeriods[index];
+    self->TG.period = self->notePeriods[self->index];
     ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
 
     // Sleep until it should silence the toneGenerator
-    const int toneDuration = MSEC(getBeatLenght(self->beatLength[index], self->tempo, self->silenceDuration));
-    SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, (index + 1) & ~32); // (same as (index + 1) % 32)
+    const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
+    self->index += 1;
+    self->index %= 32;
+    SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, self->index); // (same as (index + 1) % 32)
 }
 
-void nextSilence(MusicPlayer* self, int index)
+void nextSilence(MusicPlayer* self, int unused)
 {
     // Turns of the tone generator
     self->TG.silence = 1;
 
     // Sleep until the next note
-    if (self->playing == -1)
+    if (self->playing == 1)
     {
         const int silenceDuration = MSEC(self->silenceDuration);
-        SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, index);
-    }
-    else
-    {
-        self->playing = index;
+        SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
     }
 }
 
-static inline int getBeatLenght(char c, int ms, int silenceDuration)
+int getBeatLenght(char c, int ms, int silenceDuration)
 {
     switch (c)
     {
@@ -62,14 +59,24 @@ void setPeriods(MusicPlayer* self, int arrIn)
 
 int togglePlaying(MusicPlayer* self, int unused)
 {
-    if (self->playing == -1)
+    if (self->playing == 1)
     {
         self->playing = 0;
     }
     else
     {
-        ASYNC(self, nextBeat, self->playing); // This cannot happen before -1 :)
-        self->playing = -1;
+        ASYNC(self, nextBeat, 0);
+        self->playing = 1;
     }
+    return self->playing;
+}
+
+void set_index(MusicPlayer* self, int index)
+{
+    self->index = index;
+}
+
+int is_playing(MusicPlayer* self)
+{
     return self->playing;
 }
