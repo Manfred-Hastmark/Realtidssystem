@@ -1,82 +1,87 @@
 [
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/startup.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/startup.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/startup.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/startup.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/startup.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/startup.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_gpio.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_gpio.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_gpio.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/canMsgs.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/canMsgs.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/canMsgs.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_syscfg.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_syscfg.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_syscfg.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/canTinyTimber.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/canTinyTimber.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/canTinyTimber.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_dac.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_dac.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_dac.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/part0.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/part0.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/part0.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_tim.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_tim.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_tim.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/part1.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/part1.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/part1.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_exti.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_exti.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_exti.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_rcc.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_rcc.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_rcc.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_usart.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_usart.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_usart.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_gpio.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_gpio.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_gpio.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_rcc.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_rcc.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_rcc.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_dac.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_dac.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_dac.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/driver/src/stm32f4xx_can.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_can.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/driver/src/stm32f4xx_can.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_usart.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_usart.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_usart.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/canTinyTimber.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/canTinyTimber.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/canTinyTimber.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_tim.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_tim.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_tim.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/TinyTimber.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/TinyTimber.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/TinyTimber.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_syscfg.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_syscfg.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_syscfg.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/application.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/application.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/application.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_exti.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_exti.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_exti.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/part2.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/part2.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/part2.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/driver/src/stm32f4xx_can.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_can.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/driver/src/stm32f4xx_can.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/part1.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/part1.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/part1.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/part2.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/part2.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/part2.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/part0.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/part0.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/part0.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/TinyTimber.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/TinyTimber.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/TinyTimber.o"
   },
   {
     "directory": ".",
-    "command": "arm-none-eabi-g++ -O3 -std=c++17 -w -D STM32F40_41xxx -c /home/isak/Documents/school/EDA423/Realtidssystem/sciTinyTimber.c -I /home/isak/Documents/school/EDA423/Realtidssystem -I /home/isak/Documents/school/EDA423/Realtidssystem/device/inc/ -I /home/isak/Documents/school/EDA423/Realtidssystem/driver/inc/ -o /home/isak/Documents/school/EDA423/Realtidssystem/.out/sciTinyTimber.o",
-    "file": "/home/isak/Documents/school/EDA423/Realtidssystem/.out/sciTinyTimber.o"
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/application.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/application.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/application.o"
+  },
+  {
+    "directory": ".",
+    "command": "arm-none-eabi-gcc -w -D STM32F40_41xxx -c /home/hastmark/Documents/school/realtime/Realtidssystem/sciTinyTimber.c -I /home/hastmark/Documents/school/realtime/Realtidssystem -I /home/hastmark/Documents/school/realtime/Realtidssystem/device/inc/ -I /home/hastmark/Documents/school/realtime/Realtidssystem/driver/inc/ -o /home/hastmark/Documents/school/realtime/Realtidssystem/.out/sciTinyTimber.o",
+    "file": "/home/hastmark/Documents/school/realtime/Realtidssystem/.out/sciTinyTimber.o"
   }
 ]

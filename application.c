@@ -247,12 +247,12 @@ void sendCANMsg(int id, int data)
 
 void startApp(App* self, int arg)
 {
-
     CAN_INIT(&can0);
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Hello, hello...\n");
 
     sendCANMsg(0, 12345678);
+    ASYNC(&musicPlayer, nextBeat, 0);
 }
 
 int main()

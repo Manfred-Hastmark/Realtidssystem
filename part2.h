@@ -85,7 +85,7 @@ void setTempo(MusicPlayer* self, int bpm);
  * @param MusicPlayer* musicPlayer.
  * @param (int) int* array. Takes an array with new precalculated periods (currently hard coded to a size of 32).
  * @return void.
- */
+ * 
 void setPeriods(MusicPlayer* self, int arrIn);
 
 int togglePlaying(MusicPlayer* self, int unused);
