@@ -40,7 +40,7 @@ typedef struct
             0                                                                                                                              \
     }
 
-static inline int getBeatLenght(char c, int ms, int silenceDuration);   
+int getBeatLenght(char c, int ms, int silenceDuration);   
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the
