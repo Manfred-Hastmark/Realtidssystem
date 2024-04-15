@@ -1,5 +1,6 @@
 #include "application.h"
 #include "TinyTimber.h"
+#include "board_handler.h"
 #include "canHandler.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
@@ -37,8 +38,7 @@
 #define MUSICIAN
 
 // Brother John melody
-const int length = 32;
-const int brotherJohn[32] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
+const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
 const char brotherJohnBeatLength[32] = "aaaaaaaaaabaabccccaaccccaaaabaab";
 const char brotherJohnBeatLength1[32] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
@@ -50,7 +50,12 @@ void keyHandler(App*, int);
 void recieveBPM();
 void receiveKey();
 Melody melody = initMelody(brotherJohn, length);
-MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength);
+BoardHandler board_handler;
+MusicPlayer musicPlayer = initMusicPlayer(120, &board_handler, brotherJohnBeatLength);
+
+CanHandler can_handler = init_can_handler(&musicPlayer, &board_handler);
+Can can0 = initCan(CAN_PORT0, &can_handler, receive_msg);
+
 void notes_hanlder(Notes* msg);
 
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
@@ -64,20 +69,6 @@ void reader(App* self, int c)
 
     // Call the keyhandler
     ASYNC(&app, keyHandler, c);
-}
-
-void notes_handler(Notes* msg)
-{
-    if (msg->player == RANK_SELF)
-    {
-        SYNC(&melody, setKey, msg->key);
-        int melodyPeriods[length];
-        SYNC(&melody, setMelodyPeriods, (int)melodyPeriods);
-        SYNC(&musicPlayer, setPeriods, (int)melodyPeriods);
-        SYNC(&musicPlayer.TG, volume, msg->volume);
-        SYNC(&musicPlayer.TG, set_index, msg->note_index);
-        ASYNC(&musicPlayer, nextBeat, 0);
-    }
 }
 
 void keyHandler(App* self, int c)
@@ -184,7 +175,6 @@ void recieveBPM()
 void startApp(App* self, int arg)
 {
     SCI_INIT(&sci0);
-    init_can_handler();
     SCI_WRITE(&sci0, "Hello, hello...\n");
     ASYNC(&musicPlayer, nextBeat, 0);
 }
@@ -192,7 +182,7 @@ void startApp(App* self, int arg)
 int main()
 {
     INSTALL(&sci0, sci_interrupt, SCI_IRQ0);
-    install_can_handler();
+    init(&can_handler, &can0);
     TINYTIMBER(&app, startApp, 0);
     return 0;
 }

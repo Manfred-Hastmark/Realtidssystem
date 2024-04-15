@@ -1,9 +1,9 @@
 #ifndef PART2
 #define PART2
+#include "board_handler.h"
 #include "canMsgs.h"
+#include "part0.h"
 #include "part1.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
  * How to run this lib:
@@ -24,23 +24,25 @@
 
 typedef struct
 {
-    ToneGenerator TG;    // ToneGenerator
-    int tempo;           // 60000 / bpm represended in ms
-    int silenceDuration; // 60000 / bpm * 10 which is 10% of the note
-    char* beatLength;    // How long every beat should be
-    int notePeriods[32]; // A char array with 32 notePeriods
+    ToneGenerator TG;                // ToneGenerator
+    BoardHandler* m_board_handler_p; // Board handler
+    Melody* m_melody_p;              // Melody
+    int tempo;                       // 60000 / bpm represended in ms
+    int silenceDuration;             // 60000 / bpm * 10 which is 10% of the note
+    char* beatLength;                // How long every beat should be
+    int notePeriods[32];             // A char array with 32 notePeriods
     int playing;
     int index;
-    bool isConductor;
-    bool isInitialized;
+    int isConductor;
+    int isInitialized;
 } MusicPlayer;
 
-#define initMusicPlayer(BPM, beatLength)                                                                                                   \
+#define initMusicPlayer(BPM, board_handler_p, beatLength)                                                                                  \
     {                                                                                                                                      \
-        initToneGenerator(1000), 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                                                     \
+        initToneGenerator(1000), board_handler_p, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                                    \
             {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851,  758,  902,  851,  758,  758,  676,                                   \
              758,  851,  902, 1136, 758,  676,  758, 851,  902, 1136, 1136, 1517, 1136, 1136, 1517, 1136},                                 \
-            0, false                                                                                                                       \
+            0, 0, 0                                                                                                                        \
     }
 
 int getBeatLenght(char c, int ms, int silenceDuration);

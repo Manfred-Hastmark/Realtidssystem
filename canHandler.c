@@ -7,42 +7,38 @@
 #include "canTinyTimber.h"
 #include "software_defines.h"
 
-Can can0 = initCan(CAN_PORT0, &app, receive_msg);
-
 Time last_heart_beat_1 = 0;
 Time last_heart_beat_2 = 0;
 
-void install_can_handler()
+void init(CanHandler* self, Can* can0_p)
 {
-    INSTALL(&can0, can_interrupt, CAN_IRQ0);
+    self->m_can0_p = can0_p;
+    INSTALL(&can0_p, can_interrupt, CAN_IRQ0);
+    CAN_INIT(&can0_p);
 }
 
-void init_can_handler()
-{
-    CAN_INIT(&can0);
-}
+void notes_handler(CanHandler* self, Notes* msg);
 
-void send_msg(int index, const uchar* data, int length)
+void send_msg(CanHandler* self, int can_data_p)
 {
     CANMsg msg;
-    msg.msgId = index;
+    CanData* data_p = (CanData*)can_data_p;
+    msg.msgId = data_p->index;
     msg.nodeId = RANK_SELF;
-    msg.length = length;
-    *(unsigned long long*)msg.buff = *(unsigned long long*)data;
+    msg.length = data_p->length;
+    *(unsigned long long*)msg.buff = *(unsigned long long*)data_p->data;
 }
 
-void receive_msg(App* self, uint8_t* data)
+void receive_msg(CanHandler* self, uint8_t* data)
 {
     CANMsg msg;
-    CAN_RECEIVE(&can0, &msg);
+    CAN_RECEIVE(self->m_can0_p, &msg);
     print("Can ID: %c, ", msg.msgId);
     uchar data_buff[8];
     *(unsigned long long*)data_buff = *(unsigned long long*)data;
 
     switch (msg.msgId)
     {
-    case TIMESYNCID:
-        return;
     case HEARTBEATID + RANK_OTHER_1:
         last_heart_beat_1 = CURRENT_OFFSET();
         SEND(HEARTBEATTO, HEARTBEATDL, &app, heartbeat_tmo_check_1, (int)&last_heart_beat_1);
@@ -56,7 +52,7 @@ void receive_msg(App* self, uint8_t* data)
     case NOTESID: {
         Notes notes_msg;
         data_to_notes(data_buff, &notes_msg);
-        notes_handler(&notes_msg);
+        notes_handler(self, &notes_msg);
         return;
     }
     case NOTEACKSID:
@@ -65,5 +61,19 @@ void receive_msg(App* self, uint8_t* data)
         return;
     default:
         return;
+    }
+}
+
+void notes_handler(CanHandler* self, Notes* msg)
+{
+    if (msg->player == RANK_SELF)
+    {
+        SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
+        int melodyPeriods[LENGTH];
+        SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
+        SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
+        SYNC(&self->m_music_player_p->TG, volume, msg->volume);
+        SYNC(&self->m_music_player_p->TG, set_index, msg->note_index);
+        ASYNC(self->m_music_player_p, nextBeat, 0);
     }
 }

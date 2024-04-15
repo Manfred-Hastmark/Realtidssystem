@@ -2,28 +2,48 @@
 #ifndef CAN_HANLDER
 #define CAN_HANLDER
 
+#include "TinyTimber.h"
 #include "application.h"
+#include "board_handler.h"
 #include "canMsgs.h"
+#include "canTinyTimber.h"
+#include "part2.h"
 
-/**
- * @brief Install can 
- */
-void install_can_handler();
+typedef struct
+{
+    Object obj;
+    MusicPlayer* m_music_player_p;
+    BoardHandler* m_board_handler_p;
+    Can* m_can0_p;
+} CanHandler;
 
-/**
- * @brief Inits CAN
- */
-void init_can_handler();
+typedef struct
+{
+    int index;
+    uint8_t* data;
+    int length;
 
-/**
- * @brief Function to send a can message
- */
-void send_msg(int index, const uint8_t* data, int length);
+} CanData;
+
+#define init_can_handler(music_player_p, board_handler_p)                                                                                  \
+    {                                                                                                                                      \
+        initObject(), music_player_p, board_handler_p                                                                                      \
+    }
 
 /**
  * @brief Function that gets called on CAN msg recv
  */
-void receive_msg(App* self, uint8_t* data);
+void init(CanHandler* self, Can* can0_p);
+
+/**
+ * @brief Function that gets called on CAN msg recv
+ */
+void send_msg(CanHandler* self, int can_data_p);
+
+/**
+ * @brief Function that gets called on CAN msg recv
+ */
+void receive_msg(CanHandler* self, uint8_t* data);
 
 /**
  * @brief Checks timeout on all msgs

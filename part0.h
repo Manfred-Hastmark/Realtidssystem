@@ -2,8 +2,6 @@
 #define PART0
 
 #include "TinyTimber.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 // Definition for "Class" ReadBuffer, used to read user input
 

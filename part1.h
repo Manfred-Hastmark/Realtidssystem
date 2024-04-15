@@ -2,8 +2,6 @@
 #define PART1
 
 #include "TinyTimber.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 #define DAC_DATA *((unsigned char*)0x4000741C)
 
