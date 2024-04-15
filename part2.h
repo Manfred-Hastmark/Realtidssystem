@@ -1,5 +1,6 @@
 #ifndef PART2
 #define PART2
+#include "canMsgs.h"
 #include "part1.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,6 +31,8 @@ typedef struct
     int notePeriods[32]; // A char array with 32 notePeriods
     int playing;
     int index;
+    bool isConductor;
+    bool isInitialized;
 } MusicPlayer;
 
 #define initMusicPlayer(BPM, beatLength)                                                                                                   \
@@ -37,10 +40,10 @@ typedef struct
         initToneGenerator(1000), 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                                                     \
             {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851,  758,  902,  851,  758,  758,  676,                                   \
              758,  851,  902, 1136, 758,  676,  758, 851,  902, 1136, 1136, 1517, 1136, 1136, 1517, 1136},                                 \
-            0                                                                                                                              \
+            0, false                                                                                                                       \
     }
 
-int getBeatLenght(char c, int ms, int silenceDuration);   
+int getBeatLenght(char c, int ms, int silenceDuration);
 
 /**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until the
@@ -90,5 +93,7 @@ int togglePlaying(MusicPlayer* self, int unused);
  * @brief returns -1 if playing
  */
 int is_playing(MusicPlayer* self);
+
+void assignMode(MusicPlayer* self, int mode);
 
 #endif

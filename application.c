@@ -105,10 +105,19 @@ void keyHandler(App* self, int c)
         recieveBPM();
         break;
     case 's':
-        if (SYNC(&musicPlayer, togglePlaying, UNUSED))
-            SCI_WRITE(&sci0, "Playing\n");
-        else
-            SCI_WRITE(&sci0, "Paused\n");
+        if (musicPlayer.isConductor)
+        {
+            if (SYNC(&musicPlayer, togglePlaying, UNUSED))
+                SCI_WRITE(&sci0, "Playing\n");
+            else
+                SCI_WRITE(&sci0, "Paused\n");
+        }
+        break;
+    case 'z':
+        ASYNC(&musicPlayer, assignMode, true);
+        break;
+    case 'x':
+        ASYNC(&musicPlayer, assignMode, false);
         break;
     }
 #elif defined(CONDUCTOR)

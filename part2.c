@@ -2,6 +2,16 @@
 
 void nextBeat(MusicPlayer* self, int unused)
 {
+    if (self->isConductor)
+    {
+    }
+    else
+    {
+        self->TG.silence = 0;
+        self->TG.period = self->notePeriods[self->index];
+        ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+    }
+
     // Sets a period to the toneGenerator and turns it on.
     self->TG.silence = 0;
     self->TG.period = self->notePeriods[self->index];
@@ -79,4 +89,13 @@ void set_index(MusicPlayer* self, int index)
 int is_playing(MusicPlayer* self)
 {
     return self->playing;
+}
+
+void assignMode(MusicPlayer* self, int mode)
+{
+    if (!self->isInitialized)
+    {
+        self->isConductor = mode;
+        self->isInitialized = true;
+    }
 }
