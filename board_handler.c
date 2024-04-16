@@ -13,7 +13,6 @@ int is_conductor(BoardHandler* self, int unused)
 int current_musician_index = 0;
 int get_next_musician_index(BoardHandler* self, int unused)
 {
-    print("Current musician index = %i\n", current_musician_index);
     for (int i = 0; i < MAX_NODES; i++)
     {
         if (self->node_states[current_musician_index] != DISCONNECTED)
