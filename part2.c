@@ -5,9 +5,28 @@
 
 void nextBeat(MusicPlayer* self, int unused)
 {
-    self->TG.silence = 0;
-    self->TG.period = self->notePeriods[self->index];
-    ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+    if (SYNC(self->m_board_handler_p, get_conductor_index, 0) == RANK)
+    {
+        self->index++;
+        int player_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
+        if (player_index == RANK)
+        {
+            self->TG.silence = 0;
+            self->TG.period = self->notePeriods[self->index];
+            ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+        }
+        else
+        {
+            Notes notes_msg;
+            notes_msg.id = NOTESID;
+            notes_msg.note_index = self->index;
+            notes_msg.key = self->m_melody_p->key;
+            notes_msg.player = player_index;
+            notes_msg.tempo = self->tempo;
+            notes_msg.volume = self->TG.volume;
+            SYNC(self, send_tone_msg, (int)&notes_msg);
+        }
+    }
 
     // Sleep until it should silence the toneGenerator
     const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
@@ -25,7 +44,7 @@ void nextSilence(MusicPlayer* self, int unused)
     if (self->playing == 1)
     {
         const int silenceDuration = MSEC(self->silenceDuration);
-        //SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
+        // SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
     }
 }
 
@@ -81,13 +100,4 @@ void set_note_index(MusicPlayer* self, int index)
 int is_playing(MusicPlayer* self)
 {
     return self->playing;
-}
-
-void assignMode(MusicPlayer* self, int mode)
-{
-    if (!self->isInitialized)
-    {
-        self->isConductor = mode;
-        self->isInitialized = true;
-    }
 }

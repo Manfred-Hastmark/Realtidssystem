@@ -79,7 +79,9 @@ void notes_handler(CanHandler* self, Notes* msg)
         SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
         SYNC(&self->m_music_player_p->TG, volume, msg->volume);
         SYNC(&self->m_music_player_p->TG, set_note_index, msg->note_index);
-        ASYNC(self->m_music_player_p, nextBeat, 0);
+        self->m_music_player_p->TG.silence = 0;
+        self->m_music_player_p->TG.period = self->m_music_player_p->notePeriods[self->m_music_player_p->index];
+        ASYNC(&self->m_music_player_p->TG, setDAC, 0xFFFFFFFF);
     }
 }
 

@@ -33,7 +33,6 @@ typedef struct
     int notePeriods[32];             // A char array with 32 notePeriods
     int playing;
     int index;
-    int isConductor;
     int isInitialized;
 } MusicPlayer;
 
