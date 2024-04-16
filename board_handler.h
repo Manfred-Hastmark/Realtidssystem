@@ -3,16 +3,10 @@
 #define BOARD_HANDLER
 
 #include "TinyTimber.h"
+#include "canMsgs.h"
 
 #define MAX_NODES 8
 #define LENGTH 32
-
-enum BoardState
-{
-    DISCONNECTED = 0,
-    MUSICIAN = 1,
-    CONDUCTOR = 2,
-};
 
 typedef struct
 {

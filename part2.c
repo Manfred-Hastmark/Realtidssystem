@@ -25,7 +25,7 @@ void nextSilence(MusicPlayer* self, int unused)
     if (self->playing == 1)
     {
         const int silenceDuration = MSEC(self->silenceDuration);
-        SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
+        //SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
     }
 }
 

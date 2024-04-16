@@ -5,7 +5,6 @@
 #include "TinyTimber.h"
 #include "application.h"
 #include "board_handler.h"
-#include "canMsgs.h"
 #include "canTinyTimber.h"
 #include "part2.h"
 
@@ -49,6 +48,5 @@ void receive_msg(CanHandler* self, uint8_t* data);
 /**
  * @brief Checks timeout on all msgs
  */
-void check_timeout();
-
+void check_timeout(CanHandler* self, int id);
 #endif

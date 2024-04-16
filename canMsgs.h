@@ -2,13 +2,14 @@
 #ifndef CANMSG
 #define CANMSG
 
-enum Role
-{
-    Conductor,
-    Musician
-};
-
 typedef unsigned char uint8_t;
+
+enum BoardState
+{
+    DISCONNECTED = 0,
+    MUSICIAN = 1,
+    CONDUCTOR = 2,
+};
 
 //////////////////////////////////////////////////////////////////////
 ///
@@ -43,7 +44,7 @@ typedef struct
 typedef struct
 {
     uint8_t id;
-    enum Role role;
+    enum BoardState role;
 
 } HeartBeat;
 
