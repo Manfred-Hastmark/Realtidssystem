@@ -24,7 +24,7 @@ typedef struct
         initObject(),                                                                                                                      \
             {                                                                                                                              \
                 DISCONNECTED,                                                                                                              \
-                0,                                                                                                                         \
+                DISCONNECTED,                                                                                                              \
                 DISCONNECTED,                                                                                                              \
                 DISCONNECTED,                                                                                                              \
                 DISCONNECTED,                                                                                                              \
