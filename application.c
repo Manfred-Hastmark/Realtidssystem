@@ -11,7 +11,6 @@
 #include "software_defines.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 /* HOW TO USE
  * LAB0
@@ -98,19 +97,25 @@ void keyHandler(App* self, int c)
         if (SYNC(&board_handler, is_conductor, 0))
         {
             if (SYNC(&musicPlayer, togglePlaying, UNUSED))
+            {
                 SCI_WRITE(&sci0, "Playing\n");
+            }
             else
+            {
                 SCI_WRITE(&sci0, "Paused\n");
+            }
         }
         break;
-    case 'z':
+    case 'z': {
         SetBoardState state = {CONDUCTOR, RANK};
         SYNC(&board_handler, set_index, (int)&state);
         break;
-    case 'x':
+    }
+    case 'x': {
         SetBoardState state = {MUSICIAN, RANK};
-        SYNC(&board_handler, set_index, (int)&state);   
+        SYNC(&board_handler, set_index, (int)&state);
         break;
+    }
     }
 }
 
@@ -151,9 +156,6 @@ void startApp(App* self, int arg)
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Initialize the board as conductor by typing 'z' or 'x' for musician\n");
 }
-
-
-
 
 int main()
 {
