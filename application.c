@@ -12,6 +12,16 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+/**
+ * - Gå inte vidare i melodin föräns acks är receivet, om timeout
+ *      så spelar conductorn noten själv och går senare vidare
+ *
+ *
+ *
+ *
+ *
+ */
+
 #define PROBLEM_1
 
 /* HOW TO USE

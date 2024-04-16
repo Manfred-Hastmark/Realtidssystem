@@ -14,22 +14,6 @@ enum BoardState
 
 //////////////////////////////////////////////////////////////////////
 ///
-/// @brief TimeSync
-///
-/// Period 100 ms
-/// (Set baseline to 0)
-///
-//////////////////////////////////////////////////////////////////////
-#define TIMESYNCID 0
-#define TIMESYNDTO 0
-typedef struct
-{
-    uint8_t id;
-
-} TimeSync;
-
-//////////////////////////////////////////////////////////////////////
-///
 /// @brief Heart beat
 ///
 /// Period 20 ms
@@ -78,8 +62,6 @@ typedef struct
     char key;
     uint8_t player;
     uint8_t tempo;
-    uint8_t volume;
-
 } Notes;
 
 void data_to_notes(CANMsg* msg, Notes* notes);
@@ -94,7 +76,7 @@ void notes_to_data(CANMsg* msg, Notes* notes);
 typedef struct
 {
     uint8_t id;
-
+    uint8_t index;
 } NoteAcks;
 
 //////////////////////////////////////////////////////////////////////
@@ -103,7 +85,6 @@ typedef struct
 ///
 //////////////////////////////////////////////////////////////////////
 #define HANDOUTCONDUCTORID 40
-#define HANDOUTCONDUCTORTO 1
 typedef struct
 {
     uint8_t id;

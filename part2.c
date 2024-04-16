@@ -25,7 +25,6 @@ void nextBeat(MusicPlayer* self, int unused)
             notes_msg.key = self->m_melody_p->key;
             notes_msg.player = player_index;
             notes_msg.tempo = self->tempo;
-            notes_msg.volume = self->TG.volume;
             ASYNC(self, send_tone_msg, (int)&notes_msg);
             ASYNC(self, check_notes_to, self->index);
         }

@@ -22,7 +22,6 @@ void data_to_notes(CANMsg* msg, Notes* notes)
     notes->key = *(char*)msg->buff[1];
     notes->player = msg->buff[2];
     notes->tempo = msg->buff[3];
-    notes->volume = msg->buff[4];
 }
 
 void notes_to_data(CANMsg* msg, Notes* notes)
@@ -34,7 +33,6 @@ void notes_to_data(CANMsg* msg, Notes* notes)
     msg->buff[1] = *(uint8_t*)notes->key;
     msg->buff[2] = notes->player;
     msg->buff[3] = notes->tempo;
-    msg->buff[4] = notes->volume;
     msg->length = 5;
     msg->msgId = notes->id;
 }
