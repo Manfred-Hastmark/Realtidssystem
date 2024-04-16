@@ -107,8 +107,7 @@ int is_playing(MusicPlayer* self)
 Time notes_timeouts[LENGTH];
 void check_notes_to(MusicPlayer* self, int index)
 {
-    const notes_to = MSEC(1);
-    if (CURRENT_OFFSET() - notes_timeouts[index] > notes_to && self->index == index)
+    if (CURRENT_OFFSET() - notes_timeouts[index] > MSEC(1) && self->index == index)
     {
         self->TG.silence = 0;
         self->TG.period = self->notePeriods[self->index];
