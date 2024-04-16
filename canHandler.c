@@ -23,13 +23,9 @@ void init_canhandler(CanHandler* self, Can* can0_p)
 
 void receive_msg(CanHandler* self, uint8_t* data)
 {
-    print("Received can msg %i\n", 1);
-
     CANMsg msg;
     CAN_RECEIVE(self->m_can_p, &msg);
     print("Can ID: %c, ", msg.msgId);
-    uchar data_buff[8];
-    // *(unsigned long long*)data_buff = *(unsigned long long*)data;
 
     switch (msg.msgId)
     {
