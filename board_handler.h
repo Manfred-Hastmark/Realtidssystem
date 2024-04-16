@@ -7,10 +7,17 @@
 #define MAX_NODES 8
 #define LENGTH 32
 
+enum BoardState
+{
+    DISCONNECTED = 0,
+    MUSICIAN = 1,
+    CONDUCTOR = 2,
+};
+
 typedef struct
 {
     Object obj;
-    int nodes[MAX_NODES];
+    enum BoardState node_states[MAX_NODES];
     int number_of_nodes;
 } BoardHandler;
 
@@ -19,14 +26,26 @@ typedef struct
         initObject(), {0, 0, 0, 0, 0, 0, 0, 0}, 0                                                                                          \
     }
 
+typedef struct
+{
+    enum BoardState state;
+    int index;
+} SetBoardState;
+
 /**
  * @brief Scans CAN to find all connected boards
  */
 void initialize(BoardHandler* self, int unused);
 
 /**
- * @brief Gets the next index to of board to play
+ * @brief Gets the next musician index to play
  */
-int get_next_index(BoardHandler* self, int unused);
+int get_next_musician_index(BoardHandler* self, int unused);
+
+/**
+ * @brief Sets a certain board to certain status.
+ *          Takes SetBoardState as arg
+ */
+void set_index(BoardHandler* self, int set);
 
 #endif
