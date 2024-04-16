@@ -26,7 +26,6 @@ void receive_msg(CanHandler* self, uint8_t* data)
     CANMsg msg;
     CAN_RECEIVE(self->m_can_p, &msg);
 
-
     switch (msg.msgId)
     {
     case HEARTBEATID ... HEARTBEATID + MAX_NODES - 1: {

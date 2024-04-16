@@ -31,7 +31,7 @@ void nextBeat(MusicPlayer* self, int unused)
             notes_msg.tempo = self->tempo;
 
             ASYNC(self, send_tone_msg, &notes_msg);
-            ASYNC(self, check_notes_to, self->index);
+            AFTER(MSEC(2), self, check_notes_to, self->index);
         }
     }
 
@@ -121,6 +121,7 @@ void check_notes_to(MusicPlayer* self, int index)
 
 void notes_ack(MusicPlayer* self, int index)
 {
+    print("Got an ack for index %i\n", index);
     notes_timeouts[index]++;
     unsigned int data = (notes_timeouts[index] << 16) + (index & 0xFFFF);
 }
