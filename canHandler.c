@@ -7,6 +7,7 @@
 #include "canTinyTimber.h"
 #include "part2.h"
 #include "software_defines.h"
+#include <stdio.h>
 
 #define HEARTBEAT_PERIOD MSEC(100)
 #define HEARTBEAT_TMO MSEC(200)
@@ -18,16 +19,18 @@ Time timeouts[MAX_NODES] = {0, 0, 0, 0, 0, 0, 0, 0};
 void init_canhandler(CanHandler* self, Can* can0_p)
 {
     self->m_can_p = can0_p;
-    INSTALL(&can0_p, can_interrupt, CAN_IRQ0);
 }
 
 void send_msg(CanHandler* self, int can_msg_p)
 {
-    CAN_SEND(self->m_can_p, (CanData*)can_msg_p);
+    print("Sent can msg %i\n", 1);
+    CAN_SEND(self->m_can_p, (CANMsg*)can_msg_p);
 }
 
 void receive_msg(CanHandler* self, uint8_t* data)
 {
+    print("Received can msg %i\n", 1);
+
     CANMsg msg;
     CAN_RECEIVE(self->m_can_p, &msg);
     print("Can ID: %c, ", msg.msgId);
@@ -39,13 +42,13 @@ void receive_msg(CanHandler* self, uint8_t* data)
     case HEARTBEATID ... HEARTBEATID + MAX_NODES - 1: {
         HeartBeat heart_beat;
         data_to_heart_beat(msg.buff, &heart_beat);
-        heart_beat.id = msg.msgId - HEARTBEATID;
+        heart_beat.id -= HEARTBEATID;
 
         timeouts[heart_beat.id] = CURRENT_OFFSET();
         SetBoardState state = {heart_beat.role, heart_beat.id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
 
-        SEND(HEARTBEAT_PERIOD, HEARTBEAT_PERIOD + MSEC(1), self, check_timeout, msg.msgId);
+        SEND(HEARTBEAT_PERIOD, HEARTBEAT_PERIOD + MSEC(1), self, check_timeout, heart_beat.id);
         break;
     }
     case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1:
@@ -58,6 +61,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
         return;
     case NOTESID: {
+        print("Received notes msg %i\n", 1);
         Notes notes_msg;
         data_to_notes(data_buff, &notes_msg);
         notes_handler(self, &notes_msg);

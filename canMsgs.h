@@ -7,9 +7,9 @@ typedef unsigned char uint8_t;
 
 enum BoardState
 {
-    DISCONNECTED = 0,
+    DISCONNECTED = 2,
     MUSICIAN = 1,
-    CONDUCTOR = 2,
+    CONDUCTOR = 0,
 };
 
 //////////////////////////////////////////////////////////////////////

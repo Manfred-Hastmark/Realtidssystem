@@ -17,7 +17,7 @@ typedef struct
 
 #define init_board_handler()                                                                                                               \
     {                                                                                                                                      \
-        initObject(), {0, 0, 0, 0, 0, 0, 0, 0}, 0                                                                                          \
+        initObject(), {DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED}, 0  \
     }
 
 typedef struct

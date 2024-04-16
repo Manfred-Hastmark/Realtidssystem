@@ -27,6 +27,9 @@ int get_next_musician_index(BoardHandler* self, int unused)
 
 int get_conductor_index(BoardHandler* self, int unused)
 {
+    print("Node 0 = %i", self->node_states[0]);
+    print("Node 1 = %i\n", self->node_states[1]);
+
     for (int i = 0; i < MAX_NODES; i++)
     {
         if (self->node_states[i] == CONDUCTOR)

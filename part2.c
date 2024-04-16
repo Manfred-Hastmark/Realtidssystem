@@ -10,6 +10,7 @@ void nextBeat(MusicPlayer* self, int unused)
     if (SYNC(self->m_board_handler_p, get_conductor_index, 0) == RANK)
     {
         self->index++;
+        self->index %= 32;
         int player_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
         if (player_index == RANK)
         {
@@ -32,8 +33,6 @@ void nextBeat(MusicPlayer* self, int unused)
 
     // Sleep until it should silence the toneGenerator
     const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
-    self->index += 1;
-    self->index %= 32;
     SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, self->index); // (same as (index + 1) % 32)
 }
 

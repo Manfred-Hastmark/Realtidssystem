@@ -51,13 +51,12 @@ const char brotherJohnBeatLength[32] = {'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 
                                         'c', 'c', 'a', 'a', 'c', 'c', 'c', 'c', 'a', 'a', 'a', 'a', 'b', 'a', 'a', 'b'};
 const char brotherJohnBeatLength1[32] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
-void print(char*, int);
-
 void reader(App*, int);
 void keyHandler(App*, int);
 
 void recieveBPM();
 void receiveKey();
+void send_heartbeat(App* self, int unused);
 
 App app = {initObject(), 0, 'X'};
 Melody melody = initMelody(brotherJohn, LENGTH);
@@ -106,7 +105,7 @@ void keyHandler(App* self, int c)
         recieveBPM();
         break;
     case 's':
-        if (SYNC(&board_handler, is_conductor, 0))
+        if (board_handler.node_states[RANK] == CONDUCTOR)
         {
             if (SYNC(&musicPlayer, togglePlaying, UNUSED))
             {
@@ -124,6 +123,7 @@ void keyHandler(App* self, int c)
         {
             SetBoardState state = {CONDUCTOR, RANK};
             SYNC(&board_handler, set_index, (int)&state);
+            ASYNC(&musicPlayer, nextBeat, 0);
             break;
         }
     }
@@ -173,32 +173,19 @@ void recieveBPM()
 
 void startApp(App* self, int arg)
 {
+    CAN_INIT(&can0);
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Initialize the board as conductor by typing 'z' or 'x' for musician\n");
+    SEND(MSEC(100), MSEC(200), self, send_heartbeat, 0);
 }
 
 int main()
 {
     INSTALL(&sci0, sci_interrupt, SCI_IRQ0);
+    INSTALL(&can0, can_interrupt, CAN_IRQ0);
     init_canhandler(&can_handler, &can0);
     TINYTIMBER(&app, startApp, 0);
     return 0;
-}
-
-void heartbeat_tmo_check_1(App* self, int call_time_p)
-{
-    Time call_time = *((int*)call_time_p);
-    if (CURRENT_OFFSET() - call_time > HEARTBEATTO)
-    {
-    }
-}
-
-void heartbeat_tmo_check_2(App* self, int call_time_p)
-{
-    Time call_time = *((int*)call_time_p);
-    if (CURRENT_OFFSET() - call_time > HEARTBEATTO)
-    {
-    }
 }
 
 void send_tone_msg(MusicPlayer* musig_player_p, int notes_msg_p)
@@ -213,4 +200,15 @@ void send_conductor_handout_msg(BoardHandler* board_handler, int handout_msg_p)
     static CANMsg msg;
     handout_conductor_to_data(&msg, (HandoutConductor*)handout_msg_p);
     ASYNC(&can0, send_msg, (int)&msg);
+}
+
+void send_heartbeat(App* self, int unused)
+{
+    static CANMsg msg;
+    HeartBeat heart_beat_msg;
+    heart_beat_msg.id = HEARTBEATID + RANK;
+    heart_beat_msg.role = board_handler.node_states[RANK];
+    heart_beat_to_data(&msg, &heart_beat_msg);
+    ASYNC(&can0, send_msg, (int)&msg);
+    SEND(MSEC(100), MSEC(200), self, send_heartbeat, 0);
 }
