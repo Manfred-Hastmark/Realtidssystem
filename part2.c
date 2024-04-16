@@ -41,10 +41,10 @@ void nextSilence(MusicPlayer* self, int unused)
     self->TG.silence = 1;
 
     // Sleep until the next note
-    if (self->playing == 1)
+    if (self->playing == 1 && SYNC(self->m_board_handler_p, get_next_musician_index, 0) == RANK)
     {
         const int silenceDuration = MSEC(self->silenceDuration);
-        // SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
+        SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
     }
 }
 

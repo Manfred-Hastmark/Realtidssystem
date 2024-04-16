@@ -54,7 +54,7 @@ int getBeatLenght(char c, int ms, int silenceDuration);
  * @param int index. Current note index.
  * @return void.
  */
-void nextBeat(MusicPlayer* self, int index);
+void nextBeat(MusicPlayer* self, int unused);
 
 /**
  * @brief Do not call this funtion. Internal only! Stops the tone generator and tells it to silence the DAC. Then sleeps until the next note
