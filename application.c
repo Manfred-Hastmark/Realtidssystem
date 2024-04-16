@@ -226,12 +226,12 @@ void send_heartbeat(App* self, int unused)
 
 void send_ack(MusicPlayer* self, int index)
 {
-    print("Note ack %i\n", index);
     CANMsg msg;
     msg.msgId = NOTEACKSID + RANK;
     msg.buff[0] = index;
     if (can0.count < 8)
     {
+        print("Note ack %i\n", index);
         CAN_SEND(&can0, &msg);
     }
 }
