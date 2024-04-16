@@ -39,7 +39,7 @@ typedef struct
 
 #define initMusicPlayer(BPM, melody, board_handler_p, beatLength)                                                                          \
     {                                                                                                                                      \
-        initToneGenerator(1000), /*board_handler_p, melody,*/ 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                        \
+        initToneGenerator(1000), board_handler_p, melody, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                            \
             {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851,  758,  902,  851,  758,  758,  676,                                   \
              758,  851,  902, 1136, 758,  676,  758, 851,  902, 1136, 1136, 1517, 1136, 1136, 1517, 1136},                                 \
             1, 0, 0, 0                                                                                                                     \
