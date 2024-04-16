@@ -34,7 +34,6 @@ void receive_msg(CanHandler* self, uint8_t* data)
         heart_beat.id -= HEARTBEATID;
 
         SetBoardState state = {heart_beat.role, heart_beat.id};
-        print("Heart beat: %i\n", state.index);
         SYNC(self->m_board_handler_p, set_index, (int)&state);
 
         timeouts[heart_beat.id]++;
@@ -69,7 +68,6 @@ void receive_msg(CanHandler* self, uint8_t* data)
         self->m_board_handler_p->node_states[handout_conductor_msg.id - HANDOUTCONDUCTORID] = MUSICIAN;
 
         SetBoardState state = {CONDUCTOR, handout_conductor_msg.conductorId};
-        print("Handout: %i\n", state.index);
         SYNC(self->m_board_handler_p, set_index, (int)&state);
 
         if (SYNC(self->m_board_handler_p, is_conductor, 0) == 1)
@@ -97,7 +95,6 @@ void notes_handler(MusicPlayer* self, Notes* msg)
         // self->TG.period = self->notePeriods[self->index];
         // ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
 
-        print("Received notes msg %i\n", msg->note_index);
         send_ack(self, msg->note_index);
     }
 }
