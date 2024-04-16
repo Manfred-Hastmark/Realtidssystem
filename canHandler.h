@@ -25,8 +25,6 @@ typedef struct
 
 } CanData;
 
-typedef void (*CanSendCb)(CanHandler*, int);
-
 #define init_can_object(app, music_player_p, board_handler_p)                                                                              \
     {                                                                                                                                      \
         initObject(), app, music_player_p, board_handler_p                                                                                 \
