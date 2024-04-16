@@ -13,6 +13,7 @@ int is_conductor(BoardHandler* self, int unused)
 int current_musician_index = 0;
 int get_next_musician_index(BoardHandler* self, int unused)
 {
+    print("number nodes = %i\n", self->number_of_nodes);
     for (int i = 0; i < MAX_NODES; i++)
     {
         if (self->node_states[current_musician_index] != DISCONNECTED)
@@ -110,33 +111,33 @@ int lowest_id = -1;
 
 void handout_conductor(BoardHandler* self, int id)
 {
-    if (lowest_id == -1)
-    {
-        SEND(CLAIM_DURATION, CLAIM_DURATION + MSEC(1), self, send_handout_msg, 0);
-        lowest_id = id;
-    }
-    else
-    {
-        if (id < lowest_id)
-        {
-            lowest_id = id;
-        }
-    }
+    // if (lowest_id == -1)
+    // {
+    //     SEND(CLAIM_DURATION, CLAIM_DURATION + MSEC(1), self, send_handout_msg, 0);
+    //     lowest_id = id;
+    // }
+    // else
+    // {
+    //     if (id < lowest_id)
+    //     {
+    //         lowest_id = id;
+    //     }
+    // }
 }
 
 void send_handout_msg(BoardHandler* self, int unused)
 {
-    self->node_states[RANK] = MUSICIAN;
-    self->node_states[lowest_id] = CONDUCTOR;
-
-    HandoutConductor handout_conductor_msg;
-    handout_conductor_msg.id = HANDOUTCONDUCTORID + RANK;
-    handout_conductor_msg.conductorId = lowest_id;
-
-    CANMsg msg;
-    handout_conductor_to_data(&msg, &handout_conductor_msg);
-
-    lowest_id = -1;
-    SYNC(self, send_handout_msg, (int)&msg);
-    // send msg
+    // self->node_states[RANK] = MUSICIAN;
+    // self->node_states[lowest_id] = CONDUCTOR;
+    //
+    // HandoutConductor handout_conductor_msg;
+    // handout_conductor_msg.id = HANDOUTCONDUCTORID + RANK;
+    // handout_conductor_msg.conductorId = lowest_id;
+    //
+    // CANMsg msg;
+    // handout_conductor_to_data(&msg, &handout_conductor_msg);
+    //
+    // lowest_id = -1;
+    // SYNC(self, send_handout_msg, (int)&msg);
+    // // send msg
 }
