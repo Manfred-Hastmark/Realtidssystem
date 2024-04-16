@@ -28,8 +28,15 @@ void can_receiver(CanHandler* self, int raw_msg_p)
         if (notes_msg.player == RANK)
         {
             ASYNC(self->m_music_player_p, play_note, notes_msg.note_index);
+            ASYNC(self->m_app_p, send_note_ack, notes_msg.note_index);
         }
         break;
+    }
+    case NOTEACKSID ... NOTEACKSID + MAX_BOARDS - 1: {
+        if (self->m_app_p->ack_notes)
+        {
+            ASYNC(self->m_music_player_p, note_ack_received, msg_p->buff[0]);
+        }
     }
     default:
         break;
