@@ -10,7 +10,7 @@
 #define HEARTBEAT_PERIOD MSEC(100)
 #define HEARTBEAT_TMO MSEC(200)
 
-Time timeouts[MAX_NODES];
+Time timeouts[MAX_NODES] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 void init_canhandler(CanHandler* self, Can* can0_p)
 {
@@ -46,7 +46,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
         heart_beat.id = msg.msgId - HEARTBEATID;
 
         timeouts[heart_beat.id] = CURRENT_OFFSET();
-        SetBoardState state{heart_beat.role, heart_beat.id};
+        SetBoardState state = {heart_beat.role, heart_beat.id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
 
         SEND(HEARTBEAT_PERIOD, HEARTBEAT_PERIOD + MSEC(1), self, check_timeout, msg.msgId);
@@ -87,7 +87,7 @@ void check_timeout(CanHandler* self, int id)
 {
     if (CURRENT_OFFSET() - timeouts[id] > HEARTBEAT_TMO)
     {
-        SetBoardState state{DISCONNECTED, id};
+        SetBoardState state = {DISCONNECTED, id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
     }
 }
