@@ -21,4 +21,6 @@ void heartbeat_tmo_check_2(App* self, int call_time_p);
 
 void send_tone_msg(MusicPlayer* musig_player_p, int notes_msg_p);
 
+void send_conductor_handout_msg(BoardHandler* board_handler, int handout_msg_p);
+
 #endif

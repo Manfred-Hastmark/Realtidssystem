@@ -49,9 +49,9 @@ void receive_msg(CanHandler* self, uint8_t* data)
     }
     case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1:
 
-        if (SYNC(self->m_board_handler_p, is_conductor, 0) == CONDUCTOR)
+        if (SYNC(self->m_board_handler_p, is_conductor, 0) == 1)
         {
-            ASYNC(self->m_board_handler_p, handout_conductor, 0);
+            ASYNC(self->m_board_handler_p, handout_conductor, CLAIMCONDUCTORID - MAX_NODES);
         }
 
         return;
@@ -69,7 +69,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
     }
     case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1: {
         HandoutConductor handout_conductor_msg;
-        data_to_handout_conductor(&msg, &handout_conductor);
+        data_to_handout_conductor(&msg, &handout_conductor_msg);
         self->m_board_handler_p->node_states[handout_conductor_msg.id - HANDOUTCONDUCTORID] = MUSICIAN;
 
         SetBoardState state = {CONDUCTOR, handout_conductor_msg.conductorId};

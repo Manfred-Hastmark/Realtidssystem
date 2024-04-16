@@ -70,5 +70,5 @@ void handout_conductor(BoardHandler* self, int id);
 /**
  * @brief Sends handout msg when ready
  */
-void send_handout_msg(BoardHandler* self, int id);
+void send_handout_msg(BoardHandler* self, int unused);
 #endif
