@@ -50,4 +50,9 @@ void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p);
  */
 int get_next_player(BoardHandler* self, int unused);
 
+/**
+ * @brief Checks if there's a conductor in network
+ */
+int has_conductor(BoardHandler* self, int unused);
+
 #endif

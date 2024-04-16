@@ -139,6 +139,13 @@ void keyHandler(App* self, int c)
         self->ack_notes ^= 1;
         break;
     }
+    case 'r': {
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            musicPlayer.index = 0;
+        }
+        break;
+    }
     }
 }
 
