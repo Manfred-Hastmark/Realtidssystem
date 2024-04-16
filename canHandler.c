@@ -31,7 +31,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
     {
     case HEARTBEATID ... HEARTBEATID + MAX_NODES - 1: {
         HeartBeat heart_beat;
-        data_to_heart_beat(msg.buff, &heart_beat);
+        data_to_heart_beat(&msg, &heart_beat);
         heart_beat.id -= HEARTBEATID;
 
         timeouts[heart_beat.id] = CURRENT_OFFSET();
@@ -53,13 +53,13 @@ void receive_msg(CanHandler* self, uint8_t* data)
     case NOTESID: {
         print("Received notes msg %i\n", 1);
         Notes notes_msg;
-        data_to_notes(data_buff, &notes_msg);
+        data_to_notes(&msg, &notes_msg);
         notes_handler(self, &notes_msg);
         return;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
         Notes notes_msg;
-        data_to_notes(data_buff, &notes_msg);
+        data_to_notes(&msg, &notes_msg);
         ASYNC(self->m_music_player_p, notes_ack, notes_msg.note_index);
         return;
     }
