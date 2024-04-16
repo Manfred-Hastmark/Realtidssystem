@@ -29,9 +29,6 @@ int get_next_musician_index(BoardHandler* self, int unused)
 
 int get_conductor_index(BoardHandler* self, int unused)
 {
-    print("Node 0 = %i", self->node_states[0]);
-    print("Node 1 = %i\n", self->node_states[1]);
-
     for (int i = 0; i < MAX_NODES; i++)
     {
         if (self->node_states[i] == CONDUCTOR)
@@ -45,6 +42,9 @@ int get_conductor_index(BoardHandler* self, int unused)
 void set_index(BoardHandler* self, int set)
 {
     SetBoardState* set_state = (SetBoardState*)set;
+
+    print("Node 0 = %i, ", self->node_states[0]);
+    print("Node 1 = %i\n", self->node_states[1]);
 
     if (set_state->index < 0 || set_state->index > (MAX_NODES - 1))
     {
