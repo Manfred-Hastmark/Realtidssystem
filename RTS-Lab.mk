@@ -62,7 +62,7 @@ AS       := arm-none-eabi-as
 ## User defined environment variables
 ##
 Objects0=$(IntermediateDirectory)/dispatch.s$(ObjectSuffix) $(IntermediateDirectory)/part1.c$(ObjectSuffix) $(IntermediateDirectory)/sciTinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/application.c$(ObjectSuffix) $(IntermediateDirectory)/part2.c$(ObjectSuffix) $(IntermediateDirectory)/canMsgs.c$(ObjectSuffix) $(IntermediateDirectory)/TinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/startup.c$(ObjectSuffix) $(IntermediateDirectory)/canTinyTimber.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_usart.c$(ObjectSuffix) $(IntermediateDirectory)/part0.c$(ObjectSuffix) \
-	$(IntermediateDirectory)/driver_src_stm32f4xx_can.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_syscfg.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_tim.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_rcc.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_exti.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_dac.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(ObjectSuffix) 
+	$(IntermediateDirectory)/driver_src_stm32f4xx_can.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_syscfg.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_tim.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_rcc.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_exti.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_dac.c$(ObjectSuffix) $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(ObjectSuffix) $(IntermediateDirectory)/can_handler.c$(ObjectSuffix) $(IntermediateDirectory)/heart_beat_handler.c$(ObjectSuffix) $(IntermediateDirectory)/board_handler.c$(ObjectSuffix) 
 
 
 
@@ -205,6 +205,23 @@ $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(ObjectSuffix): driver/src/
 $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(PreprocessSuffix): driver/src/stm32f4xx_gpio.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/driver_src_stm32f4xx_gpio.c$(PreprocessSuffix) driver/src/stm32f4xx_gpio.c
 
+$(IntermediateDirectory)/can_handler.c$(ObjectSuffix): can_handler.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/can_handler.c$(ObjectSuffix) -MF$(IntermediateDirectory)/can_handler.c$(DependSuffix) -MM can_handler.c
+	$(CC) $(SourceSwitch) "./can_handler.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/can_handler.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/can_handler.c$(PreprocessSuffix): can_handler.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/can_handler.c$(PreprocessSuffix) can_handler.c
+
+$(IntermediateDirectory)/heart_beat_handler.c$(ObjectSuffix): heart_beat_handler.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/heart_beat_handler.c$(ObjectSuffix) -MF$(IntermediateDirectory)/heart_beat_handler.c$(DependSuffix) -MM heart_beat_handler.c
+	$(CC) $(SourceSwitch) "./heart_beat_handler.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/heart_beat_handler.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/heart_beat_handler.c$(PreprocessSuffix): heart_beat_handler.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/heart_beat_handler.c$(PreprocessSuffix) heart_beat_handler.c
+
+$(IntermediateDirectory)/board_handler.c$(ObjectSuffix): board_handler.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/board_handler.c$(ObjectSuffix) -MF$(IntermediateDirectory)/board_handler.c$(DependSuffix) -MM board_handler.c
+	$(CC) $(SourceSwitch) "./board_handler.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/board_handler.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/board_handler.c$(PreprocessSuffix): board_handler.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/board_handler.c$(PreprocessSuffix) board_handler.c
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

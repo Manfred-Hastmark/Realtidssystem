@@ -1,6 +1,10 @@
+#include "application.h"
 #include "TinyTimber.h"
+#include "board_handler.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
+#include "can_handler.h"
+#include "heart_beat_handler.h"
 #include "part0.h"
 #include "part1.h"
 #include "part2.h"
@@ -31,58 +35,54 @@
 #define UNUSED 0
 
 #define CONDUCTOR
-#define MUSICIAN
+// #define MUSICIAN
 
 // Brother John melody
-const int length = 32;
-const int brotherJohn[32] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
-const char brotherJohnBeatLength[32] = "aaaaaaaaaabaabccccaaccccaaaabaab";
-const char brotherJohnBeatLength1[32] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
+const char brotherJohnBeatLength[LENGTH] = "aaaaaaaaaabaabccccaaccccaaaabaab";
+const char brotherJohnBeatLength1[LENGTH] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
-void print(char*, int);
-
-typedef struct
-{
-    Object super;
-    int count;
-    char c;
-} App;
-
-App app = {initObject(), 0, 'X'};
-void reader(App*, int);
-void receiver(App*, int);
-void keyHandler(App*, int);
-
-void recieveBPM();
 void receiveKey();
-Melody melody = initMelody(brotherJohn, length);
-MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength);
-void sendCANMsg(int, int);
-void CANHandler(char, int);
+void recieveBPM();
+void reader(App*, int);
+void receive(App*, int);
+void send(App*, int);
+void keyHandler(App*, int);
+void send_heart_beat(App*, int);
 
+Melody melody = initMelody(brotherJohn, LENGTH);
+ToneGenerator tone_generator = initToneGenerator(1000);
+MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength, &tone_generator, &melody);
+App app = {initObject(), 0, 'X', 0};
+ReadBuffer readBuffer = initReadBuffer();
+BoardHandler board_handler = initBoardHandler();
+HeartBeatHandler heart_beat_handler = initHeartBeatHandler(&app, &board_handler);
+CanHandler can_handler = initCanHandler(&app, &heart_beat_handler, &musicPlayer);
+Can can0 = initCan(CAN_PORT0, &app, receive);
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
 
-ReadBuffer readBuffer = initReadBuffer();
-
-Can can0 = initCan(CAN_PORT0, &app, receiver);
-
-void receiver(App* self, int unused)
+void receive(App* self, int unused)
 {
-    CANMsg msg;
+    static CANMsg msg;
     CAN_RECEIVE(&can0, &msg);
-    int rcv = 0;
-    rcv += msg.buff[0];
-    rcv += msg.buff[1] << 8;
-    rcv += msg.buff[2] << 16;
-    rcv += msg.buff[3] << 24;
+    ASYNC(&can_handler, can_receiver, (int)&msg);
+}
 
-    HeartBeat dkas;
-    heart_beat_to_data(msg.buff, &dkas);
+void send(App* self, int msg_p)
+{
+    CAN_SEND(&can0, (CANMsg*)msg_p);
+}
 
-    print("Can ID: %c, ", msg.msgId);
-    print("DATA: %d\n", rcv);
+void send_heart_beat(App* self, int role)
+{
+    static HeartBeat heart_beat_msg;
+    heart_beat_msg.role = role;
+    heart_beat_msg.id = HEARTBEATID + RANK;
 
-    CANHandler(msg.msgId, rcv);
+    static CANMsg msg;
+    heart_beat_to_data(&msg, &heart_beat_msg);
+
+    ASYNC(self, send, (int)&msg);
 }
 
 void reader(App* self, int c)
@@ -95,106 +95,12 @@ void reader(App* self, int c)
     ASYNC(&app, keyHandler, c);
 }
 
-void CANHandler(char id, int data)
-{
-    switch (id)
-    {
-    case 'c': // Lower volume
-        print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, -1));
-        break;
-    case 'v': // Raise volume
-        print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, 1));
-        break;
-    case 'k': // A key was received
-    {
-        char output[50];
-        sprintf(output, "Key: %d\n", data);
-        SCI_WRITE(&sci0, output);
-        SYNC(&melody, setKey, data);
-
-        int melodyPeriods[length];
-
-        SYNC(&melody, setMelodyPeriods, (int)melodyPeriods);
-        ASYNC(&musicPlayer, setPeriods, (int)melodyPeriods);
-    }
-    break;
-    case 'm': // Toggle muting
-        ASYNC(&musicPlayer.TG, toggleMute, UNUSED);
-        break;
-    case 'b': {
-        char output[50];
-        sprintf(output, "BPM: %d\n", data);
-        SCI_WRITE(&sci0, output);
-        ASYNC(&musicPlayer, setTempo, data);
-    }
-    break;
-    case 's':
-        if (SYNC(&musicPlayer, togglePlaying, UNUSED))
-            SCI_WRITE(&sci0, "Playing\n");
-        else
-            SCI_WRITE(&sci0, "Paused\n");
-        break;
-    }
-}
-
 void keyHandler(App* self, int c)
 {
-    switch (c)
+    if (c == 'k')
     {
-#ifdef MUSICIAN
-    case '0' ... '9': // Add character to readbuffer
-    case '-':
-        ASYNC(&readBuffer, readBufferAdd, c);
-        break;
-    case 'c': // Lower volume
-        print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, -1));
-        break;
-    case 'v': // Raise volume
-        print("Volume changed to: %d\n", SYNC(&musicPlayer.TG, volume, 1));
-        break;
-    case 'k': // A key was received
-        receiveKey();
-        break;
-    case 'm': // Toggle muting
-        ASYNC(&musicPlayer.TG, toggleMute, UNUSED);
-        break;
-    case 'b':
-        recieveBPM();
-        break;
-    case 's':
-        if (SYNC(&musicPlayer, togglePlaying, UNUSED))
-            SCI_WRITE(&sci0, "Playing\n");
-        else
-            SCI_WRITE(&sci0, "Paused\n");
-        break;
+        self->to_heart_beat ^= 1;
     }
-#elif defined(CONDUCTOR)
-        switch (c)
-        {
-        case '0' ... '9': // Add character to readbuffer
-        case '-':
-            ASYNC(&readBuffer, readBufferAdd, c);
-            break;
-        case 'c': // Lower volume
-            sendCANMsg('c', 0);
-            break;
-        case 'v': // Raise volume
-            sendCANMsg('v', 0);
-            break;
-        case 'k':                                                  // A key was received
-            sendCANMsg('k', SYNC(&readBuffer, endBuffer, UNUSED)); //
-            break;
-        case 'm': // Toggle muting
-            sendCANMsg('m', 0);
-            break;
-        case 'b': // BPM
-            sendCANMsg('b', SYNC(&readBuffer, endBuffer, UNUSED));
-            break;
-        case 's': // Start / stop
-            sendCANMsg('s', 0);
-            break;
-        }
-#endif
 }
 
 void print(char* string, int val)
@@ -211,12 +117,7 @@ void receiveKey()
     char output[50];
     sprintf(output, "Key: %d\n", key);
     SCI_WRITE(&sci0, output);
-    SYNC(&melody, setKey, key);
-
-    int melodyPeriods[length];
-
-    SYNC(&melody, setMelodyPeriods, (int)melodyPeriods);
-    ASYNC(&musicPlayer, setPeriods, (int)melodyPeriods);
+    ASYNC(&musicPlayer, change_key, key);
 }
 
 void recieveBPM()
@@ -226,33 +127,16 @@ void recieveBPM()
     char output[50];
     sprintf(output, "BPM: %d\n", bpm);
     SCI_WRITE(&sci0, output);
-    ASYNC(&musicPlayer, setTempo, bpm);
+    ASYNC(&musicPlayer, change_bpm, bpm);
 }
-
-#ifdef CONDUCTOR
-void sendCANMsg(int id, int data)
-{
-    CANMsg msg;
-    msg.msgId = id;
-    msg.nodeId = 1;
-    msg.length = 4;
-
-    msg.buff[0] = data;
-    msg.buff[1] = data >> 8;
-    msg.buff[2] = data >> 16;
-    msg.buff[3] = data >> 24;
-    CAN_SEND(&can0, &msg);
-}
-#endif
 
 void startApp(App* self, int arg)
 {
     CAN_INIT(&can0);
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Hello, hello...\n");
-
-    sendCANMsg(0, 12345678);
     ASYNC(&musicPlayer, nextBeat, 0);
+    ASYNC(&heart_beat_handler, init, 0);
 }
 
 int main()

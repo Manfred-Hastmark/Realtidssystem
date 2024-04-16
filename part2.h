@@ -1,5 +1,7 @@
 #ifndef PART2
 #define PART2
+#include "TinyTimber.h"
+#include "part0.h"
 #include "part1.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +25,9 @@
 
 typedef struct
 {
-    ToneGenerator TG;    // ToneGenerator
+    Object obj;
+    ToneGenerator* m_tone_generator_p; // ToneGenerator
+    Melody* m_melody_p;
     int tempo;           // 60000 / bpm represended in ms
     int silenceDuration; // 60000 / bpm * 10 which is 10% of the note
     char* beatLength;    // How long every beat should be
@@ -31,9 +35,9 @@ typedef struct
     int playing;
 } MusicPlayer;
 
-#define initMusicPlayer(BPM, beatLength)                                                                                                   \
+#define initMusicPlayer(BPM, beatLength, tone_generator_p, melody_p)                                                                       \
     {                                                                                                                                      \
-        initToneGenerator(1000), 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                                                     \
+        initObject(), tone_generator_p, melody_p, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                                    \
             {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851,  758,  902,  851,  758,  758,  676,                                   \
              758,  851,  902, 1136, 758,  676,  758, 851,  902, 1136, 1136, 1517, 1136, 1136, 1517, 1136},                                 \
             0                                                                                                                              \
@@ -60,6 +64,21 @@ void nextBeat(MusicPlayer* self, int index);
  */
 void nextSilence(MusicPlayer* self, int index);
 
+/*
+ * @brief Plays the note given the index
+ */
+void play_note(MusicPlayer* self, int index);
+
+/**
+ * @brief Change the key of the melody
+ */
+void change_key(MusicPlayer* self, int key);
+
+/**
+ * @brief Change the bpm of the melody
+ */
+void change_bpm(MusicPlayer* self, int bpm);
+
 /**
  * @brief Takes some parameters and calculates the correct beat length.
  *
@@ -69,24 +88,6 @@ void nextSilence(MusicPlayer* self, int index);
  * @return int. Returns the length of a given note in ms.
  */
 static inline int getBeatLenght(char c, int ms, int silenceDuration);
-
-/**
- * @brief Changes the BPM of the song.
- *
- * @param MusicPlayer* musicPlayer.
- * @param int BPM. New BPM.
- * @return void.
- */
-void setTempo(MusicPlayer* self, int bpm);
-
-/**
- * @brief Changes all the periods of a given array.
- *
- * @param MusicPlayer* musicPlayer.
- * @param (int) int* array. Takes an array with new precalculated periods (currently hard coded to a size of 32).
- * @return void.
- */
-void setPeriods(MusicPlayer* self, int arrIn);
 
 int togglePlaying(MusicPlayer* self, int unused);
 

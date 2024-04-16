@@ -1,48 +1,60 @@
 #include "canMsgs.h"
 
-void data_to_heart_beat(const uint8_t* data, HeartBeat* heart_beat)
+void data_to_heart_beat(CANMsg* msg, HeartBeat* heart_beat)
 {
-    heart_beat->id = HEARTBEATID;
-    heart_beat->role = data[0];
+    heart_beat->id = msg->msgId;
+    heart_beat->role = msg->buff[0];
 }
 
-void heart_beat_to_data(uint8_t* data, HeartBeat* heart_beat)
+void heart_beat_to_data(CANMsg* msg, HeartBeat* heart_beat)
 {
     // Set all bytes to 0
-    *(unsigned long long*)data = 0;
-    data[0] = heart_beat->role;
+    for (int i = 0; i < 8; i++)
+    {
+        msg->buff[i] = 0;
+    }
+    msg->buff[0] = heart_beat->role;
+    msg->msgId = heart_beat->id;
+    msg->length = 1;
 }
 
-void data_to_notes(const uint8_t* data, Notes* notes)
+void data_to_notes(CANMsg* msg, Notes* notes)
 {
-    notes->id = NOTESID;
-    notes->note_index = data[0];
-    notes->key = *(char*)data[1];
-    notes->player = data[2];
-    notes->tempo = data[3];
-    notes->volume = data[4];
+    notes->id = msg->msgId;
+    notes->note_index = msg->buff[0];
+    notes->key = msg->buff[1];
+    notes->player = msg->buff[2];
+    notes->tempo = msg->buff[3];
 }
 
-void notes_to_data(uint8_t* data, Notes* notes)
+void notes_to_data(CANMsg* msg, Notes* notes)
 {
-    // Set all bytes to 0
-    *(unsigned long long*)data = 0;
+    for (int i = 0; i < 8; i++)
+    {
+        msg->buff[i] = 0;
+    }
 
-    data[0] = notes->note_index;
-    data[1] = *(uint8_t*)notes->key;
-    data[2] = notes->player;
-    data[3] = notes->tempo;
-    data[4] = notes->volume;
+    msg->buff[0] = notes->note_index;
+    msg->buff[1] = notes->key;
+    msg->buff[2] = notes->player;
+    msg->buff[3] = notes->tempo;
+    msg->length = 4;
+    msg->msgId = notes->id;
 }
 
-void data_to_handout_conductor(uint8_t* data, HandoutConductor* handoutConductor)
+void data_to_handout_conductor(CANMsg* msg, HandoutConductor* handoutConductor)
 {
-    handoutConductor->id = HANDOUTCONDUCTORID;
-    handoutConductor->conductorId = data[0];
+    handoutConductor->id = msg->msgId;
+    handoutConductor->conductorId = msg->buff[0];
 }
 
-void handout_conductor_to_data(uint8_t* data, HandoutConductor* handoutConductor)
+void handout_conductor_to_data(CANMsg* msg, HandoutConductor* handoutConductor)
 {
-    *(unsigned long long*)data = 0;
-    data[0] = handoutConductor->conductorId;
+    for (int i = 0; i < 8; i++)
+    {
+        msg->buff[i] = 0;
+    }
+    msg->buff[0] = handoutConductor->conductorId;
+    msg->msgId = handoutConductor->id;
+    msg->length = 1;
 }

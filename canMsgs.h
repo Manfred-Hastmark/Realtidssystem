@@ -1,29 +1,10 @@
-
 #ifndef CANMSG
 #define CANMSG
 
-enum Role
-{
-    Conductor,
-    Musician
-};
+#include "board_handler.h"
+#include "canTinyTimber.h"
 
 typedef unsigned char uint8_t;
-
-//////////////////////////////////////////////////////////////////////
-///
-/// @brief TimeSync
-///
-/// Period 100 ms
-/// (Set baseline to 0)
-///
-//////////////////////////////////////////////////////////////////////
-#define TIMESYNCID 0
-typedef struct
-{
-    uint8_t id;
-
-} TimeSync;
 
 //////////////////////////////////////////////////////////////////////
 ///
@@ -37,15 +18,17 @@ typedef struct
 ///
 //////////////////////////////////////////////////////////////////////
 #define HEARTBEATID 10
+#define HEARTBEATTO MSEC(40)
+#define HEARTBEATDL MSEC(41)
 typedef struct
 {
     uint8_t id;
-    enum Role role;
+    enum NodeState role;
 
 } HeartBeat;
 
-void data_to_heart_beat(const uint8_t* data, HeartBeat* heart_beat);
-void heart_beat_to_data(uint8_t* data, HeartBeat* heart_beat);
+void data_to_heart_beat(CANMsg* msg, HeartBeat* heart_beat);
+void heart_beat_to_data(CANMsg* msg, HeartBeat* heart_beat);
 
 //////////////////////////////////////////////////////////////////////
 ///
@@ -73,12 +56,10 @@ typedef struct
     char key;
     uint8_t player;
     uint8_t tempo;
-    uint8_t volume;
-
 } Notes;
 
-void data_to_notes(const uint8_t* data, Notes* notes);
-void notes_to_data(uint8_t* data, Notes* notes);
+void data_to_notes(CANMsg* msg, Notes* notes);
+void notes_to_data(CANMsg* msg, Notes* notes);
 
 //////////////////////////////////////////////////////////////////////
 ///
@@ -89,7 +70,7 @@ void notes_to_data(uint8_t* data, Notes* notes);
 typedef struct
 {
     uint8_t id;
-
+    uint8_t index;
 } NoteAcks;
 
 //////////////////////////////////////////////////////////////////////
@@ -105,7 +86,7 @@ typedef struct
 
 } HandoutConductor;
 
-void data_to_handout_conductor(uint8_t* data, HandoutConductor* handoutConductor);
-void handout_conductor_to_data(uint8_t* data, HandoutConductor* handoutConductor);
+void data_to_handout_conductor(CANMsg* msg, HandoutConductor* handoutConductor);
+void handout_conductor_to_data(CANMsg* msg, HandoutConductor* handoutConductor);
 
-#endif // !CANMSG
+#endif // !CANMSGendif // !CANMSG
