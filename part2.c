@@ -16,6 +16,7 @@ void nextBeat(MusicPlayer* self, int unused)
         print("Hello fucker %i\n", player_index);
         if (player_index == RANK)
         {
+            print("We play: %i", self->index);
             self->TG.silence = 0;
             self->TG.period = self->notePeriods[self->index];
             ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
