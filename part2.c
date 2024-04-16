@@ -48,6 +48,7 @@ void nextSilence(MusicPlayer* self, int unused)
     // Sleep until the next note
     if (self->playing == 1 && SYNC(self->m_board_handler_p, get_next_musician_index, 0) == RANK)
     {
+        print("Replaying %i\n", 0);
         const int silenceDuration = MSEC(self->silenceDuration);
         SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, self->index);
     }
