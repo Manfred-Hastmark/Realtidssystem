@@ -14,8 +14,8 @@ void heart_beat_to_data(CANMsg* msg, HeartBeat* heart_beat)
         msg->buff[i] = 0;
     }
     msg->buff[0] = heart_beat->role;
-    msg->length = 1;
     msg->msgId = heart_beat->id;
+    msg->length = 1;
 }
 
 void data_to_notes(CANMsg* msg, Notes* notes)
