@@ -1,7 +1,7 @@
 #include "canTinyTimber.h"
 #include "TinyTimber.h"
 
-// #define __CAN_LOOPBACK // Note: requires physical loopback between CAN 1 and 2 jacks
+#define __CAN_LOOPBACK // Note: requires physical loopback between CAN 1 and 2 jacks
 
 void DUMP(char* s);
 
@@ -168,7 +168,6 @@ int can_send(Can* self, CANMsg* msg)
 
     if (TransmitMailbox == CAN_TxStatus_NoMailBox)
     {
-        DUMP("CAN TxBuf full!\n\r");
         return 1;
     }
 
@@ -178,7 +177,6 @@ int can_send(Can* self, CANMsg* msg)
 
     if (CAN_TransmitStatus(canport, TransmitMailbox) == CAN_TxStatus_Failed)
     {
-        DUMP("CAN Tx fail!\n\r");
         return 1;
     }
 #endif

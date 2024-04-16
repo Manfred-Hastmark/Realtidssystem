@@ -38,7 +38,6 @@ void heart_beat_received(HeartBeatHandler* self, int raw_msg_p)
 
 void heart_beat(HeartBeatHandler* self, int unused)
 {
-    print("Node state = %i\n", self->m_board_handler_p->node_states[RANK]);
     if (!self->m_app_p->to_heart_beat)
     {
         ASYNC(self->m_app_p, send_heart_beat, self->m_board_handler_p->node_states[RANK]);
