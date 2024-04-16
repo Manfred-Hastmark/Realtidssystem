@@ -47,4 +47,13 @@ int get_conductor_index(BoardHandler* self, int unused);
  */
 void set_index(BoardHandler* self, int set);
 
+/**
+ * @brief Returns the lowest player id
+ */
+int get_lowest_id(BoardHandler* self, int unused);
+
+/**
+ * @brief Handles timeouts and conductor ship
+ */
+void update_behaviour(BoardHandler* self, int unused);
 #endif

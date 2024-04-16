@@ -1,5 +1,7 @@
 
 #include "board_handler.h"
+#include "application.h"
+#include "canMsgs.h"
 
 int get_next_musician_index(BoardHandler* self, int unused)
 {
@@ -45,6 +47,40 @@ void set_index(BoardHandler* self, int set)
         if (self->node_states[i] != DISCONNECTED)
         {
             self->number_of_nodes++;
+        }
+    }
+    ASYNC(self, update_behaviour, 0);
+}
+
+int get_lowest_id(BoardHandler* self, int unused)
+{
+    for (int i = 0; i < MAX_NODES; i++)
+    {
+        if (self->node_states[i] != DISCONNECTED)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void update_behaviour(BoardHandler* self, int unused)
+{
+    // We are solo
+    if (self->number_of_nodes == 1)
+    {
+    }
+
+    // Assign new conductor
+    if (SYNC(self, get_conductor_index, 0) == -1)
+    {
+        int lowest_rank_id = SYNC(self, get_lowest_id, 0);
+        if (lowest_rank_id != -1)
+        {
+            if (lowest_rank_id == RANK)
+            {
+                self->node_states[RANK] = CONDUCTOR;
+            }
         }
     }
 }
