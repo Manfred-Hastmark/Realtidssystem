@@ -192,14 +192,14 @@ void send_tone_msg(MusicPlayer* musig_player_p, int notes_msg_p)
 {
     static CANMsg msg;
     notes_to_data(&msg, (Notes*)notes_msg_p);
-    ASYNC(&can0, send_msg, (int)&msg);
+    CAN_SEND(&can0, &msg);
 }
 
 void send_conductor_handout_msg(BoardHandler* board_handler, int handout_msg_p)
 {
     static CANMsg msg;
     handout_conductor_to_data(&msg, (HandoutConductor*)handout_msg_p);
-    ASYNC(&can0, send_msg, (int)&msg);
+    CAN_SEND(&can0, &msg);
 }
 
 void send_heartbeat(App* self, int unused)
@@ -209,6 +209,6 @@ void send_heartbeat(App* self, int unused)
     heart_beat_msg.id = HEARTBEATID + RANK;
     heart_beat_msg.role = board_handler.node_states[RANK];
     heart_beat_to_data(&msg, &heart_beat_msg);
-    ASYNC(&can0, send_msg, (int)&msg);
+    CAN_SEND(&can0, &msg);
     SEND(MSEC(100), MSEC(200), self, send_heartbeat, 0);
 }

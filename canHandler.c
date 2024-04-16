@@ -21,12 +21,6 @@ void init_canhandler(CanHandler* self, Can* can0_p)
     self->m_can_p = can0_p;
 }
 
-void send_msg(CanHandler* self, int can_msg_p)
-{
-    print("Sent can msg %i\n", 1);
-    CAN_SEND(self->m_can_p, (CANMsg*)can_msg_p);
-}
-
 void receive_msg(CanHandler* self, uint8_t* data)
 {
     print("Received can msg %i\n", 1);
