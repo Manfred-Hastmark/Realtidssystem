@@ -49,8 +49,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
         SetBoardState state{heart_beat.role, heart_beat.id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
 
-        SEND(HEARTBEAT_PERIOD, HEARTBEAT_PERIOD + MSEC(1), self, check_timeout, msg.msgId - HEARTBEATID);
-
+        SEND(HEARTBEAT_PERIOD, HEARTBEAT_PERIOD + MSEC(1), self, check_timeout, msg.msgId);
         break;
     }
     case CLAIMCONDUCTORID:
