@@ -28,7 +28,14 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
     switch (msg.msgId)
     {
-    case HEARTBEATID ... HEARTBEATID + MAX_NODES - 1: {
+    case HEARTBEATID:
+    case HEARTBEATID + 1:
+    case HEARTBEATID + 2:
+    case HEARTBEATID + 3:
+    case HEARTBEATID + 4:
+    case HEARTBEATID + 5:
+    case HEARTBEATID + 6:
+    case HEARTBEATID + 7: {
         HeartBeat heart_beat;
         data_to_heart_beat(&msg, &heart_beat);
         heart_beat.id -= HEARTBEATID;
@@ -42,7 +49,15 @@ void receive_msg(CanHandler* self, uint8_t* data)
         SEND(HEARTBEAT_TMO, HEARTBEAT_TMO + USEC(1), self, check_timeout, data);
         return;
     }
-    case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1: {
+    break;
+    case CLAIMCONDUCTORID:
+    case CLAIMCONDUCTORID + 1:
+    case CLAIMCONDUCTORID + 2:
+    case CLAIMCONDUCTORID + 3:
+    case CLAIMCONDUCTORID + 4:
+    case CLAIMCONDUCTORID + 5:
+    case CLAIMCONDUCTORID + 6:
+    case CLAIMCONDUCTORID + 7: {
         if (SYNC(self->m_board_handler_p, is_conductor, 0) == 1)
         {
             // Print claim conductor
@@ -56,11 +71,28 @@ void receive_msg(CanHandler* self, uint8_t* data)
         notes_handler(self->m_music_player_p, &notes_msg);
         return;
     }
-    case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
+    break;
+    case NOTEACKSID:
+    case NOTEACKSID + 1:
+    case NOTEACKSID + 2:
+    case NOTEACKSID + 3:
+    case NOTEACKSID + 4:
+    case NOTEACKSID + 5:
+    case NOTEACKSID + 6:
+    case NOTEACKSID + 7: {
+
         ASYNC(self->m_music_player_p, notes_ack, msg.buff[0]);
         return;
     }
-    case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1: {
+
+    case HANDOUTCONDUCTORID:
+    case HANDOUTCONDUCTORID + 1:
+    case HANDOUTCONDUCTORID + 2:
+    case HANDOUTCONDUCTORID + 3:
+    case HANDOUTCONDUCTORID + 4:
+    case HANDOUTCONDUCTORID + 5:
+    case HANDOUTCONDUCTORID + 6:
+    case HANDOUTCONDUCTORID + 7: {
         HandoutConductor handout_conductor_msg;
         data_to_handout_conductor(&msg, &handout_conductor_msg);
         self->m_board_handler_p->node_states[handout_conductor_msg.id - HANDOUTCONDUCTORID] = MUSICIAN;
@@ -74,6 +106,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
         }
         return;
     }
+    break;
     default:
         return;
     }
