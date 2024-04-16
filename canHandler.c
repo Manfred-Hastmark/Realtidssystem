@@ -2,13 +2,15 @@
 
 #include "canHandler.h"
 #include "TinyTimber.h"
-#include "application.h"
+#include "board_handler.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
 #include "software_defines.h"
 
-Time last_heart_beat_1 = 0;
-Time last_heart_beat_2 = 0;
+#define HEARTBEAT_PERIOD MSEC(100)
+#define HEARTBEAT_TMO MSEC(200)
+
+Time timeouts[MAX_NODES]{};
 
 void init_canhandler(CanHandler* self, Can* can0_p)
 {
@@ -38,14 +40,19 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
     switch (msg.msgId)
     {
-    case HEARTBEATID + RANK_OTHER_1:
-        last_heart_beat_1 = CURRENT_OFFSET();
-        SEND(HEARTBEATTO, HEARTBEATDL, &self->app, heartbeat_tmo_check_1, (int)&last_heart_beat_1);
-        return;
-    case HEARTBEATID + RANK_OTHER_2:
-        last_heart_beat_2 = CURRENT_OFFSET();
-        SEND(HEARTBEATTO, HEARTBEATDL, &self->app, heartbeat_tmo_check_2, (int)&last_heart_beat_2);
-        return;
+    case HEARTBEATID ... HEARTBEATID + MAX_NODES - 1: {
+        HeartBeat heart_beat;
+        data_to_heart_beat(msg.buff, &heart_beat);
+        heart_beat.id = msg.msgId - HEARTBEATID;
+
+        timeouts[heart_beat.id] = CURRENT_OFFSET();
+        SetBoardState state{heart_beat.role, heart_beat.id};
+        SYNC(self->m_board_handler_p, set_index, (int)&state);
+
+        SEND(HEARTBEAT_PERIOD, HEARTBEAT_PERIOD + MSEC(1), self, check_timeout, msg.msgId - HEARTBEATID);
+
+        break;
+    }
     case CLAIMCONDUCTORID:
         return;
     case NOTESID: {
@@ -67,12 +74,21 @@ void notes_handler(CanHandler* self, Notes* msg)
 {
     if (msg->player == RANK_SELF)
     {
-        //SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
+        // SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
         int melodyPeriods[LENGTH];
-        //SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
-        //SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
+        // SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
+        // SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
         SYNC(&self->m_music_player_p->TG, volume, msg->volume);
-        SYNC(&self->m_music_player_p->TG, set_index, msg->note_index);
+        SYNC(&self->m_music_player_p->TG, set_note_index, msg->note_index);
         ASYNC(self->m_music_player_p, nextBeat, 0);
+    }
+}
+
+void check_timeout(CanHandler* self, int id)
+{
+    if (CURRENT_OFFSET() - timeouts[id] > HEARTBEAT_TMO)
+    {
+        SetBoardState state{DISCONNECTED, id};
+        SYNC(self->m_board_handler_p, set_index, (int)&state);
     }
 }
