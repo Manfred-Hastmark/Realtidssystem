@@ -54,14 +54,12 @@ void receive_msg(CanHandler* self, uint8_t* data)
     case NOTESID: {
         Notes notes_msg;
         data_to_notes(&msg, &notes_msg);
-        print("Received notes msg %i\n", notes_msg.note_index);
         notes_handler(self->m_music_player_p, &notes_msg);
         return;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
-        Notes notes_msg;
-        data_to_notes(&msg, &notes_msg);
-        ASYNC(self->m_music_player_p, notes_ack, notes_msg.note_index);
+
+        ASYNC(self->m_music_player_p, notes_ack, msg.buff[0]);
         return;
     }
     case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1: {
@@ -97,6 +95,7 @@ void notes_handler(MusicPlayer* self, Notes* msg)
         // self->TG.period = self->notePeriods[self->index];
         // ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
 
+        print("Received notes msg %i\n", msg->note_index);
         send_ack(self, msg->note_index);
     }
 }
