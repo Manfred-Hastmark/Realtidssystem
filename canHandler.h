@@ -38,7 +38,7 @@ void init_canhandler(CanHandler* self, Can* can0_p);
 /**
  * @brief Function that gets called on CAN msg recv
  */
-void send_msg(CanHandler* self, int can_data_p);
+void send_msg(CanHandler* self, int can_msg_p);
 
 /**
  * @brief Function that gets called on CAN msg recv

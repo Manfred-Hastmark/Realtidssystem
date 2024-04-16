@@ -20,15 +20,9 @@ void init_canhandler(CanHandler* self, Can* can0_p)
     INSTALL(&can0_p, can_interrupt, CAN_IRQ0);
 }
 
-void send_msg(CanHandler* self, int can_data_p)
+void send_msg(CanHandler* self, int can_msg_p)
 {
-    CANMsg msg;
-    CanData* data_p = (CanData*)can_data_p;
-    msg.msgId = data_p->index;
-    msg.nodeId = RANK_SELF;
-    msg.length = data_p->length;
-    *(unsigned long long*)msg.buff = *(unsigned long long*)data_p->data;
-    CAN_SEND(self->m_can0_p, &data_p);
+    CAN_SEND(self->m_can0_p, (CanData*)can_msg_p);
 }
 
 void receive_msg(CanHandler* self, uint8_t* data)
