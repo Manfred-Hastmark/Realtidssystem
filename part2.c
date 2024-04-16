@@ -3,6 +3,7 @@
 #include "application.h"
 #include "stdbool.h"
 
+short notes_timeouts[LENGTH] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 void check_notes_to(MusicPlayer* self, int index);
 
 void nextBeat(MusicPlayer* self, int unused)
@@ -12,21 +13,23 @@ void nextBeat(MusicPlayer* self, int unused)
         self->index++;
         self->index %= 32;
         int player_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
+        print("Hello fucker %i\n", player_index);
         if (player_index == RANK)
         {
+            print("We play: %i", self->index);
             self->TG.silence = 0;
             self->TG.period = self->notePeriods[self->index];
             ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
         }
         else
         {
-            print("Hello fucker %i\n", 1);
             static Notes notes_msg;
             notes_msg.id = NOTESID;
             notes_msg.note_index = self->index;
             notes_msg.key = self->m_melody_p->key;
             notes_msg.player = player_index;
             notes_msg.tempo = self->tempo;
+
             ASYNC(self, send_tone_msg, &notes_msg);
             ASYNC(self, check_notes_to, self->index);
         }
@@ -104,10 +107,11 @@ int is_playing(MusicPlayer* self)
     return self->playing;
 }
 
-Time notes_timeouts[LENGTH];
 void check_notes_to(MusicPlayer* self, int index)
 {
-    if (CURRENT_OFFSET() - notes_timeouts[index] > MSEC(1) && self->index == index)
+    unsigned short val = ((unsigned int)index) >> 16;
+    unsigned short id = ((unsigned int)index) & 0xFFFF;
+    if (val == notes_timeouts[id] && self->index == index)
     {
         self->TG.silence = 0;
         self->TG.period = self->notePeriods[self->index];
@@ -117,5 +121,6 @@ void check_notes_to(MusicPlayer* self, int index)
 
 void notes_ack(MusicPlayer* self, int index)
 {
-    notes_timeouts[index] = CURRENT_OFFSET();
+    notes_timeouts[index]++;
+    unsigned int data = (notes_timeouts[index] << 16) + (index & 0xFFFF);
 }

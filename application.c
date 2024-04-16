@@ -72,9 +72,9 @@ ReadBuffer readBuffer = initReadBuffer();
 
 void reader(App* self, int c)
 {
-    SCI_WRITE(&sci0, "Rcv: \'");
+    // SCI_WRITE(&sci0, "Rcv: \'");
     SCI_WRITECHAR(&sci0, c);
-    SCI_WRITE(&sci0, "\'\n");
+    SCI_WRITE(&sci0, "\n");
 
     // Call the keyhandler
     ASYNC(&app, keyHandler, c);
@@ -122,6 +122,7 @@ void keyHandler(App* self, int c)
         {
             SetBoardState state = {CONDUCTOR, RANK};
             SYNC(&board_handler, set_index, (int)&state);
+            SCI_WRITE(&sci0, "Init as conductor\n");
             ASYNC(&musicPlayer, nextBeat, 0);
             break;
         }
@@ -131,6 +132,7 @@ void keyHandler(App* self, int c)
         {
             SetBoardState state = {MUSICIAN, RANK};
             SYNC(&board_handler, set_index, (int)&state);
+            SCI_WRITE(&sci0, "Init as conductor\n");
             break;
         }
     }
