@@ -177,7 +177,7 @@ void startApp(App* self, int arg)
     CAN_INIT(&can0);
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Initialize the board as conductor by typing 'z' or 'x' for musician\n");
-    SEND(MSEC(100), MSEC(200), self, send_heartbeat, 0);
+    SEND(MSEC(100), MSEC(110), self, send_heartbeat, 0);
 }
 
 int main()
@@ -211,7 +211,7 @@ void send_conductor_handout_msg(BoardHandler* board_handler, int handout_msg_p)
 
 void send_heartbeat(App* self, int unused)
 {
-    static CANMsg msg;
+    CANMsg msg;
     HeartBeat heart_beat_msg;
     heart_beat_msg.id = HEARTBEATID + RANK;
     heart_beat_msg.role = board_handler.node_states[RANK];
@@ -221,12 +221,13 @@ void send_heartbeat(App* self, int unused)
         CAN_SEND(&can0, &msg);
     }
 
-    SEND(MSEC(100), MSEC(200), self, send_heartbeat, 0);
+    SEND(MSEC(100), MSEC(110), self, send_heartbeat, 0);
 }
 
 void send_ack(MusicPlayer* self, int index)
 {
-    static CANMsg msg;
+    CANMsg msg;
+    msg.msgId = NOTEACKSID + RANK;
     msg.buff[0] = index;
     if (can0.count < 8)
     {

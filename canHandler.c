@@ -26,7 +26,6 @@ void receive_msg(CanHandler* self, uint8_t* data)
     CANMsg msg;
     CAN_RECEIVE(self->m_can_p, &msg);
 
-
     switch (msg.msgId)
     {
     case HEARTBEATID ... HEARTBEATID + MAX_NODES - 1: {
@@ -34,13 +33,13 @@ void receive_msg(CanHandler* self, uint8_t* data)
         data_to_heart_beat(&msg, &heart_beat);
         heart_beat.id -= HEARTBEATID;
 
-        timeouts[heart_beat.id]++;
         SetBoardState state = {heart_beat.role, heart_beat.id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
 
+        timeouts[heart_beat.id]++;
         unsigned int data = (timeouts[heart_beat.id] << 16) + (heart_beat.id & 0xFFFF);
 
-        SEND(HEARTBEAT_TMO, HEARTBEAT_TMO + USEC(100), self, check_timeout, data);
+        SEND(HEARTBEAT_TMO, HEARTBEAT_TMO + USEC(1), self, check_timeout, data);
         break;
     }
     case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1:
@@ -110,6 +109,8 @@ void check_timeout(CanHandler* self, int id)
     {
         SetBoardState state = {DISCONNECTED, msg_id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
-        print("DC 1 = %i\n", msg_id);
+
+        print("timeouts %i, ", timeouts[msg_id]);
+        print("to_id %i\n", to_id);
     }
 }
