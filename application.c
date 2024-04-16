@@ -218,7 +218,6 @@ void send_heartbeat(App* self, int unused)
     heart_beat_to_data(&msg, &heart_beat_msg);
     if (can0.count < 8)
     {
-        print("Heartbeat %i \n", msg.msgId);
         CAN_SEND(&can0, &msg);
     }
 
