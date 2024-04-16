@@ -63,4 +63,6 @@ int get_lowest_id(BoardHandler* self, int unused);
  * @brief Handles timeouts and conductor ship
  */
 void update_behaviour(BoardHandler* self, int unused);
+
+void handout_conductor(BoardHandler* self, int unused);
 #endif

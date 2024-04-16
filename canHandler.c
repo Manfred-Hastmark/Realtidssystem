@@ -53,7 +53,13 @@ void receive_msg(CanHandler* self, uint8_t* data)
         SEND(HEARTBEAT_PERIOD, HEARTBEAT_PERIOD + MSEC(1), self, check_timeout, msg.msgId);
         break;
     }
-    case CLAIMCONDUCTORID:
+    case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1:
+        // is conductor
+        if (1)
+        {
+            ASYNC(self->m_board_handler_p, handout_conductor, 0);
+        }
+
         return;
     case NOTESID: {
         Notes notes_msg;
@@ -67,8 +73,14 @@ void receive_msg(CanHandler* self, uint8_t* data)
         ASYNC(self->m_music_player_p, notes_ack, notes_msg.note_index);
         return;
     }
+    case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1: {
+        HandoutConductor handout_conductor_msg;
+        data_to_handout_conductor(&msg, &handout_conductor);
+        self->m_board_handler_p->node_states[handout_conductor_msg.id - HANDOUTCONDUCTORID] = MUSICIAN;
 
-    case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1:
+        SetBoardState state = {CONDUCTOR, handout_conductor_msg.conductorId};
+        SYNC(self->m_board_handler_p, set_index, (int)&state);
+    }
         return;
     default:
         return;
