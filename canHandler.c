@@ -48,8 +48,8 @@ void receive_msg(CanHandler* self, uint8_t* data)
         break;
     }
     case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1:
-        // is conductor
-        if (1)
+
+        if (SYNC(self->m_board_handler_p, is_conductor, 0) == CONDUCTOR)
         {
             ASYNC(self->m_board_handler_p, handout_conductor, 0);
         }

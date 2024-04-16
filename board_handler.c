@@ -1,8 +1,9 @@
 
 #include "board_handler.h"
+#include "TinyTimber.h"
 #include "application.h"
 #include "canMsgs.h"
-
+#include "canTinyTimber.h"
 
 int is_conductor(BoardHandler* self, int unused)
 {
@@ -96,4 +97,39 @@ void update_behaviour(BoardHandler* self, int unused)
             }
         }
     }
+}
+
+#define CLAIM_DURATION MSEC(3000)
+int lowest_id = -1;
+CanSendCb send_cb = 0;
+
+void handout_conductor(BoardHandler* self, int handout_cb)
+{
+    HandoutConductorCB* handout = (HandoutConductorCB*)handout_cb;
+    if (lowest_id == -1)
+    {
+        SEND(CLAIM_DURATION, CLAIM_DURATION + MSEC(1), self, send_handout_msg, 0);
+        lowest_id = handout->index;
+        send_cb = handout->callback;
+    }
+    else
+    {
+        if (handout->index < lowest_id)
+        {
+            lowest_id = handout->index;
+        }
+    }
+}
+
+void send_handout_msg(BoardHandler* self, int id)
+{
+
+    HandoutConductor handout_conductor_msg;
+    handout_conductor_msg.id = HANDOUTCONDUCTORID + RANK;
+    handout_conductor_msg.conductorId = lowest_id;
+
+    CANMsg msg;
+    handout_conductor_to_data(&msg, &handout_conductor_msg);
+
+    // send msg
 }
