@@ -10,19 +10,20 @@ int is_conductor(BoardHandler* self, int unused)
     return self->node_states[RANK] == CONDUCTOR;
 }
 
+int current_musician_index = 0;
 int get_next_musician_index(BoardHandler* self, int unused)
 {
-    static int current_musician_index = 0;
     for (int i = 0; i < MAX_NODES; i++)
     {
-        current_musician_index %= MAX_NODES;
         if (self->node_states[current_musician_index] != DISCONNECTED)
         {
             int index = current_musician_index;
             current_musician_index++;
+            current_musician_index %= MAX_NODES;
             return index;
         }
         current_musician_index++;
+        current_musician_index %= MAX_NODES;
     }
     return -1;
 }
