@@ -22,7 +22,7 @@ void data_to_notes(CANMsg* msg, Notes* notes)
 {
     notes->id = msg->msgId;
     notes->note_index = msg->buff[0];
-    notes->key = *(char*)msg->buff[1];
+    notes->key = msg->buff[1];
     notes->player = msg->buff[2];
     notes->tempo = msg->buff[3];
 }
