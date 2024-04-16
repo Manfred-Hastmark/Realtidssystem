@@ -13,7 +13,6 @@ void nextBeat(MusicPlayer* self, int unused)
         self->index++;
         self->index %= 32;
         int player_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
-        print("Musician = %i\n", player_index);
         if (player_index == RANK)
         {
             self->TG.silence = 0;

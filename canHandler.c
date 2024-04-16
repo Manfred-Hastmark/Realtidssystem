@@ -41,17 +41,16 @@ void receive_msg(CanHandler* self, uint8_t* data)
         unsigned int data = (timeouts[heart_beat.id] << 16) + (heart_beat.id & 0xFFFF);
 
         SEND(HEARTBEAT_TMO, HEARTBEAT_TMO + USEC(1), self, check_timeout, data);
-        break;
+        return;
     }
-    case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1:
-
+    case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1: {
         if (SYNC(self->m_board_handler_p, is_conductor, 0) == 1)
         {
             // Print claim conductor
             ASYNC(self->m_board_handler_p, handout_conductor, CLAIMCONDUCTORID - MAX_NODES);
         }
-
         return;
+    }
     case NOTESID: {
         Notes notes_msg;
         data_to_notes(&msg, &notes_msg);
@@ -59,7 +58,6 @@ void receive_msg(CanHandler* self, uint8_t* data)
         return;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
-
         ASYNC(self->m_music_player_p, notes_ack, msg.buff[0]);
         return;
     }
@@ -76,8 +74,8 @@ void receive_msg(CanHandler* self, uint8_t* data)
         {
             ASYNC(self->m_music_player_p, nextBeat, 0);
         }
-    }
         return;
+    }
     default:
         return;
     }
@@ -109,7 +107,6 @@ void check_timeout(CanHandler* self, int id)
     if (timeouts[msg_id] == to_id)
     {
         SetBoardState state = {DISCONNECTED, msg_id};
-        print("TMO: %i\n", state.index);
         SYNC(self->m_board_handler_p, set_index, (int)&state);
     }
 }
