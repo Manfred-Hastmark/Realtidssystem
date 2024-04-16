@@ -101,7 +101,6 @@ void update_behaviour(BoardHandler* self, int unused)
 
 #define CLAIM_DURATION MSEC(3000)
 int lowest_id = -1;
-CanSendCb send_cb = 0;
 
 void handout_conductor(BoardHandler* self, int id)
 {
