@@ -95,7 +95,7 @@ void keyHandler(App* self, int c)
         recieveBPM();
         break;
     case 's':
-        if (musicPlayer.isConductor)
+        if (SYNC(&board_handler, is_conductor, 0))
         {
             if (SYNC(&musicPlayer, togglePlaying, UNUSED))
                 SCI_WRITE(&sci0, "Playing\n");
@@ -150,18 +150,8 @@ void startApp(App* self, int arg)
 {
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Initialize the board as conductor by typing 'z' or 'x' for musician\n");
-    ASYNC(&musicPlayer, waitForInit, 0);
 }
 
-void waitForInit(MusicPlayer* self, int unused){
-    if(self->m_board_handler_p->node_states[RANK] == 0){
-        const int bl = MSEC(200);
-        SEND(bl, bl + MSEC(50), self, waitForInit, 0);
-    }
-    else{
-       //Make some call that we are ready
-    }
-}
 
 
 
