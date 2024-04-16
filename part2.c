@@ -1,25 +1,34 @@
 #include "part2.h"
 #include "TinyTimber.h"
 #include "application.h"
+#include "board_handler.h"
 #include "canMsgs.h"
 
 void nextBeat(MusicPlayer* self, int unused)
 {
-    // Sets a period to the toneGenerator and turns it on.
-    // self->m_tone_generator_p->silence = 0;
-    // self->m_tone_generator_p->period = self->notePeriods[self->index];
-    // ASYNC(self->m_tone_generator_p, setDAC, 0xFFFFFFFF);
-
-    self->index++;
-    self->index %= LENGTH;
-
-    static Notes notes_msg;
-    notes_msg.note_index = self->index;
-    notes_msg.player = RANK;
-    notes_msg.tempo = 60000 / self->tempo;
-    notes_msg.key = self->m_melody_p->key;
-    notes_msg.id = NOTESID;
-    ASYNC(self->m_app_p, send_notes_msg, (int)&notes_msg);
+    if (self->m_board_handler_p->node_states[RANK] == CONDUCTOR)
+    {
+        self->index++;
+        self->index %= LENGTH;
+        int player_index = SYNC(self->m_board_handler_p, get_next_player, 0);
+        print("Player %i playing\n", player_index);
+        if (player_index == RANK)
+        {
+            self->m_tone_generator_p->silence = 0;
+            self->m_tone_generator_p->period = self->notePeriods[self->index];
+            ASYNC(self->m_tone_generator_p, setDAC, 0xFFFFFFFF);
+        }
+        else if (player_index != -1)
+        {
+            static Notes notes_msg;
+            notes_msg.note_index = self->index;
+            notes_msg.player = RANK;
+            notes_msg.tempo = 60000 / self->tempo;
+            notes_msg.key = self->m_melody_p->key;
+            notes_msg.id = NOTESID;
+            ASYNC(self->m_app_p, send_notes_msg, (int)&notes_msg);
+        }
+    }
 
     const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
     SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, 0);

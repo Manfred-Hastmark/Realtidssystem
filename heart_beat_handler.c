@@ -2,6 +2,7 @@
 #include "heart_beat_handler.h"
 #include "TinyTimber.h"
 #include "application.h"
+#include "board_handler.h"
 #include "canMsgs.h"
 
 #define HEARTBEAT_TO MSEC(210)
@@ -37,10 +38,9 @@ void heart_beat_received(HeartBeatHandler* self, int raw_msg_p)
 
 void heart_beat(HeartBeatHandler* self, int unused)
 {
-    const int role = 0;
     if (!self->m_app_p->to_heart_beat)
     {
-        ASYNC(self->m_app_p, send_heart_beat, role);
+        ASYNC(self->m_app_p, send_heart_beat, self->m_board_handler_p->node_states[RANK]);
     }
     AFTER(MSEC(100), self, heart_beat, unused);
 }
