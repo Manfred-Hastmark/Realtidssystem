@@ -130,10 +130,20 @@ void keyHandler(App* self, int c)
         break;
     }
     case 'k':
-        receiveKey();
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            receiveKey();
+        }
         break;
     case 'b':
-        recieveBPM();
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            recieveBPM();
+        }
+        break;
+    case 'R':
+        ASYNC(&musicPlayer, change_key, DEFAULT_KEY);
+        ASYNC(&musicPlayer, change_bpm, DEFAULT_BPM);
         break;
     case 'h':
         self->to_heart_beat ^= 1;

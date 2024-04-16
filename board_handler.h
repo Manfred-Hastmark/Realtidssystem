@@ -12,6 +12,12 @@ enum NodeState
     DISCONNECTED = 2,
 };
 
+enum DefaultTones
+{
+    DEFAULT_KEY = 0,
+    DEFAULT_BPM = 120,
+};
+
 typedef struct
 {
     Object obj;
