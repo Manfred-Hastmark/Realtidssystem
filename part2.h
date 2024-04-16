@@ -25,8 +25,8 @@
 typedef struct
 {
     ToneGenerator TG;                // ToneGenerator
-    BoardHandler* m_board_handler_p; // Board handler
-    Melody* m_melody_p;              // Melody
+    //BoardHandler* m_board_handler_p; // Board handler
+    //Melody* m_melody_p;              // Melody
     int tempo;                       // 60000 / bpm represended in ms
     int silenceDuration;             // 60000 / bpm * 10 which is 10% of the note
     char* beatLength;                // How long every beat should be
@@ -37,12 +37,12 @@ typedef struct
     int isInitialized;
 } MusicPlayer;
 
-#define initMusicPlayer(BPM, board_handler_p, beatLength)                                                                                  \
+#define initMusicPlayer(BPM, melody,board_handler_p, beatLength)                                                                                  \
     {                                                                                                                                      \
-        initToneGenerator(1000), board_handler_p, 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                                    \
+        initToneGenerator(1000), /*board_handler_p, melody,*/ 60000 / (int)BPM, 6000 / (int)BPM, (char*)beatLength,                                    \
             {1136, 1012, 902, 1136, 1136, 1012, 902, 1136, 902, 851,  758,  902,  851,  758,  758,  676,                                   \
              758,  851,  902, 1136, 758,  676,  758, 851,  902, 1136, 1136, 1517, 1136, 1136, 1517, 1136},                                 \
-            0, 0, 0                                                                                                                        \
+            1, 0, 0, 0                                                                                                                        \
     }
 
 int getBeatLenght(char c, int ms, int silenceDuration);

@@ -10,11 +10,10 @@
 Time last_heart_beat_1 = 0;
 Time last_heart_beat_2 = 0;
 
-void init(CanHandler* self, Can* can0_p)
+void init_canhandler(CanHandler* self, Can* can0_p)
 {
     self->m_can0_p = can0_p;
     INSTALL(&can0_p, can_interrupt, CAN_IRQ0);
-    CAN_INIT(&can0_p);
 }
 
 void notes_handler(CanHandler* self, Notes* msg);
@@ -41,11 +40,11 @@ void receive_msg(CanHandler* self, uint8_t* data)
     {
     case HEARTBEATID + RANK_OTHER_1:
         last_heart_beat_1 = CURRENT_OFFSET();
-        SEND(HEARTBEATTO, HEARTBEATDL, &app, heartbeat_tmo_check_1, (int)&last_heart_beat_1);
+        SEND(HEARTBEATTO, HEARTBEATDL, &self->app, heartbeat_tmo_check_1, (int)&last_heart_beat_1);
         return;
     case HEARTBEATID + RANK_OTHER_2:
         last_heart_beat_2 = CURRENT_OFFSET();
-        SEND(HEARTBEATTO, HEARTBEATDL, &app, heartbeat_tmo_check_2, (int)&last_heart_beat_2);
+        SEND(HEARTBEATTO, HEARTBEATDL, &self->app, heartbeat_tmo_check_2, (int)&last_heart_beat_2);
         return;
     case CLAIMCONDUCTORID:
         return;
@@ -68,10 +67,10 @@ void notes_handler(CanHandler* self, Notes* msg)
 {
     if (msg->player == RANK_SELF)
     {
-        SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
+        //SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
         int melodyPeriods[LENGTH];
-        SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
-        SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
+        //SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
+        //SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
         SYNC(&self->m_music_player_p->TG, volume, msg->volume);
         SYNC(&self->m_music_player_p->TG, set_index, msg->note_index);
         ASYNC(self->m_music_player_p, nextBeat, 0);

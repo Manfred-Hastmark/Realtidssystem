@@ -1,4 +1,6 @@
 #include "part2.h"
+#include "stdbool.h"
+
 
 void nextBeat(MusicPlayer* self, int unused)
 {
@@ -11,12 +13,8 @@ void nextBeat(MusicPlayer* self, int unused)
         self->TG.period = self->notePeriods[self->index];
         ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
     }
-
-    // Sets a period to the toneGenerator and turns it on.
-    self->TG.silence = 0;
-    self->TG.period = self->notePeriods[self->index];
-    ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
-
+	
+	
     // Sleep until it should silence the toneGenerator
     const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
     self->index += 1;

@@ -11,7 +11,8 @@
 
 typedef struct
 {
-    Object obj;
+    Object super;
+    App* app;
     MusicPlayer* m_music_player_p;
     BoardHandler* m_board_handler_p;
     Can* m_can0_p;
@@ -25,15 +26,15 @@ typedef struct
 
 } CanData;
 
-#define init_can_handler(music_player_p, board_handler_p)                                                                                  \
+#define init_can_object(app, music_player_p, board_handler_p)                                                                                  \
     {                                                                                                                                      \
-        initObject(), music_player_p, board_handler_p                                                                                      \
+        initObject(), app, music_player_p, board_handler_p                                                                                      \
     }
 
 /**
  * @brief Function that gets called on CAN msg recv
  */
-void init(CanHandler* self, Can* can0_p);
+void init_canhandler(CanHandler* self, Can* can0_p);
 
 /**
  * @brief Function that gets called on CAN msg recv

@@ -5,6 +5,7 @@
 #include "TinyTimber.h"
 
 #define MAX_NODES 8
+#define LENGTH 32
 
 typedef struct
 {
