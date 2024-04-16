@@ -130,6 +130,12 @@ void keyHandler(App* self, int c)
         break;
     }
     case 'k':
+        receiveKey();
+        break;
+    case 'b':
+        recieveBPM();
+        break;
+    case 'h':
         self->to_heart_beat ^= 1;
         break;
     case 's': {
