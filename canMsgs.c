@@ -12,6 +12,7 @@ void heart_beat_to_data(CANMsg* msg, HeartBeat* heart_beat)
     *(unsigned long long*)msg->buff = 0;
     msg->buff[0] = heart_beat->role;
     msg->length = 1;
+    msg->msgId = heart_beat->id;
 }
 
 void data_to_notes(CANMsg* msg, Notes* notes)
@@ -35,6 +36,7 @@ void notes_to_data(CANMsg* msg, Notes* notes)
     msg->buff[3] = notes->tempo;
     msg->buff[4] = notes->volume;
     msg->length = 5;
+    msg->msgId = notes->id;
 }
 
 void data_to_handout_conductor(CANMsg* msg, HandoutConductor* handoutConductor)
@@ -47,5 +49,6 @@ void handout_conductor_to_data(CANMsg* msg, HandoutConductor* handoutConductor)
 {
     *(unsigned long long*)msg->buff = 0;
     msg->buff[0] = handoutConductor->conductorId;
+    msg->msgId = handoutConductor->id;
     msg->length = 1;
 }
