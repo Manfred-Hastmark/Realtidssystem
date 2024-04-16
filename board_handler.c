@@ -66,9 +66,16 @@ int get_lowest_id(BoardHandler* self, int unused)
 
 void update_behaviour(BoardHandler* self, int unused)
 {
+    // Wait for init
+    if (self->node_states[RANK] == DISCONNECTED)
+    {
+        return;
+    }
+
     // We are solo
     if (self->number_of_nodes == 1)
     {
+        self->node_states[RANK] = MUSICIAN;
     }
 
     // Assign new conductor
