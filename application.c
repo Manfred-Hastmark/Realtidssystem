@@ -49,11 +49,11 @@ void send_heart_beat(App*, int);
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
 App app = {initObject(), 0, 'X', 0, 1};
-BoardHandler board_handler = initBoardHandler();
+BoardHandler board_handler = initBoardHandler(&app);
 MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength, &tone_generator, &melody, &app, &board_handler);
 ReadBuffer readBuffer = initReadBuffer();
 HeartBeatHandler heart_beat_handler = initHeartBeatHandler(&app, &board_handler);
-CanHandler can_handler = initCanHandler(&app, &heart_beat_handler, &musicPlayer);
+CanHandler can_handler = initCanHandler(&app, &heart_beat_handler, &musicPlayer, &board_handler);
 Can can0 = initCan(CAN_PORT0, &app, receive);
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
 
@@ -97,6 +97,23 @@ void send_note_ack(App* self, int note_index)
     ASYNC(self, send, (int)&msg);
 }
 
+void send_claim_conductorship(App* self, int unused)
+{
+    static CANMsg msg;
+    msg.msgId = CLAIMCONDUCTORID + RANK;
+    msg.length = 0;
+    ASYNC(self, send, (int)&msg);
+}
+
+void send_handout_conductor(App* self, int index)
+{
+    static CANMsg msg;
+    msg.msgId = HANDOUTCONDUCTORID + RANK;
+    msg.buff[0] = index;
+    msg.length = 1;
+    ASYNC(self, send, (int)&msg);
+}
+
 void reader(App* self, int c)
 {
     SCI_WRITE(&sci0, "Rcv: \'");
@@ -111,6 +128,10 @@ void keyHandler(App* self, int c)
 {
     switch (c)
     {
+    case 'p': {
+        ASYNC(&board_handler, request_conductorship, 0);
+        break;
+    }
     case 'z': {
         if (board_handler.node_states[RANK] == DISCONNECTED)
         {

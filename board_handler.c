@@ -1,7 +1,15 @@
 
 #include "board_handler.h"
+#include "TinyTimber.h"
 #include "application.h"
 #include "canMsgs.h"
+
+#define CLAIM_WAIT_TIME MSEC(1000)
+
+int request_index;
+int request_ongoing;
+
+void commit_claim_request(BoardHandler* self, int unused);
 
 void handle_node_timeout(BoardHandler* self, int index)
 {
@@ -36,4 +44,47 @@ int get_next_player(BoardHandler* self, int unused)
         }
     }
     return -1;
+}
+
+int has_conductor(BoardHandler* self, int unused)
+{
+    for (int i = 0; i < MAX_BOARDS; i++)
+    {
+        if (self->node_states[i] == CONDUCTOR)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int request_conductorship(BoardHandler* self, int unused)
+{
+    ASYNC(self->m_app_p, send_claim_conductorship, unused);
+}
+
+void handle_conductorship_handout(BoardHandler* self, int index)
+{
+    if (index < 0 || index > MAX_BOARDS - 1)
+    {
+        return;
+    }
+    self->node_states[index] = CONDUCTOR;
+}
+
+void handle_conductorship_request(BoardHandler* self, int index)
+{
+    request_index = index;
+    if (!request_ongoing)
+    {
+        request_ongoing = 1;
+        AFTER(CLAIM_WAIT_TIME, self, commit_claim_request, 0);
+    }
+}
+
+void commit_claim_request(BoardHandler* self, int unused)
+{
+    self->node_states[RANK] = MUSICIAN;
+    request_ongoing = 0;
+    ASYNC(self->m_app_p, send_handout_conductor, request_index);
 }

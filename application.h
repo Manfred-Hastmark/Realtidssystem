@@ -33,4 +33,14 @@ void send_notes_msg(App* self, int raw_notes_msg_p);
  */
 void send_note_ack(App* self, int note_index);
 
+/**
+ * @brief Send out request to claim conductorship
+ */
+void send_claim_conductorship(App* self, int unused);
+
+/**
+ * @brief Send the handout on CAN
+ */
+void send_handout_conductor(App* self, int index);
+
 #endif

@@ -2,6 +2,7 @@
 #include "can_handler.h"
 #include "TinyTimber.h"
 #include "application.h"
+#include "board_handler.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
 #include "part2.h"
@@ -37,6 +38,18 @@ void can_receiver(CanHandler* self, int raw_msg_p)
     }
     case NOTEACKSID ... NOTEACKSID + MAX_BOARDS - 1: {
         ASYNC(self->m_music_player_p, note_ack_received, msg_p->buff[0]);
+        break;
+    }
+    case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_BOARDS - 1: {
+        ASYNC(self->m_board_handler_p, handle_conductorship_handout, msg_p->buff[0]);
+        break;
+    }
+    case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_BOARDS - 1: {
+        if (self->m_board_handler_p->node_states[RANK] == CONDUCTOR)
+        {
+            ASYNC(self->m_board_handler_p, handle_conductorship_request, msg_p->msgId - CLAIMCONDUCTORID);
+        }
+        break;
     }
     default:
         break;

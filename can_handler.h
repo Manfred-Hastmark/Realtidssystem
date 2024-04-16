@@ -4,6 +4,7 @@
 
 #include "TinyTimber.h"
 #include "application.h"
+#include "board_handler.h"
 #include "canTinyTimber.h"
 #include "heart_beat_handler.h"
 #include "part2.h"
@@ -14,11 +15,12 @@ typedef struct
     App* m_app_p;
     HeartBeatHandler* m_heart_beat_handler_p;
     MusicPlayer* m_music_player_p;
+    BoardHandler* m_board_handler_p;
 } CanHandler;
 
-#define initCanHandler(app_p, heart_beat_handler_p, music_player_p)                                                                        \
+#define initCanHandler(app_p, heart_beat_handler_p, music_player_p, board_handler_p)                                                       \
     {                                                                                                                                      \
-        initObject(), app_p, heart_beat_handler_p, music_player_p                                                                          \
+        initObject(), app_p, heart_beat_handler_p, music_player_p, board_handler_p                                                         \
     }
 
 /**

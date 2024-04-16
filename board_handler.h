@@ -15,13 +15,14 @@ enum NodeState
 typedef struct
 {
     Object obj;
+    App* m_app_p;
     enum NodeState node_states[MAX_BOARDS];
     int nodes_connected;
 } BoardHandler;
 
-#define initBoardHandler()                                                                                                                 \
+#define initBoardHandler(app_p)                                                                                                            \
     {                                                                                                                                      \
-        initObject(),                                                                                                                      \
+        initObject(), app_p,                                                                                                               \
             {                                                                                                                              \
                 DISCONNECTED,                                                                                                              \
                 DISCONNECTED,                                                                                                              \
@@ -54,5 +55,20 @@ int get_next_player(BoardHandler* self, int unused);
  * @brief Checks if there's a conductor in network
  */
 int has_conductor(BoardHandler* self, int unused);
+
+/**
+ * @brief Request to claim conductorship
+ */
+int request_conductorship(BoardHandler* self, int unused);
+
+/**
+ * @brief Updates board state with who is conductor
+ */
+void handle_conductorship_handout(BoardHandler* self, int index);
+
+/**
+ * @brief Handle conductorship request
+ */
+void handle_conductorship_request(BoardHandler* self, int index);
 
 #endif
