@@ -30,12 +30,8 @@
  * 'b' sets bpm
  * 's' start / pause
  */
-#define MUSICIAN
 
 #define UNUSED 0
-
-#define CONDUCTOR
-// #define MUSICIAN
 
 // Brother John melody
 const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
@@ -113,17 +109,36 @@ void reader(App* self, int c)
 
 void keyHandler(App* self, int c)
 {
-    if (c == 'k')
+    switch (c)
     {
+    case 'z': {
+        if (board_handler.node_states[RANK] == DISCONNECTED)
+        {
+            board_handler.node_states[RANK] = CONDUCTOR;
+        }
+        break;
+    }
+    case 'x': {
+        if (board_handler.node_states[RANK] == DISCONNECTED)
+        {
+            board_handler.node_states[RANK] = MUSICIAN;
+        }
+        break;
+    }
+    case 'k':
         self->to_heart_beat ^= 1;
+        break;
+    case 's': {
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            ASYNC(&musicPlayer, togglePlaying, 0);
+        }
+        break;
     }
-    if (c == 's')
-    {
-        ASYNC(&musicPlayer, togglePlaying, 0);
-    }
-    if (c == 'a')
-    {
+    case 'a': {
         self->ack_notes ^= 1;
+        break;
+    }
     }
 }
 
