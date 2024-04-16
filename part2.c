@@ -22,7 +22,7 @@ void nextBeat(MusicPlayer* self, int unused)
         {
             self->TG.silence = 0;
             self->TG.period = self->notePeriods[self->index];
-            ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+            SEND(MSEC(1), MSEC(2), &self->TG, setDAC, 0xFFFFFFFF);
         }
         else
         {

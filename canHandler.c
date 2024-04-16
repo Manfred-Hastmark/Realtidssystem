@@ -92,12 +92,13 @@ void notes_handler(MusicPlayer* self, int msg)
         SYNC(self->m_melody_p, setKey, notes->key);
         int melodyPeriods[LENGTH];
         SYNC(self->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
-        SYNC(self, setPeriods, (int)melodyPeriods);
+        ASYNC(self, setPeriods, (int)melodyPeriods);
 
         self->TG.silence = 0;
         self->TG.period = self->notePeriods[self->index];
         SEND(MSEC(1), MSEC(2), &self->TG, setDAC, 0xFFFFFFFF);
 
+        print("send_ack\n", 0);
         ASYNC(self, send_ack, notes->note_index);
     }
 }
