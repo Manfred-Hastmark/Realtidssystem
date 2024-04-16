@@ -10,7 +10,7 @@
 #define HEARTBEAT_PERIOD MSEC(100)
 #define HEARTBEAT_TMO MSEC(200)
 
-Time timeouts[MAX_NODES]{};
+Time timeouts[MAX_NODES];
 
 void init_canhandler(CanHandler* self, Can* can0_p)
 {
@@ -60,9 +60,9 @@ void receive_msg(CanHandler* self, uint8_t* data)
         notes_handler(self, &notes_msg);
         return;
     }
-    case NOTEACKSID:
+    case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1:
         return;
-    case HANDOUTCONDUCTORID:
+    case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1:
         return;
     default:
         return;
