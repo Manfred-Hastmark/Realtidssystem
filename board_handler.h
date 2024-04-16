@@ -18,6 +18,8 @@ typedef struct
     App* m_app_p;
     enum NodeState node_states[MAX_BOARDS];
     int nodes_connected;
+    int conductor_change;
+    int new_conductor_index;
 } BoardHandler;
 
 #define initBoardHandler(app_p)                                                                                                            \
@@ -33,7 +35,7 @@ typedef struct
                 DISCONNECTED,                                                                                                              \
                 DISCONNECTED,                                                                                                              \
             },                                                                                                                             \
-            0                                                                                                                              \
+            0, 0, 0                                                                                                                        \
     }
 
 /**

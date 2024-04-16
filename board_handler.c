@@ -90,5 +90,6 @@ void commit_claim_request(BoardHandler* self, int unused)
 {
     self->node_states[RANK] = MUSICIAN;
     request_ongoing = 0;
-    ASYNC(self->m_app_p, send_handout_conductor, request_index);
+    self->conductor_change = 1;
+    self->new_conductor_index = request_index;
 }
