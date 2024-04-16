@@ -31,12 +31,8 @@
  * 'b' sets bpm
  * 's' start / pause
  */
-#define MUSICIAN
 
 #define UNUSED 0
-
-#define CONDUCTOR
-#define MUSICIAN
 
 // Brother John melody
 const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
@@ -79,7 +75,6 @@ void keyHandler(App* self, int c)
 {
     switch (c)
     {
-#ifdef MUSICIAN
     case '0' ... '9': // Add character to readbuffer
     case '-':
         ASYNC(&readBuffer, readBufferAdd, c);
@@ -109,39 +104,14 @@ void keyHandler(App* self, int c)
         }
         break;
     case 'z':
-        ASYNC(&musicPlayer, assignMode, true);
+        SetBoardState state = {CONDUCTOR, RANK};
+        SYNC(&board_handler, set_index, (int)&state);
         break;
     case 'x':
-        ASYNC(&musicPlayer, assignMode, false);
+        SetBoardState state = {MUSICIAN, RANK};
+        SYNC(&board_handler, set_index, (int)&state);   
         break;
     }
-#elif defined(CONDUCTOR)
-        switch (c)
-        {
-        case '0' ... '9': // Add character to readbuffer
-        case '-':
-            ASYNC(&readBuffer, readBufferAdd, c);
-            break;
-        case 'c': // Lower volume
-            sendCANMsg('c', 0);
-            break;
-        case 'v': // Raise volume
-            sendCANMsg('v', 0);
-            break;
-        case 'k':                                                  // A key was received
-            sendCANMsg('k', SYNC(&readBuffer, endBuffer, UNUSED)); //
-            break;
-        case 'm': // Toggle muting
-            sendCANMsg('m', 0);
-            break;
-        case 'b': // BPM
-            sendCANMsg('b', SYNC(&readBuffer, endBuffer, UNUSED));
-            break;
-        case 's': // Start / stop
-            sendCANMsg('s', 0);
-            break;
-        }
-#endif
 }
 
 void print(char* string, int val)
@@ -179,9 +149,21 @@ void recieveBPM()
 void startApp(App* self, int arg)
 {
     SCI_INIT(&sci0);
-    SCI_WRITE(&sci0, "Hello, hello...\n");
-    ASYNC(&musicPlayer, nextBeat, 0);
+    SCI_WRITE(&sci0, "Initialize the board as conductor by typing 'z' or 'x' for musician\n");
+    ASYNC(&musicPlayer, waitForInit, 0);
 }
+
+void waitForInit(MusicPlayer* self, int unused){
+    if(self->m_board_handler_p->node_states[RANK] == 0){
+        const int bl = MSEC(200);
+        SEND(bl, bl + MSEC(50), self, waitForInit, 0);
+    }
+    else{
+       //Make some call that we are ready
+    }
+}
+
+
 
 int main()
 {
