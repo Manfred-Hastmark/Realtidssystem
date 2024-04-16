@@ -9,7 +9,7 @@ void data_to_heart_beat(CANMsg* msg, HeartBeat* heart_beat)
 void heart_beat_to_data(CANMsg* msg, HeartBeat* heart_beat)
 {
     // Set all bytes to 0
-    *(unsigned long long*)msg->buff = 0;
+    // *(unsigned long long*)msg->buff = 0;
     msg->buff[0] = heart_beat->role;
     msg->length = 1;
     msg->msgId = heart_beat->id;
@@ -27,7 +27,7 @@ void data_to_notes(CANMsg* msg, Notes* notes)
 void notes_to_data(CANMsg* msg, Notes* notes)
 {
     // Set all bytes to 0
-    *(unsigned long long*)msg->buff = 0;
+    // *(unsigned long long*)msg->buff = 0;
 
     msg->buff[0] = notes->note_index;
     msg->buff[1] = *(uint8_t*)notes->key;
@@ -45,7 +45,7 @@ void data_to_handout_conductor(CANMsg* msg, HandoutConductor* handoutConductor)
 
 void handout_conductor_to_data(CANMsg* msg, HandoutConductor* handoutConductor)
 {
-    *(unsigned long long*)msg->buff = 0;
+    // *(unsigned long long*)msg->buff = 0;
     msg->buff[0] = handoutConductor->conductorId;
     msg->msgId = handoutConductor->id;
     msg->length = 1;
