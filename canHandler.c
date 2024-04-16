@@ -5,6 +5,7 @@
 #include "board_handler.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
+#include "part2.h"
 #include "software_defines.h"
 
 #define HEARTBEAT_PERIOD MSEC(100)
@@ -51,6 +52,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
         if (SYNC(self->m_board_handler_p, is_conductor, 0) == 1)
         {
+            // Print claim conductor
             ASYNC(self->m_board_handler_p, handout_conductor, CLAIMCONDUCTORID - MAX_NODES);
         }
 
@@ -74,6 +76,11 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
         SetBoardState state = {CONDUCTOR, handout_conductor_msg.conductorId};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
+
+        if (SYNC(self->m_board_handler_p, is_conductor, 0) == 1)
+        {
+            ASYNC(self->m_music_player_p, nextBeat, 0);
+        }
     }
         return;
     default:
