@@ -67,10 +67,10 @@ void notes_handler(CanHandler* self, Notes* msg)
 {
     if (msg->player == RANK_SELF)
     {
-        //SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
+        SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
         int melodyPeriods[LENGTH];
-        //SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
-        //SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
+        SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
+        SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
         SYNC(&self->m_music_player_p->TG, volume, msg->volume);
         SYNC(&self->m_music_player_p->TG, set_index, msg->note_index);
         ASYNC(self->m_music_player_p, nextBeat, 0);
