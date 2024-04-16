@@ -3,7 +3,6 @@
 #include "TinyTimber.h"
 #include "application.h"
 #include "canMsgs.h"
-#include "canTinyTimber.h"
 
 int is_conductor(BoardHandler* self, int unused)
 {
@@ -14,14 +13,17 @@ int get_next_musician_index(BoardHandler* self, int unused)
 {
     int iter = 0;
     self->board_to_play = (self->board_to_play + 1) % MAX_NODES;
-    while(self->node_states[self->board_to_play] == DISCONNECTED){
+    while (self->node_states[self->board_to_play] == DISCONNECTED)
+    {
         self->board_to_play = (self->board_to_play + 1) % MAX_NODES;
         iter++;
-        if(iter >= MAX_NODES){
+        if (iter >= MAX_NODES)
+        {
             return -1;
         }
     }
-    for(int i = 0; i < MAX_NODES; i++){
+    for (int i = 0; i < MAX_NODES; i++)
+    {
         print("%i, ", self->node_states[i]);
     }
     print("\n", 0);
@@ -49,8 +51,8 @@ void set_index(BoardHandler* self, int set)
         return;
     }
 
-    print("index: %i, ", set_state->index);
-    print("state: %i \n", set_state->state);
+    // print("index: %i, ", set_state->index);
+    // print("state: %i \n", set_state->state);
     self->node_states[set_state->index] = set_state->state;
 
     self->number_of_nodes = 0;
@@ -66,19 +68,18 @@ void set_index(BoardHandler* self, int set)
 
 int get_lowest_id(BoardHandler* self, int unused)
 {
-    // for (int i = 0; i < MAX_NODES; i++)
-    // {
-    //     if (self->node_states[i] != DISCONNECTED)
-    //     {
-    //         return i;
-    //     }
-    // }
-    // return -1;
+    for (int i = 0; i < MAX_NODES; i++)
+    {
+        if (self->node_states[i] != DISCONNECTED)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void update_behaviour(BoardHandler* self, int unused)
 {
-    // static int last_nr_boards = 0;
     // // Wait for init
     // if (self->node_states[RANK] == DISCONNECTED)
     // {
@@ -86,7 +87,7 @@ void update_behaviour(BoardHandler* self, int unused)
     // }
     //
     // // We are solo
-    // if (self->number_of_nodes == 1 && last_nr_boards > 2)
+    // if (self->number_of_nodes == 1)
     // {
     //     self->node_states[RANK] = MUSICIAN;
     // }
@@ -103,8 +104,6 @@ void update_behaviour(BoardHandler* self, int unused)
     //         }
     //     }
     // }
-    //
-    // last_nr_boards = self->number_of_nodes;
 }
 
 #define CLAIM_DURATION MSEC(3000)
@@ -112,6 +111,7 @@ int lowest_id = -1;
 
 void handout_conductor(BoardHandler* self, int id)
 {
+    print("handout_conductor %c", '\n');
     // if (lowest_id == -1)
     // {
     //     SEND(CLAIM_DURATION, CLAIM_DURATION + MSEC(1), self, send_handout_msg, 0);
@@ -128,6 +128,8 @@ void handout_conductor(BoardHandler* self, int id)
 
 void send_handout_msg(BoardHandler* self, int unused)
 {
+    print("send_handout_msg%c", '\n');
+
     // self->node_states[RANK] = MUSICIAN;
     // self->node_states[lowest_id] = CONDUCTOR;
     //
@@ -140,5 +142,5 @@ void send_handout_msg(BoardHandler* self, int unused)
     //
     // lowest_id = -1;
     // SYNC(self, send_handout_msg, (int)&msg);
-    // // send msg
+    // send msg
 }

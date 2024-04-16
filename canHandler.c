@@ -1,5 +1,3 @@
-
-
 #include "canHandler.h"
 #include "TinyTimber.h"
 #include "application.h"
@@ -12,7 +10,7 @@
 #define HEARTBEAT_PERIOD MSEC(100)
 #define HEARTBEAT_TMO MSEC(200)
 
-void notes_handler(MusicPlayer* self, Notes* msg);
+void notes_handler(MusicPlayer* self, int msg);
 
 unsigned short timeouts[MAX_NODES] = {0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -26,16 +24,14 @@ void receive_msg(CanHandler* self, uint8_t* data)
     CANMsg msg;
     CAN_RECEIVE(self->m_can_p, &msg);
 
+    if (msg.msgId != 10)
+    {
+        print("Msg rec id: %i\n", msg.msgId);
+    }
+
     switch (msg.msgId)
     {
-    case HEARTBEATID:
-    case HEARTBEATID + 1:
-    case HEARTBEATID + 2:
-    case HEARTBEATID + 3:
-    case HEARTBEATID + 4:
-    case HEARTBEATID + 5:
-    case HEARTBEATID + 6:
-    case HEARTBEATID + 7: {
+    case HEARTBEATID ... HEARTBEATID + MAX_NODES - 1: {
         HeartBeat heart_beat;
         data_to_heart_beat(&msg, &heart_beat);
         heart_beat.id -= HEARTBEATID;
@@ -49,18 +45,9 @@ void receive_msg(CanHandler* self, uint8_t* data)
         SEND(HEARTBEAT_TMO, HEARTBEAT_TMO + USEC(1), self, check_timeout, data);
         return;
     }
-    break;
-    case CLAIMCONDUCTORID:
-    case CLAIMCONDUCTORID + 1:
-    case CLAIMCONDUCTORID + 2:
-    case CLAIMCONDUCTORID + 3:
-    case CLAIMCONDUCTORID + 4:
-    case CLAIMCONDUCTORID + 5:
-    case CLAIMCONDUCTORID + 6:
-    case CLAIMCONDUCTORID + 7: {
+    case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_NODES - 1: {
         if (SYNC(self->m_board_handler_p, is_conductor, 0) == 1)
         {
-            // Print claim conductor
             ASYNC(self->m_board_handler_p, handout_conductor, CLAIMCONDUCTORID - MAX_NODES);
         }
         return;
@@ -68,31 +55,16 @@ void receive_msg(CanHandler* self, uint8_t* data)
     case NOTESID: {
         Notes notes_msg;
         data_to_notes(&msg, &notes_msg);
-        notes_handler(self->m_music_player_p, &notes_msg);
+        SYNC(self->m_music_player_p, notes_handler, (int)&notes_msg);
         return;
     }
-    break;
-    case NOTEACKSID:
-    case NOTEACKSID + 1:
-    case NOTEACKSID + 2:
-    case NOTEACKSID + 3:
-    case NOTEACKSID + 4:
-    case NOTEACKSID + 5:
-    case NOTEACKSID + 6:
-    case NOTEACKSID + 7: {
+    case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
 
         ASYNC(self->m_music_player_p, notes_ack, msg.buff[0]);
         return;
     }
 
-    case HANDOUTCONDUCTORID:
-    case HANDOUTCONDUCTORID + 1:
-    case HANDOUTCONDUCTORID + 2:
-    case HANDOUTCONDUCTORID + 3:
-    case HANDOUTCONDUCTORID + 4:
-    case HANDOUTCONDUCTORID + 5:
-    case HANDOUTCONDUCTORID + 6:
-    case HANDOUTCONDUCTORID + 7: {
+    case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1: {
         HandoutConductor handout_conductor_msg;
         data_to_handout_conductor(&msg, &handout_conductor_msg);
         self->m_board_handler_p->node_states[handout_conductor_msg.id - HANDOUTCONDUCTORID] = MUSICIAN;
@@ -106,27 +78,27 @@ void receive_msg(CanHandler* self, uint8_t* data)
         }
         return;
     }
-    break;
     default:
         return;
     }
 }
 
-void notes_handler(MusicPlayer* self, Notes* msg)
+void notes_handler(MusicPlayer* self, int msg)
 {
-    // SYNC(&self->TG, set_note_index, msg->note_index);
-    if (msg->player == RANK)
+    Notes* notes = (Notes*)msg;
+    SYNC(&self->TG, set_note_index, notes->note_index);
+    if (notes->player == RANK)
     {
-        // SYNC(self->m_melody_p, setKey, msg->key);
-        // int melodyPeriods[LENGTH];
-        // SYNC(self->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
-        // SYNC(self->m_melody_p, setPeriods, (int)melodyPeriods);
-        //
-        // self->TG.silence = 0;
-        // self->TG.period = self->notePeriods[self->index];
-        // ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+        SYNC(self->m_melody_p, setKey, notes->key);
+        int melodyPeriods[LENGTH];
+        SYNC(self->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
+        SYNC(self, setPeriods, (int)melodyPeriods);
 
-        send_ack(self, msg->note_index);
+        self->TG.silence = 0;
+        self->TG.period = self->notePeriods[self->index];
+        SEND(MSEC(1), MSEC(2), &self->TG, setDAC, 0xFFFFFFFF);
+
+        ASYNC(self, send_ack, notes->note_index);
     }
 }
 

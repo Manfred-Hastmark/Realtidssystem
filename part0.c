@@ -1,4 +1,5 @@
 #include "part0.h"
+#include "application.h"
 
 // us for each note needed in lab 0 for non-general solution
 const int notePeriods[25] = {
@@ -157,10 +158,11 @@ void generatePeriodGeneral(MelodyGeneral* self, int key)
 
 void setMelodyPeriodsGeneral(MelodyGeneral* self, int arr)
 {
-    int* retArr = (int*)arr;
-
-    for (int i = 0; i < self->length; i++)
-    {
-        retArr[i] = self->periods[self->melody[i] - self->min];
-    }
+    print("setMelodyPeriodsGeneral\n", 0);
+    // int* retArr = (int*)arr;
+    //
+    // for (int i = 0; i < self->length; i++)
+    // {
+    //     retArr[i] = self->periods[self->melody[i] - self->min];
+    // }
 }

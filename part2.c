@@ -3,40 +3,42 @@
 #include "application.h"
 #include "stdbool.h"
 
-#define LOOPBACK
+// #define LOOPBACK
 
 short notes_timeouts[LENGTH] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 void check_notes_to(MusicPlayer* self, int index);
 
 void nextBeat(MusicPlayer* self, int unused)
 {
+
     if (SYNC(self->m_board_handler_p, get_conductor_index, 0) == RANK)
     {
         self->index++;
         self->index %= 32;
         int player_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
-        print("Player index: %i\n", player_index);
-        #ifndef LOOPBACK
+
+#ifndef LOOPBACK
         if (player_index == RANK)
         {
             self->TG.silence = 0;
             self->TG.period = self->notePeriods[self->index];
             ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
         }
-        if (player_index != -1)
+        else
         {
 
             ASYNC(self, send_tone_msg, player_index);
-            AFTER(MSEC(2), self, check_notes_to, self->index);
+            SEND(MSEC(4), MSEC(5), self, check_notes_to, self->index);
         }
-        #else
+#else
+        print("Before send tm%c", '\n');
         ASYNC(self, send_tone_msg, player_index);
-        AFTER(MSEC(2), self, check_notes_to, self->index);
-        #endif
+        SEND(MSEC(4), MSEC(5), self, check_notes_to, self->index);
+#endif
     }
 
     // Sleep until it should silence the toneGenerator
-    const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
+    int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
     SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, self->index); // (same as (index + 1) % 32)
 }
 
@@ -76,11 +78,12 @@ void setTempo(MusicPlayer* self, int bpm)
 
 void setPeriods(MusicPlayer* self, int arrIn)
 {
-    int* arr = (int*)arrIn;
-    for (int i = 0; i < 32; i++)
-    {
-        self->notePeriods[i] = arr[i];
-    }
+    print("setPeriods\n", 0);
+    // int* arr = (int*)arrIn;
+    // for (int i = 0; i < 32; i++)
+    // {
+    //     self->notePeriods[i] = arr[i];
+    // }
 }
 
 int togglePlaying(MusicPlayer* self, int unused)
@@ -113,9 +116,10 @@ void check_notes_to(MusicPlayer* self, int index)
     unsigned short id = ((unsigned int)index) & 0xFFFF;
     if (val == notes_timeouts[id] && self->index == index)
     {
+        print("miss%c", '\n');
         self->TG.silence = 0;
         self->TG.period = self->notePeriods[self->index];
-        ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+        // ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
     }
 }
 

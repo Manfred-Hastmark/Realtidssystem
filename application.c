@@ -123,7 +123,7 @@ void keyHandler(App* self, int c)
             SetBoardState state = {CONDUCTOR, RANK};
             SYNC(&board_handler, set_index, (int)&state);
             SCI_WRITE(&sci0, "Init as conductor\n");
-            ASYNC(&musicPlayer, nextBeat, 0);
+            SEND(MSEC(1), MSEC(2), &musicPlayer, nextBeat, 0);
             break;
         }
     }
@@ -132,7 +132,7 @@ void keyHandler(App* self, int c)
         {
             SetBoardState state = {MUSICIAN, RANK};
             SYNC(&board_handler, set_index, (int)&state);
-            SCI_WRITE(&sci0, "Init as conductor\n");
+            SCI_WRITE(&sci0, "Init as musician\n");
             break;
         }
     }
@@ -190,7 +190,7 @@ int main()
 }
 
 void send_tone_msg(MusicPlayer* musig_player_p, int player_index)
-{    
+{
     Notes notes_msg;
     notes_msg.id = NOTESID;
     notes_msg.note_index = musig_player_p->index;
@@ -200,16 +200,17 @@ void send_tone_msg(MusicPlayer* musig_player_p, int player_index)
 
     CANMsg msg;
     notes_to_data(&msg, &notes_msg);
-    
+
     if (can0.count < 8)
     {
+        print("notes msg%c", '\n');
         CAN_SEND(&can0, &msg);
     }
 }
 
 void send_conductor_handout_msg(BoardHandler* board_handler, int handout_msg_p)
 {
-    static CANMsg msg;
+    CANMsg msg;
     handout_conductor_to_data(&msg, (HandoutConductor*)handout_msg_p);
     if (can0.count < 8)
     {
@@ -229,7 +230,7 @@ void send_heartbeat(App* self, int unused)
         CAN_SEND(&can0, &msg);
     }
 
-    SEND(MSEC(100), MSEC(110), self, send_heartbeat, 0);
+    SEND(MSEC(100), MSEC(150), self, send_heartbeat, 0);
 }
 
 void send_ack(MusicPlayer* self, int index)
@@ -239,7 +240,6 @@ void send_ack(MusicPlayer* self, int index)
     msg.buff[0] = index;
     if (can0.count < 8)
     {
-        print("Note ack %i\n", index);
         CAN_SEND(&can0, &msg);
     }
 }
