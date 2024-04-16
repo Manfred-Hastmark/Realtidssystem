@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#define PROBLEM_1
+
 /* HOW TO USE
  * LAB0
  * 'F' clears the threeHist
@@ -52,7 +54,7 @@ Melody melody = initMelody(brotherJohn, LENGTH);
 BoardHandler board_handler = init_board_handler();
 
 MusicPlayer musicPlayer = initMusicPlayer(120, &melody, &board_handler, brotherJohnBeatLength);
-CanHandler can_handler = init_can_object(&app, &musicPlayer, &board_handler);
+CanHandler can_handler = init_can_object(&musicPlayer, &board_handler);
 Can can0 = initCan(CAN_PORT0, &can_handler, receive_msg);
 
 void notes_hanlder(Notes* msg);
@@ -106,16 +108,24 @@ void keyHandler(App* self, int c)
             }
         }
         break;
+#ifdef PROBLEM_1
     case 'z': {
-        SetBoardState state = {CONDUCTOR, RANK};
-        SYNC(&board_handler, set_index, (int)&state);
-        break;
+        if (board_handler.node_states[RANK] == DISCONNECTED)
+        {
+            SetBoardState state = {CONDUCTOR, RANK};
+            SYNC(&board_handler, set_index, (int)&state);
+            break;
+        }
     }
     case 'x': {
-        SetBoardState state = {MUSICIAN, RANK};
-        SYNC(&board_handler, set_index, (int)&state);
-        break;
+        if (board_handler.node_states[RANK] == DISCONNECTED)
+        {
+            SetBoardState state = {MUSICIAN, RANK};
+            SYNC(&board_handler, set_index, (int)&state);
+            break;
+        }
     }
+#endif
     }
 }
 

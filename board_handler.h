@@ -3,7 +3,6 @@
 #define BOARD_HANDLER
 
 #include "TinyTimber.h"
-#include "canHandler.h"
 #include "canMsgs.h"
 
 #define MAX_NODES 8
@@ -26,12 +25,6 @@ typedef struct
     enum BoardState state;
     int index;
 } SetBoardState;
-
-typedef struct
-{
-    int index;
-    CanSendCb callback;
-} HandoutConductorCB;
 
 /**
  * @brief Scans CAN to find all connected boards

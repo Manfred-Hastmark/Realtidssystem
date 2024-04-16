@@ -3,7 +3,6 @@
 #define CAN_HANLDER
 
 #include "TinyTimber.h"
-#include "application.h"
 #include "board_handler.h"
 #include "canTinyTimber.h"
 #include "part2.h"
@@ -11,10 +10,9 @@
 typedef struct
 {
     Object super;
-    App* app;
     MusicPlayer* m_music_player_p;
     BoardHandler* m_board_handler_p;
-    Can* m_can0_p;
+    Can* m_can_p;
 } CanHandler;
 
 typedef struct
@@ -25,11 +23,9 @@ typedef struct
 
 } CanData;
 
-typedef void (*CanSendCb)(CanHandler*, int);
-
-#define init_can_object(app, music_player_p, board_handler_p)                                                                              \
+#define init_can_object(music_player_p, board_handler_p)                                                                                   \
     {                                                                                                                                      \
-        initObject(), app, music_player_p, board_handler_p                                                                                 \
+        initObject(), music_player_p, board_handler_p                                                                                      \
     }
 
 /**

@@ -16,19 +16,19 @@ Time timeouts[MAX_NODES] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 void init_canhandler(CanHandler* self, Can* can0_p)
 {
-    self->m_can0_p = can0_p;
+    self->m_can_p = can0_p;
     INSTALL(&can0_p, can_interrupt, CAN_IRQ0);
 }
 
 void send_msg(CanHandler* self, int can_msg_p)
 {
-    CAN_SEND(self->m_can0_p, (CanData*)can_msg_p);
+    CAN_SEND(self->m_can_p, (CanData*)can_msg_p);
 }
 
 void receive_msg(CanHandler* self, uint8_t* data)
 {
     CANMsg msg;
-    CAN_RECEIVE(self->m_can0_p, &msg);
+    CAN_RECEIVE(self->m_can_p, &msg);
     print("Can ID: %c, ", msg.msgId);
     uchar data_buff[8];
     *(unsigned long long*)data_buff = *(unsigned long long*)data;
