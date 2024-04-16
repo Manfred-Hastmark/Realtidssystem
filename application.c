@@ -208,7 +208,7 @@ void send_tone_msg(MusicPlayer* musig_player_p, int notes_msg_p)
     ASYNC(&can0, send_msg, (int)&msg);
 }
 
-void send_conductor_handout(BoardHandler* board_handler, int handout_msg_p)
+void send_conductor_handout_msg(BoardHandler* board_handler, int handout_msg_p)
 {
     static CANMsg msg;
     handout_conductor_to_data(&msg, (HandoutConductor*)handout_msg_p);

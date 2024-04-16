@@ -81,7 +81,7 @@ void update_behaviour(BoardHandler* self, int unused)
     }
 
     // We are solo
-    if (self->number_of_nodes == 1 &&)
+    if (self->number_of_nodes == 1 && last_nr_boards > 2)
     {
         self->node_states[RANK] = MUSICIAN;
     }
@@ -134,6 +134,6 @@ void send_handout_msg(BoardHandler* self, int unused)
     handout_conductor_to_data(&msg, &handout_conductor_msg);
 
     lowest_id = -1;
-    SYNC(self, send_conductor_handout_msg, (int)&msg);
+    SYNC(self, send_handout_msg, (int)&msg);
     // send msg
 }
