@@ -13,11 +13,12 @@ typedef struct
     Object obj;
     enum BoardState node_states[MAX_NODES];
     int number_of_nodes;
+    int board_to_play;
 } BoardHandler;
 
 #define init_board_handler()                                                                                                               \
     {                                                                                                                                      \
-        initObject(), {DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED}, 0  \
+        initObject(), {DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED, DISCONNECTED}, 0, 0  \
     }
 
 typedef struct

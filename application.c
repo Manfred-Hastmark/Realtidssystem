@@ -189,10 +189,18 @@ int main()
     return 0;
 }
 
-void send_tone_msg(MusicPlayer* musig_player_p, int notes_msg_p)
-{
-    static CANMsg msg;
-    notes_to_data(&msg, (Notes*)notes_msg_p);
+void send_tone_msg(MusicPlayer* musig_player_p, int player_index)
+{    
+    Notes notes_msg;
+    notes_msg.id = NOTESID;
+    notes_msg.note_index = musig_player_p->index;
+    notes_msg.key = musig_player_p->m_melody_p->key;
+    notes_msg.player = player_index;
+    notes_msg.tempo = musig_player_p->tempo;
+
+    CANMsg msg;
+    notes_to_data(&msg, &notes_msg);
+    
     if (can0.count < 8)
     {
         CAN_SEND(&can0, &msg);
