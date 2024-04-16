@@ -55,7 +55,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
         Notes notes_msg;
         data_to_notes(&msg, &notes_msg);
         print("Received notes msg %i\n", notes_msg.note_index);
-        // notes_handler(self->m_music_player_p, &notes_msg);
+        notes_handler(self->m_music_player_p, &notes_msg);
         return;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
@@ -85,17 +85,17 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
 void notes_handler(MusicPlayer* self, Notes* msg)
 {
-    SYNC(&self->TG, set_note_index, msg->note_index);
+    // SYNC(&self->TG, set_note_index, msg->note_index);
     if (msg->player == RANK)
     {
-        SYNC(self->m_melody_p, setKey, msg->key);
-        int melodyPeriods[LENGTH];
-        SYNC(self->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
-        SYNC(self->m_melody_p, setPeriods, (int)melodyPeriods);
-
-        self->TG.silence = 0;
-        self->TG.period = self->notePeriods[self->index];
-        ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+        // SYNC(self->m_melody_p, setKey, msg->key);
+        // int melodyPeriods[LENGTH];
+        // SYNC(self->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
+        // SYNC(self->m_melody_p, setPeriods, (int)melodyPeriods);
+        //
+        // self->TG.silence = 0;
+        // self->TG.period = self->notePeriods[self->index];
+        // ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
 
         send_ack(self, msg->note_index);
     }

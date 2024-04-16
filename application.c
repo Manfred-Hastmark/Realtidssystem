@@ -226,6 +226,7 @@ void send_heartbeat(App* self, int unused)
 
 void send_ack(MusicPlayer* self, int index)
 {
+    print("Note ack %i\n", index);
     CANMsg msg;
     msg.msgId = NOTEACKSID + RANK;
     msg.buff[0] = index;

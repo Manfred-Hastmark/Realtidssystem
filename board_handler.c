@@ -59,8 +59,6 @@ void set_index(BoardHandler* self, int set)
             self->number_of_nodes++;
         }
     }
-    print("Node 0 = %i, ", self->node_states[0]);
-    print("Node 1 = %i\n", self->node_states[1]);
     ASYNC(self, update_behaviour, 0);
 }
 
