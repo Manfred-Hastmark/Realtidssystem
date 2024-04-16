@@ -45,6 +45,7 @@ void receive(App*, int);
 void send(App*, int);
 void keyHandler(App*, int);
 void send_heart_beat(App*, int);
+void printTempo(App* self, int unused);
 
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
@@ -119,6 +120,7 @@ void keyHandler(App* self, int c)
         if (board_handler.node_states[RANK] == DISCONNECTED)
         {
             board_handler.node_states[RANK] = CONDUCTOR;
+            SEND(SEC(5), SEC(5) + MSEC(500), &musicPlayer, printTempo, 0);
         }
         break;
     }
@@ -174,6 +176,15 @@ void print(char* string, int val)
     char output[50];
     sprintf(output, string, val);
     SCI_WRITE(&sci0, output);
+}
+
+void printTempo(App* self, int unused)
+{
+    if(board_handler.node_states[RANK] == CONDUCTOR)
+    {
+        print("Bpm: %i\n", 60000 / musicPlayer.tempo);
+        SEND(SEC(5), SEC(5) + MSEC(500), self, printTempo, 0);
+    }
 }
 
 void receiveKey()
