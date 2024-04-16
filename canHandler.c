@@ -12,7 +12,7 @@
 #define HEARTBEAT_PERIOD MSEC(100)
 #define HEARTBEAT_TMO MSEC(200)
 
-void notes_handler(CanHandler* self, Notes* msg);
+void notes_handler(MusicPlayer* self, Notes* msg);
 
 unsigned short timeouts[MAX_NODES] = {0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -55,7 +55,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
         Notes notes_msg;
         data_to_notes(&msg, &notes_msg);
         print("Received notes msg %i\n", notes_msg.note_index);
-        notes_handler(self, &notes_msg);
+        notes_handler(self->m_music_player_p, &notes_msg);
         return;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
@@ -83,18 +83,19 @@ void receive_msg(CanHandler* self, uint8_t* data)
     }
 }
 
-void notes_handler(CanHandler* self, Notes* msg)
+void notes_handler(MusicPlayer* self, Notes* msg)
 {
-    SYNC(&self->m_music_player_p->TG, set_note_index, msg->note_index);
+    SYNC(&self->TG, set_note_index, msg->note_index);
     if (msg->player == RANK)
     {
-        SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
+        SYNC(self->m_melody_p, setKey, msg->key);
         int melodyPeriods[LENGTH];
-        SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
-        SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
-        self->m_music_player_p->TG.silence = 0;
-        self->m_music_player_p->TG.period = self->m_music_player_p->notePeriods[self->m_music_player_p->index];
-        ASYNC(&self->m_music_player_p->TG, setDAC, 0xFFFFFFFF);
+        SYNC(self->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
+        SYNC(self->m_melody_p, setPeriods, (int)melodyPeriods);
+
+        self->TG.silence = 0;
+        self->TG.period = self->notePeriods[self->index];
+        ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
     }
 }
 
@@ -104,7 +105,8 @@ void check_timeout(CanHandler* self, int id)
     unsigned short msg_id = ((unsigned int)id) & 0xFFFF;
     if (timeouts[msg_id] == to_id)
     {
-        SetBoardState state = {DISCONNECTED, id};
+        SetBoardState state = {DISCONNECTED, msg_id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
+        print("Node 1 = %i\n", to_id);
     }
 }
