@@ -3,7 +3,7 @@
 #define APPLICATION
 
 #include "part2.h"
-#define RANK 0
+#define RANK 1
 
 #include "TinyTimber.h"
 #include "canMsgs.h"
