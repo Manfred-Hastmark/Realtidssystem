@@ -26,9 +26,9 @@ typedef struct
 
 } CanData;
 
-#define init_can_object(app, music_player_p, board_handler_p)                                                                                  \
+#define init_can_object(app, music_player_p, board_handler_p)                                                                              \
     {                                                                                                                                      \
-        initObject(), app, music_player_p, board_handler_p                                                                                      \
+        initObject(), app, music_player_p, board_handler_p                                                                                 \
     }
 
 /**

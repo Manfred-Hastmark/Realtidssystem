@@ -51,6 +51,7 @@ void keyHandler(App*, int);
 
 void recieveBPM();
 void receiveKey();
+
 App app = {initObject(), 0, 'X'};
 Melody melody = initMelody(brotherJohn, LENGTH);
 BoardHandler board_handler = init_board_handler();

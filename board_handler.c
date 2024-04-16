@@ -16,6 +16,18 @@ int get_next_musician_index(BoardHandler* self, int unused)
     return -1;
 }
 
+int get_conductor_index(BoardHandler* self, int unused)
+{
+    for (int i = 0; i < MAX_NODES; i++)
+    {
+        if (self->node_states[i] == CONDUCTOR)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void set_index(BoardHandler* self, int set)
 {
     SetBoardState* set_state = (SetBoardState*)set;

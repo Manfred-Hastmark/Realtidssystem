@@ -55,7 +55,6 @@ int getBeatLenght(char c, int ms, int silenceDuration);
  * @param int index. Current note index.
  * @return void.
  */
-
 void nextBeat(MusicPlayer* self, int index);
 
 /**
