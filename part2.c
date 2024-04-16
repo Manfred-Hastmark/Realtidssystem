@@ -8,21 +8,19 @@ void check_notes_to(MusicPlayer* self, int index);
 
 void nextBeat(MusicPlayer* self, int unused)
 {
-    print("heloo!!!!%i\n", 0);
     if (SYNC(self->m_board_handler_p, get_conductor_index, 0) == RANK)
     {
         self->index++;
         self->index %= 32;
         int player_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
-        print("Hello fucker %i\n", player_index);
         if (player_index == RANK)
         {
-            print("We play: %i", self->index);
             self->TG.silence = 0;
             self->TG.period = self->notePeriods[self->index];
             ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
         }
-        else if (player_index != -1)
+
+        if (player_index != -1)
         {
             static Notes notes_msg;
             notes_msg.id = NOTESID;
