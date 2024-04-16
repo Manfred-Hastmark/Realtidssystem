@@ -57,6 +57,7 @@ CanHandler can_handler = initCanHandler(&app, &heart_beat_handler, &musicPlayer)
 Can can0 = initCan(CAN_PORT0, &app, receive);
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
 
+
 void receive(App* self, int unused)
 {
     static CANMsg msg;
@@ -111,6 +112,9 @@ void keyHandler(App* self, int c)
 {
     switch (c)
     {
+    case '0' ... '9': // Add character to readbuffer
+    case '-':
+        ASYNC(&readBuffer, readBufferAdd, c);
     case 'z': {
         if (board_handler.node_states[RANK] == DISCONNECTED)
         {
