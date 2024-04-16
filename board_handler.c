@@ -73,6 +73,7 @@ int get_lowest_id(BoardHandler* self, int unused)
 
 void update_behaviour(BoardHandler* self, int unused)
 {
+    static int last_nr_boards = 0;
     // Wait for init
     if (self->node_states[RANK] == DISCONNECTED)
     {
@@ -80,13 +81,13 @@ void update_behaviour(BoardHandler* self, int unused)
     }
 
     // We are solo
-    if (self->number_of_nodes == 1)
+    if (self->number_of_nodes == 1 &&)
     {
         self->node_states[RANK] = MUSICIAN;
     }
 
     // Assign new conductor
-    if (SYNC(self, get_conductor_index, 0) == -1)
+    if (SYNC(self, get_conductor_index, 0) == -1 && self->number_of_nodes > 1)
     {
         int lowest_rank_id = SYNC(self, get_lowest_id, 0);
         if (lowest_rank_id != -1)
@@ -97,6 +98,8 @@ void update_behaviour(BoardHandler* self, int unused)
             }
         }
     }
+
+    last_nr_boards = self->number_of_nodes;
 }
 
 #define CLAIM_DURATION MSEC(3000)
@@ -120,6 +123,9 @@ void handout_conductor(BoardHandler* self, int id)
 
 void send_handout_msg(BoardHandler* self, int unused)
 {
+    self->node_states[RANK] = MUSICIAN;
+    self->node_states[lowest_id] = CONDUCTOR;
+
     HandoutConductor handout_conductor_msg;
     handout_conductor_msg.id = HANDOUTCONDUCTORID + RANK;
     handout_conductor_msg.conductorId = lowest_id;
