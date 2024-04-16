@@ -1,5 +1,5 @@
-#include "TinyTimber.h"
 #include "application.h"
+#include "TinyTimber.h"
 #include "board_handler.h"
 #include "canHandler.h"
 #include "canMsgs.h"
@@ -9,9 +9,9 @@
 #include "part2.h"
 #include "sciTinyTimber.h"
 #include "software_defines.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 /* HOW TO USE
  * LAB0
@@ -40,8 +40,8 @@
 
 // Brother John melody
 const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
-const char brotherJohnBeatLength[32] = {'a', 'a','a','a','a','a','a','a','a','a','b','a','a','b',
-'c','c','c','c','a','a','c','c','c','c','a','a','a','a','b','a','a','b'};
+const char brotherJohnBeatLength[32] = {'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'a', 'a', 'b', 'c', 'c',
+                                        'c', 'c', 'a', 'a', 'c', 'c', 'c', 'c', 'a', 'a', 'a', 'a', 'b', 'a', 'a', 'b'};
 const char brotherJohnBeatLength1[32] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const char check[10] = "Checkpoint";
 
@@ -55,7 +55,6 @@ void receiveKey();
 App app = {initObject(), 0, 'X'};
 Melody melody = initMelody(brotherJohn, LENGTH);
 BoardHandler board_handler = init_board_handler();
-
 
 MusicPlayer musicPlayer = initMusicPlayer(120, &melody, &board_handler, brotherJohnBeatLength);
 CanHandler can_handler = init_can_object(&app, &musicPlayer, &board_handler);

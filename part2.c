@@ -1,9 +1,11 @@
 #include "part2.h"
+#include "TinyTimber.h"
 #include "stdbool.h"
-
 
 void nextBeat(MusicPlayer* self, int unused)
 {
+    int musician_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
+
     if (self->isConductor)
     {
     }
@@ -13,8 +15,7 @@ void nextBeat(MusicPlayer* self, int unused)
         self->TG.period = self->notePeriods[self->index];
         ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
     }
-	
-	
+
     // Sleep until it should silence the toneGenerator
     const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
     self->index += 1;
@@ -79,7 +80,7 @@ int togglePlaying(MusicPlayer* self, int unused)
     return self->playing;
 }
 
-void set_index(MusicPlayer* self, int index)
+void set_note_index(MusicPlayer* self, int index)
 {
     self->index = index;
 }

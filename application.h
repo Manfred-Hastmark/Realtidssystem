@@ -2,7 +2,6 @@
 #ifndef APPLICATION
 #define APPLICATION
 
-
 #include "TinyTimber.h"
 #include "canMsgs.h"
 
@@ -12,7 +11,6 @@ typedef struct
     int count;
     char c;
 } App;
-
 
 void heartbeat_tmo_check_1(App* self, int call_time_p);
 
