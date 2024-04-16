@@ -114,6 +114,17 @@ void send_handout_conductor(App* self, int index)
     ASYNC(self, send, (int)&msg);
 }
 
+void start_playing(App* self, int unused)
+{
+    if (!musicPlayer.playing)
+    {
+        SYNC(&musicPlayer, togglePlaying, 0);
+        return;
+    }
+    SYNC(&musicPlayer, togglePlaying, 0);
+    SYNC(&musicPlayer, togglePlaying, 0);
+}
+
 void reader(App* self, int c)
 {
     SCI_WRITE(&sci0, "Rcv: \'");

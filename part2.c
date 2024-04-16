@@ -55,11 +55,13 @@ void nextSilence(MusicPlayer* self, int unused)
     self->m_tone_generator_p->silence = 1;
 
     // Sleep until the next note
-    if (self->playing == 1)
+    if (self->playing == 1 && self->m_board_handler_p->node_states[RANK] == CONDUCTOR)
     {
         const int silenceDuration = MSEC(self->silenceDuration);
         SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, 0);
+        return;
     }
+    self->playing = 0;
 }
 
 void silence(MusicPlayer* self, int unused)

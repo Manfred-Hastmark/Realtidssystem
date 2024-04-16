@@ -43,4 +43,9 @@ void send_claim_conductorship(App* self, int unused);
  */
 void send_handout_conductor(App* self, int index);
 
+/**
+ * @brief Starts playing
+ */
+void start_playing(App* self, int unused);
+
 #endif

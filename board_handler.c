@@ -70,6 +70,10 @@ void handle_conductorship_handout(BoardHandler* self, int index)
         return;
     }
     self->node_states[index] = CONDUCTOR;
+    if (index == RANK)
+    {
+        ASYNC(self->m_app_p, start_playing, 0);
+    }
 }
 
 void handle_conductorship_request(BoardHandler* self, int index)
