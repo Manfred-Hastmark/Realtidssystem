@@ -43,7 +43,6 @@ const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9,
 const char brotherJohnBeatLength[32] = {'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'a', 'a', 'b', 'c', 'c',
                                         'c', 'c', 'a', 'a', 'c', 'c', 'c', 'c', 'a', 'a', 'a', 'a', 'b', 'a', 'a', 'b'};
 const char brotherJohnBeatLength1[32] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-const char check[10] = "Checkpoint";
 
 void print(char*, int);
 
@@ -52,6 +51,7 @@ void keyHandler(App*, int);
 
 void recieveBPM();
 void receiveKey();
+
 App app = {initObject(), 0, 'X'};
 Melody melody = initMelody(brotherJohn, LENGTH);
 BoardHandler board_handler = init_board_handler();

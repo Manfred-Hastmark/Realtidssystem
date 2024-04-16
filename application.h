@@ -2,6 +2,8 @@
 #ifndef APPLICATION
 #define APPLICATION
 
+#define RANK 0
+
 #include "TinyTimber.h"
 #include "canMsgs.h"
 
