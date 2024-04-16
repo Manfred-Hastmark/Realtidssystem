@@ -19,8 +19,8 @@ void can_init(Can* self, int unused)
     DUMP("NOTE: CAN running in loopback mode!\n\r");
 #endif
 
-    //#define	__CAN_TxAck // if defined: single transmission, can_send() will wait for message error or acknowledgement
-    //  default: automatic retransmission, can_send() will not wait for message error or acknowledgement
+    // #define	__CAN_TxAck // if defined: single transmission, can_send() will wait for message error or acknowledgement
+    //   default: automatic retransmission, can_send() will not wait for message error or acknowledgement
 
     CAN_StructInit(&CAN_InitStructure);
 
@@ -169,7 +169,7 @@ int can_send(Can* self, CANMsg* msg)
 
     if (TransmitMailbox == CAN_TxStatus_NoMailBox)
     {
-        DUMP("CAN TxBuf full!\n\r");
+        // DUMP("CAN TxBuf full!\n\r");
         return 1;
     }
 
@@ -179,7 +179,7 @@ int can_send(Can* self, CANMsg* msg)
 
     if (CAN_TransmitStatus(canport, TransmitMailbox) == CAN_TxStatus_Failed)
     {
-        DUMP("CAN Tx fail!\n\r");
+        // DUMP("CAN Tx fail!\n\r");
         return 1;
     }
 #endif
