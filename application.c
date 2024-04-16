@@ -52,8 +52,8 @@ void send_heart_beat(App*, int);
 
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
-MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength, &tone_generator, &melody);
 App app = {initObject(), 0, 'X', 0};
+MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength, &tone_generator, &melody, &app);
 ReadBuffer readBuffer = initReadBuffer();
 BoardHandler board_handler = initBoardHandler();
 HeartBeatHandler heart_beat_handler = initHeartBeatHandler(&app, &board_handler);
@@ -85,6 +85,13 @@ void send_heart_beat(App* self, int role)
     ASYNC(self, send, (int)&msg);
 }
 
+void send_notes_msg(App* self, int raw_notes_msg_p)
+{
+    static CANMsg msg;
+    notes_to_data(&msg, (Notes*)raw_notes_msg_p);
+    ASYNC(self, send, (int)&msg);
+}
+
 void reader(App* self, int c)
 {
     SCI_WRITE(&sci0, "Rcv: \'");
@@ -100,6 +107,10 @@ void keyHandler(App* self, int c)
     if (c == 'k')
     {
         self->to_heart_beat ^= 1;
+    }
+    if (c == 's')
+    {
+        ASYNC(&musicPlayer, togglePlaying, 0);
     }
 }
 

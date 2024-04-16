@@ -22,4 +22,9 @@ void print(char*, int);
  */
 void send_heart_beat(App* self, int role);
 
+/**
+ * @brief Send a notes can message
+ */
+void send_notes_msg(App* self, int raw_notes_msg_p);
+
 #endif

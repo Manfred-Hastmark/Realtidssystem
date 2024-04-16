@@ -4,6 +4,7 @@
 #include "application.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
+#include "part2.h"
 
 void can_receiver(CanHandler* self, int raw_msg_p)
 {
@@ -21,6 +22,13 @@ void can_receiver(CanHandler* self, int raw_msg_p)
     case NOTESID: {
         Notes notes_msg;
         data_to_notes(msg_p, &notes_msg);
+        self->m_music_player_p->index = notes_msg.note_index;
+        SYNC(self->m_music_player_p, change_key, notes_msg.key);
+        SYNC(self->m_music_player_p, change_bpm, notes_msg.tempo);
+        if (notes_msg.player == RANK)
+        {
+            ASYNC(self->m_music_player_p, play_note, notes_msg.note_index);
+        }
         break;
     }
     default:
