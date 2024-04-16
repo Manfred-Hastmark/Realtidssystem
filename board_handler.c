@@ -43,9 +43,6 @@ void set_index(BoardHandler* self, int set)
 {
     SetBoardState* set_state = (SetBoardState*)set;
 
-    print("Node 0 = %i, ", self->node_states[0]);
-    print("Node 1 = %i\n", self->node_states[1]);
-
     if (set_state->index < 0 || set_state->index > (MAX_NODES - 1))
     {
         return;
@@ -61,6 +58,8 @@ void set_index(BoardHandler* self, int set)
             self->number_of_nodes++;
         }
     }
+    print("Node 0 = %i, ", self->node_states[0]);
+    print("Node 1 = %i\n", self->node_states[1]);
     ASYNC(self, update_behaviour, 0);
 }
 

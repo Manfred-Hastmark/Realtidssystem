@@ -19,6 +19,8 @@ void send_tone_msg(MusicPlayer* musig_player_p, int notes_msg_p);
 
 void send_conductor_handout_msg(BoardHandler* board_handler, int handout_msg_p);
 
+void send_ack(MusicPlayer* self, int index);
+
 void print(char* string, int val);
 
 #endif

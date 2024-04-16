@@ -221,3 +221,13 @@ void send_heartbeat(App* self, int unused)
 
     SEND(MSEC(100), MSEC(200), self, send_heartbeat, 0);
 }
+
+void send_ack(MusicPlayer* self, int index)
+{
+    static CANMsg msg;
+    msg.buff[0] = index;
+    if (can0.count < 8)
+    {
+        CAN_SEND(&can0, &msg);
+    }
+}

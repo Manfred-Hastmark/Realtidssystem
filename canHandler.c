@@ -55,7 +55,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
         Notes notes_msg;
         data_to_notes(&msg, &notes_msg);
         print("Received notes msg %i\n", notes_msg.note_index);
-        notes_handler(self->m_music_player_p, &notes_msg);
+        // notes_handler(self->m_music_player_p, &notes_msg);
         return;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
@@ -96,6 +96,8 @@ void notes_handler(MusicPlayer* self, Notes* msg)
         self->TG.silence = 0;
         self->TG.period = self->notePeriods[self->index];
         ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+
+        send_ack(self, msg->note_index);
     }
 }
 
@@ -107,6 +109,6 @@ void check_timeout(CanHandler* self, int id)
     {
         SetBoardState state = {DISCONNECTED, msg_id};
         SYNC(self->m_board_handler_p, set_index, (int)&state);
-        print("Node 1 = %i\n", to_id);
+        print("DC 1 = %i\n", msg_id);
     }
 }
