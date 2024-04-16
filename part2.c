@@ -3,6 +3,8 @@
 #include "application.h"
 #include "stdbool.h"
 
+void check_notes_to(MusicPlayer* self, int index);
+
 void nextBeat(MusicPlayer* self, int unused)
 {
     if (SYNC(self->m_board_handler_p, get_conductor_index, 0) == RANK)
@@ -17,14 +19,15 @@ void nextBeat(MusicPlayer* self, int unused)
         }
         else
         {
-            Notes notes_msg;
+            static Notes notes_msg;
             notes_msg.id = NOTESID;
             notes_msg.note_index = self->index;
             notes_msg.key = self->m_melody_p->key;
             notes_msg.player = player_index;
             notes_msg.tempo = self->tempo;
             notes_msg.volume = self->TG.volume;
-            SYNC(self, send_tone_msg, (int)&notes_msg);
+            ASYNC(self, send_tone_msg, (int)&notes_msg);
+            ASYNC(self, check_notes_to, self->index);
         }
     }
 
@@ -100,4 +103,21 @@ void set_note_index(MusicPlayer* self, int index)
 int is_playing(MusicPlayer* self)
 {
     return self->playing;
+}
+
+Time notes_timeouts[LENGTH];
+void check_notes_to(MusicPlayer* self, int index)
+{
+    const notes_to = MSEC(1);
+    if (CURRENT_OFFSET() - notes_timeouts[index] > notes_to && self->index == index)
+    {
+        self->TG.silence = 0;
+        self->TG.period = self->notePeriods[self->index];
+        ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
+    }
+}
+
+void notes_ack(MusicPlayer* self, int index)
+{
+    notes_timeouts[index] = CURRENT_OFFSET();
 }

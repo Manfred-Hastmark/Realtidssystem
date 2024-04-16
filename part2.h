@@ -96,4 +96,10 @@ int is_playing(MusicPlayer* self);
 
 void assignMode(MusicPlayer* self, int mode);
 
+/**
+ * @brief Gets called when there's a ack on a
+ *          note message
+ */
+void notes_ack(MusicPlayer* self, int index);
+
 #endif

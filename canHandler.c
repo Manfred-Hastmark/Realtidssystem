@@ -10,6 +10,8 @@
 #define HEARTBEAT_PERIOD MSEC(100)
 #define HEARTBEAT_TMO MSEC(200)
 
+void notes_handler(CanHandler* self, Notes* msg);
+
 Time timeouts[MAX_NODES] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 void init_canhandler(CanHandler* self, Can* can0_p)
@@ -17,8 +19,6 @@ void init_canhandler(CanHandler* self, Can* can0_p)
     self->m_can0_p = can0_p;
     INSTALL(&can0_p, can_interrupt, CAN_IRQ0);
 }
-
-void notes_handler(CanHandler* self, Notes* msg);
 
 void send_msg(CanHandler* self, int can_data_p)
 {
@@ -28,6 +28,7 @@ void send_msg(CanHandler* self, int can_data_p)
     msg.nodeId = RANK_SELF;
     msg.length = data_p->length;
     *(unsigned long long*)msg.buff = *(unsigned long long*)data_p->data;
+    CAN_SEND(self->m_can0_p, &data_p);
 }
 
 void receive_msg(CanHandler* self, uint8_t* data)
@@ -60,8 +61,13 @@ void receive_msg(CanHandler* self, uint8_t* data)
         notes_handler(self, &notes_msg);
         return;
     }
-    case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1:
+    case NOTEACKSID ... NOTEACKSID + MAX_NODES - 1: {
+        Notes notes_msg;
+        data_to_notes(data_buff, &notes_msg);
+        ASYNC(self->m_music_player_p, notes_ack, notes_msg.note_index);
         return;
+    }
+
     case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_NODES - 1:
         return;
     default:
@@ -71,6 +77,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
 void notes_handler(CanHandler* self, Notes* msg)
 {
+    SYNC(&self->m_music_player_p->TG, set_note_index, msg->note_index);
     if (msg->player == RANK_SELF)
     {
         SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
@@ -78,7 +85,6 @@ void notes_handler(CanHandler* self, Notes* msg)
         SYNC(self->m_music_player_p->m_melody_p, setMelodyPeriods, (int)melodyPeriods);
         SYNC(self->m_music_player_p->m_melody_p, setPeriods, (int)melodyPeriods);
         SYNC(&self->m_music_player_p->TG, volume, msg->volume);
-        SYNC(&self->m_music_player_p->TG, set_note_index, msg->note_index);
         self->m_music_player_p->TG.silence = 0;
         self->m_music_player_p->TG.period = self->m_music_player_p->notePeriods[self->m_music_player_p->index];
         ASYNC(&self->m_music_player_p->TG, setDAC, 0xFFFFFFFF);
