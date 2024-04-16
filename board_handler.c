@@ -10,23 +10,22 @@ int is_conductor(BoardHandler* self, int unused)
     return self->node_states[RANK] == CONDUCTOR;
 }
 
-int current_musician_index = 0;
 int get_next_musician_index(BoardHandler* self, int unused)
 {
-    print("number nodes = %i\n", self->number_of_nodes);
-    for (int i = 0; i < MAX_NODES; i++)
-    {
-        if (self->node_states[current_musician_index] != DISCONNECTED)
-        {
-            int index = current_musician_index;
-            current_musician_index++;
-            current_musician_index %= MAX_NODES;
-            return index;
+    int iter = 0;
+    self->board_to_play = (self->board_to_play + 1) % MAX_NODES;
+    while(self->node_states[self->board_to_play] == DISCONNECTED){
+        self->board_to_play = (self->board_to_play + 1) % MAX_NODES;
+        iter++;
+        if(iter >= MAX_NODES){
+            return -1;
         }
-        current_musician_index++;
-        current_musician_index %= MAX_NODES;
     }
-    return -1;
+    for(int i = 0; i < MAX_NODES; i++){
+        print("%i, ", self->node_states[i]);
+    }
+    print("\n", 0);
+    return self->board_to_play;
 }
 
 int get_conductor_index(BoardHandler* self, int unused)

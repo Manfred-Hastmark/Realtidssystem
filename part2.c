@@ -3,6 +3,8 @@
 #include "application.h"
 #include "stdbool.h"
 
+#define LOOPBACK
+
 short notes_timeouts[LENGTH] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 void check_notes_to(MusicPlayer* self, int index);
 
@@ -13,26 +15,24 @@ void nextBeat(MusicPlayer* self, int unused)
         self->index++;
         self->index %= 32;
         int player_index = SYNC(self->m_board_handler_p, get_next_musician_index, 0);
-        print("Musician = %i\n", player_index);
+        print("Player index: %i\n", player_index);
+        #ifndef LOOPBACK
         if (player_index == RANK)
         {
             self->TG.silence = 0;
             self->TG.period = self->notePeriods[self->index];
             ASYNC(&self->TG, setDAC, 0xFFFFFFFF);
         }
-
         if (player_index != -1)
         {
-            static Notes notes_msg;
-            notes_msg.id = NOTESID;
-            notes_msg.note_index = self->index;
-            notes_msg.key = self->m_melody_p->key;
-            notes_msg.player = player_index;
-            notes_msg.tempo = self->tempo;
 
-            ASYNC(self, send_tone_msg, &notes_msg);
+            ASYNC(self, send_tone_msg, player_index);
             AFTER(MSEC(2), self, check_notes_to, self->index);
         }
+        #else
+        ASYNC(self, send_tone_msg, player_index);
+        AFTER(MSEC(2), self, check_notes_to, self->index);
+        #endif
     }
 
     // Sleep until it should silence the toneGenerator
