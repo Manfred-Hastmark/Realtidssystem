@@ -29,14 +29,13 @@ void data_to_notes(CANMsg* msg, Notes* notes)
 
 void notes_to_data(CANMsg* msg, Notes* notes)
 {
-    // Set all bytes to 0
     for (int i = 0; i < 8; i++)
     {
         msg->buff[i] = 0;
     }
 
     msg->buff[0] = notes->note_index;
-    msg->buff[1] = *(uint8_t*)notes->key;
+    msg->buff[1] = notes->key;
     msg->buff[2] = notes->player;
     msg->buff[3] = notes->tempo;
     msg->length = 5;

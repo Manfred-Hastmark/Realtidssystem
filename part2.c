@@ -20,13 +20,14 @@ void nextBeat(MusicPlayer* self, int unused)
         }
         else
         {
+            print("Hello fucker %i\n", 1);
             static Notes notes_msg;
             notes_msg.id = NOTESID;
             notes_msg.note_index = self->index;
             notes_msg.key = self->m_melody_p->key;
             notes_msg.player = player_index;
             notes_msg.tempo = self->tempo;
-            ASYNC(self, send_tone_msg, (int)&notes_msg);
+            ASYNC(self, send_tone_msg, &notes_msg);
             ASYNC(self, check_notes_to, self->index);
         }
     }

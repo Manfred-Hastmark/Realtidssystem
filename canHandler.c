@@ -25,7 +25,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
 {
     CANMsg msg;
     CAN_RECEIVE(self->m_can_p, &msg);
-    print("Can ID: %c, ", msg.msgId);
+    print("Can ID: %i\n", msg.msgId);
 
     switch (msg.msgId)
     {
