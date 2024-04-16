@@ -2,11 +2,11 @@
 
 #include "canHandler.h"
 #include "TinyTimber.h"
+#include "application.h"
 #include "board_handler.h"
 #include "canMsgs.h"
 #include "canTinyTimber.h"
 #include "part2.h"
-#include "software_defines.h"
 #include <stdio.h>
 
 #define HEARTBEAT_PERIOD MSEC(100)
@@ -51,9 +51,9 @@ void receive_msg(CanHandler* self, uint8_t* data)
 
         return;
     case NOTESID: {
-        print("Received notes msg %i\n", 1);
         Notes notes_msg;
         data_to_notes(&msg, &notes_msg);
+        print("Received notes msg %i\n", notes_msg.note_index);
         notes_handler(self, &notes_msg);
         return;
     }
@@ -85,7 +85,7 @@ void receive_msg(CanHandler* self, uint8_t* data)
 void notes_handler(CanHandler* self, Notes* msg)
 {
     SYNC(&self->m_music_player_p->TG, set_note_index, msg->note_index);
-    if (msg->player == RANK_SELF)
+    if (msg->player == RANK)
     {
         SYNC(self->m_music_player_p->m_melody_p, setKey, msg->key);
         int melodyPeriods[LENGTH];

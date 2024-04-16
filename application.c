@@ -8,7 +8,6 @@
 #include "part1.h"
 #include "part2.h"
 #include "sciTinyTimber.h"
-#include "software_defines.h"
 #include <stdbool.h>
 #include <stdio.h>
 
