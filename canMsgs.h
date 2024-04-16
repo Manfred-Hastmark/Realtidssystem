@@ -2,6 +2,7 @@
 #ifndef CANMSG
 #define CANMSG
 
+#include "canTinyTimber.h"
 typedef unsigned char uint8_t;
 
 enum BoardState
@@ -48,8 +49,8 @@ typedef struct
 
 } HeartBeat;
 
-void data_to_heart_beat(const uint8_t* data, HeartBeat* heart_beat);
-void heart_beat_to_data(uint8_t* data, HeartBeat* heart_beat);
+void data_to_heart_beat(CANMsg* msg, HeartBeat* heart_beat);
+void heart_beat_to_data(CANMsg* msg, HeartBeat* heart_beat);
 
 //////////////////////////////////////////////////////////////////////
 ///
@@ -81,8 +82,8 @@ typedef struct
 
 } Notes;
 
-void data_to_notes(const uint8_t* data, Notes* notes);
-void notes_to_data(uint8_t* data, Notes* notes);
+void data_to_notes(CANMsg* msg, Notes* notes);
+void notes_to_data(CANMsg* msg, Notes* notes);
 
 //////////////////////////////////////////////////////////////////////
 ///
@@ -110,7 +111,7 @@ typedef struct
 
 } HandoutConductor;
 
-void data_to_handout_conductor(uint8_t* data, HandoutConductor* handoutConductor);
-void handout_conductor_to_data(uint8_t* data, HandoutConductor* handoutConductor);
+void data_to_handout_conductor(CANMsg* msg, HandoutConductor* handoutConductor);
+void handout_conductor_to_data(CANMsg* msg, HandoutConductor* handoutConductor);
 
 #endif // !CANMSG
