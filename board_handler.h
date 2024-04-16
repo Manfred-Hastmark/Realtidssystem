@@ -26,10 +26,17 @@ typedef struct
     int index;
 } SetBoardState;
 
+
 /**
  * @brief Scans CAN to find all connected boards
  */
 void initialize(BoardHandler* self, int unused);
+
+/**
+ * @brief Gets if board is conductor
+ */
+int is_conductor(BoardHandler* self, int unused);
+
 
 /**
  * @brief Gets the next musician index to play

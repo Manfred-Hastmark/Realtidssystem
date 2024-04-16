@@ -3,6 +3,12 @@
 #include "application.h"
 #include "canMsgs.h"
 
+
+int is_conductor(BoardHandler* self, int unused)
+{
+    return self->node_states[RANK] == CONDUCTOR;
+}
+
 int get_next_musician_index(BoardHandler* self, int unused)
 {
     static int current_musician_index = 0;
@@ -66,9 +72,16 @@ int get_lowest_id(BoardHandler* self, int unused)
 
 void update_behaviour(BoardHandler* self, int unused)
 {
+    // Wait for init
+    if (self->node_states[RANK] == DISCONNECTED)
+    {
+        return;
+    }
+
     // We are solo
     if (self->number_of_nodes == 1)
     {
+        self->node_states[RANK] = MUSICIAN;
     }
 
     // Assign new conductor
