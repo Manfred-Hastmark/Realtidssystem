@@ -149,6 +149,7 @@ void keyHandler(App* self, int c)
             self->ack_notes = 0;
             self->to_heart_beat = 1;
             silent_failure = 1;
+            board_handler.node_states[RANK] = MUSICIAN;
         }
         else
         {
@@ -163,6 +164,7 @@ void keyHandler(App* self, int c)
         self->ack_notes = 0;
         self->to_heart_beat = 1;
         silent_failure = 1;
+        board_handler.node_states[RANK] = MUSICIAN;
         AFTER(MSEC(5000), self, reset_fail2, 0);
     }
     case 'p': {
@@ -252,6 +254,11 @@ void startApp(App* self, int arg)
     SCI_WRITE(&sci0, "Hello, hello...\n");
     ASYNC(&musicPlayer, nextBeat, 0);
     ASYNC(&heart_beat_handler, init, 0);
+}
+
+void reset_index(App* self, int unused)
+{
+    musicPlayer.index = 0;
 }
 
 int main()

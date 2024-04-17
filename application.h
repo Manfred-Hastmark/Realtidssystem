@@ -48,4 +48,8 @@ void send_handout_conductor(App* self, int index);
  */
 void start_playing(App* self, int unused);
 
+/**
+ * @brief Sets index to 0
+ */
+void reset_index(App* self, int arg);
 #endif
