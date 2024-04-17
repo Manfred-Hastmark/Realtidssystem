@@ -73,4 +73,8 @@ void handle_conductorship_handout(BoardHandler* self, int index);
  */
 void handle_conductorship_request(BoardHandler* self, int index);
 
+/**
+ * @brief Checks if the network has a conductor and if we should step up
+ */
+void check_stepup(BoardHandler* self, int unused);
 #endif

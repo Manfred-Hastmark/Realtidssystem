@@ -19,6 +19,7 @@ void handle_node_timeout(BoardHandler* self, int index)
         self->nodes_connected--;
     }
     self->node_states[index] = DISCONNECTED;
+    ASYNC(self, check_stepup, 0);
 }
 
 void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p)
@@ -92,4 +93,34 @@ void commit_claim_request(BoardHandler* self, int unused)
     request_ongoing = 0;
     self->conductor_change = 1;
     self->new_conductor_index = request_index;
+}
+
+void check_stepup(BoardHandler* self, int unused)
+{
+    if (self->nodes_connected == 1)
+    {
+        return;
+    }
+
+    int conductor = 0;
+    int lowest_id = 10;
+
+    for (int i = 0; i < MAX_BOARDS; i++)
+    {
+        if (self->node_states[i] == CONDUCTOR)
+        {
+            conductor = 1;
+        }
+
+        if (self->node_states[i] != DISCONNECTED && lowest_id > i)
+        {
+            lowest_id = i;
+        }
+    }
+
+    if (conductor == 0 && lowest_id == RANK)
+    {
+        self->node_states[lowest_id] = CONDUCTOR;
+        ASYNC(self->m_app_p, start_playing, 0);
+    }
 }
