@@ -108,7 +108,7 @@ void print_status(BoardHandler* self, int unused)
     print("Status:\n", 0);
     for (int i = 0; i < MAX_BOARDS; i++)
     {
-        print("%i ", 0);
+        print("%i ", self->node_states[i]);
     }
     print("\n ", 0);
 }
