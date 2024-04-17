@@ -45,6 +45,7 @@ void receive(App*, int);
 void send(App*, int);
 void keyHandler(App*, int);
 void send_heart_beat(App*, int);
+void reset_fail2(App* self, int unused);
 
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
@@ -135,10 +136,35 @@ void reader(App* self, int c)
     ASYNC(&app, keyHandler, c);
 }
 
+int silent_failure = 0;
+
 void keyHandler(App* self, int c)
 {
     switch (c)
     {
+    case 'w': {
+        if (silent_failure == 0)
+        {
+            print("Silent Failure\n", 0);
+            self->ack_notes = 0;
+            self->to_heart_beat = 1;
+            silent_failure = 1;
+        }
+        else
+        {
+            print("Leave Silent Failure\n", 0);
+            self->ack_notes = 1;
+            self->to_heart_beat = 0;
+            silent_failure = 0;
+        }
+    }
+    case 'q': {
+        print("Silent Failure\n", 0);
+        self->ack_notes = 0;
+        self->to_heart_beat = 1;
+        silent_failure = 1;
+        AFTER(MSEC(5000), self, reset_fail2, 0);
+    }
     case 'p': {
         ASYNC(&board_handler, request_conductorship, 0);
         break;
@@ -178,7 +204,18 @@ void keyHandler(App* self, int c)
         }
         break;
     }
+    case 'm':
+        ASYNC(&board_handler, print_status, 0);
+        break;
     }
+}
+
+void reset_fail2(App* self, int unused)
+{
+    print("Leave Silent Failure\n", 0);
+    self->ack_notes = 1;
+    self->to_heart_beat = 0;
+    silent_failure = 0;
 }
 
 void print(char* string, int val)
