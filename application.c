@@ -167,22 +167,17 @@ void keyHandler(App* self, int c)
         AFTER(MSEC(5000), self, reset_fail2, 0);
     }
     break;
+
     case 'p': {
         ASYNC(&board_handler, request_conductorship, 0);
         break;
     }
     case 'z': {
-        if (board_handler.node_states[RANK] == DISCONNECTED)
-        {
-            board_handler.node_states[RANK] = CONDUCTOR;
-        }
+        board_handler.node_states[RANK] = CONDUCTOR;
         break;
     }
     case 'x': {
-        if (board_handler.node_states[RANK] == DISCONNECTED)
-        {
-            board_handler.node_states[RANK] = MUSICIAN;
-        }
+        board_handler.node_states[RANK] = MUSICIAN;
         break;
     }
     case 'k':
@@ -252,6 +247,8 @@ void startApp(App* self, int arg)
     CAN_INIT(&can0);
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Hello, hello...\n");
+    board_handler.node_states[RANK] = MUSICIAN;
+
     ASYNC(&musicPlayer, nextBeat, 0);
     ASYNC(&heart_beat_handler, init, 0);
 }
