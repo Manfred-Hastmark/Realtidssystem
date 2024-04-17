@@ -77,9 +77,4 @@ void handle_conductorship_request(BoardHandler* self, int index);
  * @brief print status of all boards
  */
 void print_status(BoardHandler* self, int unused);
-
-/**
- * @brief Checks if the network has a conductor and if we should step up
- */
-void check_stepup(BoardHandler* self, int unused);
 #endif

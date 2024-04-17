@@ -19,7 +19,6 @@ void handle_node_timeout(BoardHandler* self, int index)
         self->nodes_connected--;
     }
     self->node_states[index] = DISCONNECTED;
-    ASYNC(self, check_stepup, 0);
 }
 
 void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p)
@@ -107,37 +106,4 @@ void print_status(BoardHandler* self, int unused)
         print("%i ", 0);
     }
     print("\n ", 0);
-}
-
-void check_stepup(BoardHandler* self, int unused)
-{
-    if (self->nodes_connected == 1)
-    {
-        self->node_states[RANK] = MUSICIAN;
-        print("Conductorship Void Due To Failure\n", 0);
-        return;
-    }
-
-    int conductor = 0;
-    int lowest_id = 10;
-
-    for (int i = 0; i < MAX_BOARDS; i++)
-    {
-        if (self->node_states[i] == CONDUCTOR)
-        {
-            conductor = 1;
-        }
-
-        if (self->node_states[i] != DISCONNECTED && lowest_id > i)
-        {
-            lowest_id = i;
-        }
-    }
-
-    if (conductor == 0 && lowest_id == RANK)
-    {
-        self->node_states[RANK] = CONDUCTOR;
-        ASYNC(self->m_app_p, start_playing, 0);
-        print("Am The New Conductor\n", 0);
-    }
 }
