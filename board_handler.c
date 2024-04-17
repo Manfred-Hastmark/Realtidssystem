@@ -115,7 +115,7 @@ void print_status(BoardHandler* self, int unused)
 
 void check_stepup(BoardHandler* self, int unused)
 {
-    if (self->nodes_connected == 1)
+    if (self->nodes_connected == 0)
     {
         ASYNC(self->m_app_p, reset_index, 0);
         self->node_states[RANK] = MUSICIAN;
