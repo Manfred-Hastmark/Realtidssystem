@@ -158,6 +158,7 @@ void keyHandler(App* self, int c)
             silent_failure = 0;
         }
     }
+    break;
     case 'q': {
         print("Silent Failure\n", 0);
         self->ack_notes = 0;
@@ -165,6 +166,7 @@ void keyHandler(App* self, int c)
         silent_failure = 1;
         AFTER(MSEC(5000), self, reset_fail2, 0);
     }
+    break;
     case 'p': {
         ASYNC(&board_handler, request_conductorship, 0);
         break;
