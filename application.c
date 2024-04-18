@@ -200,7 +200,7 @@ void printInfo(App* self, int unused)
     {
         if(board_handler.node_states[i] != DISCONNECTED)
         {
-            print("Board %i is: ", i);
+            print(" Board %i is: ", i);
             SCI_WRITE(&sci0, '0' + board_handler.node_states[i]);
         }
     }
