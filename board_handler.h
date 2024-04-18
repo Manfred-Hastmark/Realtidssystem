@@ -68,6 +68,7 @@ void request_conductorship(BoardHandler* self, int unused);
  */
 void handle_conductorship_handout(BoardHandler* self, int index);
 
+void print_status(BoardHandler* self, int unused);
 /**
  * @brief Handle conductorship request
  */

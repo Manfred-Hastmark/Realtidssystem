@@ -178,6 +178,9 @@ void keyHandler(App* self, int c)
         }
         break;
     }
+    case 'm':
+        ASYNC(&board_handler, print_status, 0);
+        break;
     }
 }
 

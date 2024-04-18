@@ -78,6 +78,7 @@ void handle_conductorship_handout(BoardHandler* self, int index)
     self->node_states[index] = CONDUCTOR;
     if (index == RANK)
     {
+        print("Claimed Conductorship\n", 0);
         ASYNC(self->m_app_p, start_playing, 0);
     }
 }
@@ -94,6 +95,15 @@ void handle_conductorship_request(BoardHandler* self, int index)
         AFTER(CLAIM_WAIT_TIME, self, commit_claim_request, 0);
     }
 }
+void print_status(BoardHandler* self, int unused)
+{
+    print("Status:\n", 0);
+    for (int i = 0; i < MAX_BOARDS; i++)
+    {
+        print("%i ", self->node_states[i]);
+    }
+    print("\n ", 0);
+}
 
 void commit_claim_request(BoardHandler* self, int unused)
 {
@@ -102,4 +112,5 @@ void commit_claim_request(BoardHandler* self, int unused)
     self->new_conductor_index = request_index;
     request_ongoing = 0;
     request_index = REQUEST_INDEX_DEFAULT;
+    print("Conductorship Void\n", 0);
 }
