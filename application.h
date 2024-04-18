@@ -2,50 +2,59 @@
 #define APPLICATION_H
 
 #include "TinyTimber.h"
+#include "canTinyTimber.h"
 
-#define RANK 1
-#define LENGTH 32
-#define MAX_BOARDS 8
+#define MAX_BUFFER 32
+#define UNUSED 0
+#define HANDLE_INTERVAL SEC(5)
+#define BURST_INTERVAL MSEC(500)
 
 typedef struct
 {
     Object super;
-    int count;
-    char c;
-    int to_heart_beat;
-    int ack_notes;
-} App;
+    CANMsg buffer[MAX_BUFFER];
+    int msg_to_handle;
+    int msg_recv;
+    int app_ready;
+    int inter_arrival;
+} Regulator;
+
+
+typedef struct
+{
+    Object super;
+    int burst_mode;
+    int msg_id;
+} Transmitter;
+
+typedef struct
+{
+    Object super;
+    char buffer[50]; // Maximum amount of characters to input at once will be 50
+    int index;
+} ReadBuffer;
+
+
+
+
+
+#define initRegulator() {initObject(), {}, 0, 0, 1, 1}
+#define initTransmitter() {initObject(), 0, 0}
+#define initReadBuffer() { initObject(), {}, 0 }
+
 
 void print(char*, int);
+void set_ready(Regulator* self, int unused);
+void handle_msg(Regulator* self, int unused);
+int buffer_full(Regulator* self, int unused);
 
-/**
- * @brief Sends a heartbeat signal on can
- */
-void send_heart_beat(App* self, int role);
+void reader(Regulator*, int);
+void receive(Regulator*, int);
+void send(Transmitter*, int);
+void keyHandler(Regulator*, int);
 
-/**
- * @brief Send a notes can message
- */
-void send_notes_msg(App* self, int raw_notes_msg_p);
+void readBufferAdd(ReadBuffer*, int);
+int endBuffer(ReadBuffer*, int);
 
-/**
- * @brief Sends note ack message
- */
-void send_note_ack(App* self, int note_index);
-
-/**
- * @brief Send out request to claim conductorship
- */
-void send_claim_conductorship(App* self, int unused);
-
-/**
- * @brief Send the handout on CAN
- */
-void send_handout_conductor(App* self, int index);
-
-/**
- * @brief Starts playing
- */
-void start_playing(App* self, int unused);
 
 #endif

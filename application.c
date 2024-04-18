@@ -1,219 +1,132 @@
 #include "application.h"
 #include "TinyTimber.h"
-#include "board_handler.h"
-#include "canMsgs.h"
-#include "canTinyTimber.h"
-#include "can_handler.h"
-#include "heart_beat_handler.h"
-#include "part0.h"
-#include "part1.h"
-#include "part2.h"
 #include "sciTinyTimber.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-/* HOW TO USE
- * LAB0
- * 'F' clears the threeHist
- * Keys 0-9 and '-' are used to input number
- * Ending a number input with 'e', adds it to threeHist and calculates sum and
- * median Ending a number input with 'k', interprets it as a key and prints the
- * periods for Brother john melody, note a key must be within [-5, 5]
- *
- * LAB1
- * 'v' is used to increase volume
- * 'c' is used to decrease volume
- * 'm' toggles mute on/off
- * 'd' toggles deadlines on/off
- * 'x' increase backgroundload by 500
- * 'z' decreases backgroundload by 500
- * 'b' sets bpm
- * 's' start / pause
- */
 
-#define UNUSED 0
-
-// Brother John melody
-const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
-const char brotherJohnBeatLength[LENGTH] = "aaaaaaaaaabaabccccaaccccaaaabaab";
-const char brotherJohnBeatLength1[LENGTH] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-
-void receiveKey();
-void recieveBPM();
-void reader(App*, int);
-void receive(App*, int);
-void send(App*, int);
-void keyHandler(App*, int);
-void send_heart_beat(App*, int);
-void reset_fail2(App* self, int unused);
-
-Melody melody = initMelody(brotherJohn, LENGTH);
-ToneGenerator tone_generator = initToneGenerator(1000);
-App app = {initObject(), 0, 'X', 0, 1};
-BoardHandler board_handler = initBoardHandler(&app);
-MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength, &tone_generator, &melody, &app, &board_handler);
+Regulator regulator = initRegulator();
+Transmitter transmitter = initTransmitter();
 ReadBuffer readBuffer = initReadBuffer();
-HeartBeatHandler heart_beat_handler = initHeartBeatHandler(&app, &board_handler);
-CanHandler can_handler = initCanHandler(&app, &heart_beat_handler, &musicPlayer, &board_handler);
-Can can0 = initCan(CAN_PORT0, &app, receive);
-Serial sci0 = initSerial(SCI_PORT0, &app, reader);
+Timer timer = initTimer();
 
-void receive(App* self, int unused)
+Can can0 = initCan(CAN_PORT0, &regulator, receive);
+Serial sci0 = initSerial(SCI_PORT0, &regulator, reader);
+
+void receive(Regulator* self, int unused)
 {
-    static CANMsg msg;
-    CAN_RECEIVE(&can0, &msg);
-    ASYNC(&can_handler, can_receiver, (int)&msg);
-}
-
-void send(App* self, int msg_p)
-{
-    CAN_SEND(&can0, (CANMsg*)msg_p);
-}
-
-void send_heart_beat(App* self, int role)
-{
-    static HeartBeat heart_beat_msg;
-    heart_beat_msg.role = role;
-    heart_beat_msg.id = HEARTBEATID + RANK;
-
-    static CANMsg msg;
-    heart_beat_to_data(&msg, &heart_beat_msg);
-
-    ASYNC(self, send, (int)&msg);
-}
-
-void send_notes_msg(App* self, int raw_notes_msg_p)
-{
-    static CANMsg msg;
-    notes_to_data(&msg, (Notes*)raw_notes_msg_p);
-    ASYNC(self, send, (int)&msg);
-}
-
-void send_note_ack(App* self, int note_index)
-{
-    static CANMsg msg;
-    msg.msgId = NOTEACKSID + RANK;
-    msg.buff[0] = note_index;
-    msg.length = 1;
-    ASYNC(self, send, (int)&msg);
-}
-
-void send_claim_conductorship(App* self, int unused)
-{
-    static CANMsg msg;
-    msg.msgId = CLAIMCONDUCTORID + RANK;
-    msg.length = 0;
-    ASYNC(self, send, (int)&msg);
-}
-
-void send_handout_conductor(App* self, int index)
-{
-    static CANMsg msg;
-    msg.msgId = HANDOUTCONDUCTORID + RANK;
-    msg.buff[0] = index;
-    msg.length = 1;
-    ASYNC(self, send, (int)&msg);
-}
-
-void start_playing(App* self, int unused)
-{
-    if (!musicPlayer.playing)
+    if(buffer_full(self, UNUSED)) //Discard if buffer is full
     {
-        SYNC(&musicPlayer, togglePlaying, 0);
+        CANMsg msg;
+        CAN_RECEIVE(&can0, &msg);
+        print("Buffer full, CAN message discarded\n", 0);
         return;
     }
-    SYNC(&musicPlayer, togglePlaying, 0);
-    SYNC(&musicPlayer, togglePlaying, 0);
+
+    CANMsg* msg = &self->buffer[self->msg_recv];
+    CAN_RECEIVE(&can0, msg);
+    self->msg_recv = (self->msg_recv + 1) % MAX_BUFFER;
+    print("CAN recv: %i\n", msg->msgId);
+    if(self->app_ready)
+    {
+        ASYNC(self, handle_msg, UNUSED);
+    }
 }
 
-void reader(App* self, int c)
+void set_ready(Regulator* self, int unused)
 {
-    SCI_WRITE(&sci0, "Rcv: \'");
+    self->app_ready = 1;
+    //print("App is ready and next message will be handled\n", 0);
+    if(self->msg_to_handle != self->msg_recv) //If there is new message handle it
+    {
+        ASYNC(self, handle_msg, UNUSED);
+    }
+}
+
+void handle_msg(Regulator* self, int unused)
+{
+    //Do msg handling
+    print("Message %i delivered to app\n", self->buffer[self->msg_to_handle].msgId);
+    print("Time since start: %i\n", SEC_OF(T_SAMPLE(&timer)));
+    self->msg_to_handle = (self->msg_to_handle + 1) % MAX_BUFFER;
+    self->app_ready = 0;
+    AFTER(SEC(self->inter_arrival), self, set_ready, UNUSED);
+}
+
+int buffer_full(Regulator* self, int unused)
+{
+    int next = (self->msg_recv + 1) % MAX_BUFFER;
+    return next == self->msg_to_handle;
+}
+
+
+void send(Transmitter* self, int unused)
+{
+    CANMsg msg;
+    msg.msgId = self->msg_id;
+    self->msg_id = (self->msg_id + 1) % 128;
+    CAN_SEND(&can0, &msg);
+    if(self->burst_mode)
+    {
+        AFTER(BURST_INTERVAL, self, send, UNUSED);
+    }
+}
+
+void reader(Regulator* self, int c)
+{
+    //SCI_WRITE(&sci0, "Rcv: \'");
     SCI_WRITECHAR(&sci0, c);
-    SCI_WRITE(&sci0, "\'\n");
+    SCI_WRITECHAR(&sci0, '\n');
 
     // Call the keyhandler
-    ASYNC(&app, keyHandler, c);
+    ASYNC(&regulator, keyHandler, c);
 }
 
-int silent_failure = 0;
 
-void keyHandler(App* self, int c)
+void keyHandler(Regulator* self, int c)
 {
     switch (c)
     {
-    case 'w': {
-        if (silent_failure == 0)
-        {
-            print("Silent Failure\n", 0);
-            self->ack_notes = 0;
-            self->to_heart_beat = 1;
-            silent_failure = 1;
-        }
-        else
-        {
-            print("Leave Silent Failure\n", 0);
-            self->ack_notes = 1;
-            self->to_heart_beat = 0;
-            silent_failure = 0;
-        }
-    }
-    break;
-    case 'q': {
-        print("Silent Failure\n", 0);
-        self->ack_notes = 0;
-        self->to_heart_beat = 1;
-        silent_failure = 1;
-        AFTER(MSEC(5000), self, reset_fail2, 0);
-    }
-    break;
-
-    case 'p': {
-        ASYNC(&board_handler, request_conductorship, 0);
+        case 'O':
+        ASYNC(&transmitter, send, UNUSED);
         break;
-    }
-    case 'z': {
-        board_handler.node_states[RANK] = CONDUCTOR;
+        case 'B':
+        transmitter.burst_mode = 1;
+        ASYNC(&transmitter, send, UNUSED);
         break;
-    }
-    case 'x': {
-        board_handler.node_states[RANK] = MUSICIAN;
+        case 'X':
+        transmitter.burst_mode = 0;
         break;
-    }
-    case 'k':
-        self->to_heart_beat ^= 1;
+        case 's':
+        print("To handle: %i\n", self->msg_to_handle);
+        print("Recv: %i\n", self->msg_recv);
+        print("Appready: %i\n", self->app_ready);
         break;
-    case 's': {
-        if (board_handler.node_states[RANK] == CONDUCTOR)
-        {
-            ASYNC(&musicPlayer, togglePlaying, 0);
-        }
+        case '0' ... '9': // Add character to readbuffer
+        case '-':
+        ASYNC(&readBuffer, readBufferAdd, c);
         break;
-    }
-    case 'a': {
-        self->ack_notes ^= 1;
+        case 'a':
+        self->inter_arrival = SYNC(&readBuffer, endBuffer, UNUSED);
         break;
-    }
-    case 'r': {
-        if (board_handler.node_states[RANK] == CONDUCTOR)
-        {
-            musicPlayer.index = 0;
-        }
-        break;
-    }
-    case 'm':
-        ASYNC(&board_handler, print_status, 0);
+        default:
         break;
     }
 }
 
-void reset_fail2(App* self, int unused)
+void readBufferAdd(ReadBuffer* self, int character)
 {
-    print("Leave Silent Failure\n", 0);
-    self->ack_notes = 1;
-    self->to_heart_beat = 0;
-    silent_failure = 0;
+    self->buffer[self->index++] = character;
 }
+
+int endBuffer(ReadBuffer* self, int unused)
+{
+    self->buffer[self->index] = '\0';
+    self->index = 0;
+    return atoi(self->buffer);
+}
+
+
 
 void print(char* string, int val)
 {
@@ -222,41 +135,18 @@ void print(char* string, int val)
     SCI_WRITE(&sci0, output);
 }
 
-void receiveKey()
-{
-    // Get key, print it and set it
-    const int key = SYNC(&readBuffer, endBuffer, UNUSED);
-    char output[50];
-    sprintf(output, "Key: %d\n", key);
-    SCI_WRITE(&sci0, output);
-    ASYNC(&musicPlayer, change_key, key);
-}
 
-void recieveBPM()
-{
-    // Get key, print it and set it
-    const int bpm = SYNC(&readBuffer, endBuffer, UNUSED);
-    char output[50];
-    sprintf(output, "BPM: %d\n", bpm);
-    SCI_WRITE(&sci0, output);
-    ASYNC(&musicPlayer, change_bpm, bpm);
-}
-
-void startApp(App* self, int arg)
+void startapp(Regulator* self, int arg)
 {
     CAN_INIT(&can0);
     SCI_INIT(&sci0);
     SCI_WRITE(&sci0, "Hello, hello...\n");
-    board_handler.node_states[RANK] = MUSICIAN;
-
-    ASYNC(&musicPlayer, nextBeat, 0);
-    ASYNC(&heart_beat_handler, init, 0);
 }
 
 int main()
 {
     INSTALL(&sci0, sci_interrupt, SCI_IRQ0);
     INSTALL(&can0, can_interrupt, CAN_IRQ0);
-    TINYTIMBER(&app, startApp, 0);
+    TINYTIMBER(&regulator, startapp, 0);
     return 0;
 }
