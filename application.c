@@ -46,6 +46,7 @@ void send(App*, int);
 void keyHandler(App*, int);
 void send_heart_beat(App*, int);
 void printTempo(App* self, int unused);
+void printInfo(App* self, int unused);
 
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
@@ -191,17 +192,20 @@ void printTempo(App* self, int unused)
         print("Bpm: %i\n", 60000 / musicPlayer.tempo);
         SEND(SEC(5), SEC(5) + MSEC(500), self, printTempo, 0);
     }
-    else
+}
+
+void printInfo(App* self, int unused)
+{
+    for(int i = 0; i < MAX_BOARDS; i++)
     {
-        for(int i = 0; i < MAX_BOARDS; i++)
+        if(board_handler.node_states[i] != DISCONNECTED)
         {
-            if(board_handler.node_states[i] != DISCONNECTED)
-            {
-                print("Board %i is: ", i);
-                SCI_WRITECHAR(&sci0, '0' + board_handler.node_states[i]);
-            }
+            print("Board %i is: ", i);
+            SCI_WRITE(&sci0, '0' + board_handler.node_states[i]);
         }
     }
+    SCI_WRITECHAR(&sci0, '\n');
+    SEND(SEC(1), SEC(1) + MSEC(200), self, printInfo, 0);
 }
 
 void receiveKey()
@@ -231,6 +235,7 @@ void startApp(App* self, int arg)
     SCI_WRITE(&sci0, "Hello, hello...\n");
     ASYNC(&musicPlayer, nextBeat, 0);
     ASYNC(&heart_beat_handler, init, 0);
+    ASYNC(&app, printInfo, 0);
 }
 
 int main()
