@@ -53,7 +53,7 @@ typedef struct
 {
     uint8_t id;
     uint8_t note_index;
-    char key;
+    signed char key;
     uint8_t player;
     uint8_t tempo;
 } Notes;
