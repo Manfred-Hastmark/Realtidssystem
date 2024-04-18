@@ -85,6 +85,15 @@ void handle_conductorship_request(BoardHandler* self, int index)
         AFTER(CLAIM_WAIT_TIME, self, commit_claim_request, 0);
     }
 }
+void print_status(BoardHandler* self, int unused)
+{
+    print("Status:\n", 0);
+    for (int i = 0; i < MAX_BOARDS; i++)
+    {
+        print("%i ", self->node_states[i]);
+    }
+    print("\n ", 0);
+}
 
 void commit_claim_request(BoardHandler* self, int unused)
 {
