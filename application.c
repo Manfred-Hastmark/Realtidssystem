@@ -108,7 +108,7 @@ void send_claim_conductorship(App* self, int unused)
 void send_handout_conductor(App* self, int index)
 {
     static CANMsg msg;
-    msg.msgId = HANDOUTCONDUCTORID + RANK;
+    msg.msgId = HANDOUTCONDUCTORID;
     msg.buff[0] = index;
     msg.length = 1;
     ASYNC(self, send, (int)&msg);
@@ -215,6 +215,7 @@ void startApp(App* self, int arg)
     SCI_WRITE(&sci0, "Hello, hello...\n");
     ASYNC(&musicPlayer, nextBeat, 0);
     ASYNC(&heart_beat_handler, init, 0);
+    board_handler.node_states[RANK] = MUSICIAN;
 }
 
 int main()

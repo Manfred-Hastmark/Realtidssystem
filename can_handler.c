@@ -40,7 +40,7 @@ void can_receiver(CanHandler* self, int raw_msg_p)
         ASYNC(self->m_music_player_p, note_ack_received, msg_p->buff[0]);
         break;
     }
-    case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_BOARDS - 1: {
+    case HANDOUTCONDUCTORID: {
         ASYNC(self->m_board_handler_p, handle_conductorship_handout, msg_p->buff[0]);
         break;
     }

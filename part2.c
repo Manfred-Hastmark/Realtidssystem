@@ -29,7 +29,7 @@ void nextBeat(MusicPlayer* self, int unused)
             self->m_tone_generator_p->period = self->notePeriods[self->index];
             ASYNC(self->m_tone_generator_p, setDAC, 0xFFFFFFFF);
         }
-        else if (player_index != -1)
+        if (player_index != -1)
         {
             static Notes notes_msg;
             notes_msg.note_index = self->index;
