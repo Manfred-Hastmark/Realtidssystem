@@ -5,8 +5,9 @@
 #include "canMsgs.h"
 
 #define CLAIM_WAIT_TIME MSEC(1000)
+#define REQUEST_INDEX_DEFAULT 100
 
-int request_index;
+int request_index = REQUEST_INDEX_DEFAULT;
 int request_ongoing;
 
 void commit_claim_request(BoardHandler* self, int unused);
@@ -58,8 +59,13 @@ int has_conductor(BoardHandler* self, int unused)
     return 0;
 }
 
-int request_conductorship(BoardHandler* self, int unused)
+void request_conductorship(BoardHandler* self, int unused)
 {
+    if (!SYNC(self, has_conductor, 0))
+    {
+        self->node_states[RANK] = CONDUCTOR;
+        return;
+    }
     ASYNC(self->m_app_p, send_claim_conductorship, unused);
 }
 
@@ -78,7 +84,10 @@ void handle_conductorship_handout(BoardHandler* self, int index)
 
 void handle_conductorship_request(BoardHandler* self, int index)
 {
-    request_index = index;
+    if (index < request_index)
+    {
+        request_index = index;
+    }
     if (!request_ongoing)
     {
         request_ongoing = 1;
@@ -98,7 +107,8 @@ void print_status(BoardHandler* self, int unused)
 void commit_claim_request(BoardHandler* self, int unused)
 {
     self->node_states[RANK] = MUSICIAN;
-    request_ongoing = 0;
     self->conductor_change = 1;
     self->new_conductor_index = request_index;
+    request_ongoing = 0;
+    request_index = REQUEST_INDEX_DEFAULT;
 }
