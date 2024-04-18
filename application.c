@@ -191,6 +191,17 @@ void printTempo(App* self, int unused)
         print("Bpm: %i\n", 60000 / musicPlayer.tempo);
         SEND(SEC(5), SEC(5) + MSEC(500), self, printTempo, 0);
     }
+    else
+    {
+        for(int i = 0; i < MAX_BOARDS; i++)
+        {
+            if(board_handler.node_states[i] != DISCONNECTED)
+            {
+                print("Board %i is: ", i);
+                SCI_WRITECHAR(&sci0, '0' + board_handler.node_states[i]);
+            }
+        }
+    }
 }
 
 void receiveKey()
