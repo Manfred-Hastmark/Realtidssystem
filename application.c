@@ -50,7 +50,7 @@ void printInfo(App* self, int unused);
 
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
-App app = {initObject(), 0, 'X', 0, 1};
+App app = {initObject(), 0, 'X', 0, 1, 1};
 BoardHandler board_handler = initBoardHandler();
 MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength, &tone_generator, &melody, &app, &board_handler);
 ReadBuffer readBuffer = initReadBuffer();
@@ -148,6 +148,9 @@ void keyHandler(App* self, int c)
         ASYNC(&musicPlayer, change_key, DEFAULT_KEY);
         ASYNC(&musicPlayer, change_bpm, DEFAULT_BPM);
         break;
+    case 'T':
+        self->print_bpm ^= 1;
+        break;
     case 'h':
         self->to_heart_beat ^= 1;
         break;
@@ -187,7 +190,7 @@ void print(char* string, int val)
 
 void printTempo(App* self, int unused)
 {
-    if(board_handler.node_states[RANK] == CONDUCTOR)
+    if(board_handler.node_states[RANK] == CONDUCTOR && self->print_bpm)
     {
         print("Bpm: %i\n", 60000 / musicPlayer.tempo);
         SEND(SEC(5), SEC(5) + MSEC(500), self, printTempo, 0);
