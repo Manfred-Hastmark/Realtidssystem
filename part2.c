@@ -41,7 +41,10 @@ void nextBeat(MusicPlayer* self, int unused)
             TOContainer to_container;
             to_container.id = self->index;
             to_container.timeout = notes_timeouts[self->index];
-            AFTER(NOTE_TO, self, handle_notes_timeout, *(int*)&to_container);
+            if (player_index != RANK)
+            {
+                AFTER(NOTE_TO, self, handle_notes_timeout, *(int*)&to_container);
+            }
         }
     }
 
