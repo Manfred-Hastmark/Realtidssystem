@@ -6,7 +6,6 @@
 
 #define MAX_BUFFER 32
 #define UNUSED 0
-#define HANDLE_INTERVAL SEC(5)
 #define BURST_INTERVAL MSEC(500)
 
 typedef struct
@@ -17,6 +16,7 @@ typedef struct
     int msg_recv;
     int app_ready;
     int inter_arrival;
+    int print_out;
 } Regulator;
 
 
@@ -38,7 +38,7 @@ typedef struct
 
 
 
-#define initRegulator() {initObject(), {}, 0, 0, 1, 1}
+#define initRegulator() {initObject(), {}, 0, 0, 1, 1, 0}
 #define initTransmitter() {initObject(), 0, 0}
 #define initReadBuffer() { initObject(), {}, 0 }
 
