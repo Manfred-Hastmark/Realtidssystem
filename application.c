@@ -168,6 +168,12 @@ void keyHandler(App* self, int c)
         }
         break;
     }
+    case 'c': // Lower volume
+        print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, -1));
+        break;
+    case 'v': // Raise volume
+        print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, 1));
+        break;
     }
 }
 
