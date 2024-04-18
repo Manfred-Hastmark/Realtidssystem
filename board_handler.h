@@ -69,6 +69,11 @@ int request_conductorship(BoardHandler* self, int unused);
 void handle_conductorship_handout(BoardHandler* self, int index);
 
 /**
+ * @brief return nr of board
+ */
+int number_of_boards(BoardHandler* self, int unused);
+
+/**
  * @brief Handle conductorship request
  */
 void handle_conductorship_request(BoardHandler* self, int index);

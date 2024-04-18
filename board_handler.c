@@ -113,6 +113,18 @@ void print_status(BoardHandler* self, int unused)
     print("\n ", 0);
 }
 
+int number_of_boards(BoardHandler* self, int unused)
+{
+    int boards_connected = 0;
+    for (int i = 0; i < MAX_BOARDS; i++)
+    {
+        if (self->node_states[i] != DISCONNECTED)
+        {
+            boards_connected++;
+        }
+    }
+}
+
 void check_stepup(BoardHandler* self, int unused)
 {
 
@@ -137,15 +149,7 @@ void check_stepup(BoardHandler* self, int unused)
         }
     }
 
-    if (boards_connected == 1)
-    {
-        ASYNC(self->m_app_p, reset_index, 0);
-        self->node_states[RANK] = MUSICIAN;
-        print("Conductorship Void Due To Failure\n", 0);
-        return;
-    }
-
-    if (conductor == 0 && lowest_id == RANK)
+    if (conductor == 0 && lowest_id == RANK && boards_connected != 1)
     {
         self->node_states[RANK] = CONDUCTOR;
         ASYNC(self->m_app_p, start_playing, 0);
