@@ -61,7 +61,7 @@ int has_conductor(BoardHandler* self, int unused);
 /**
  * @brief Request to claim conductorship
  */
-int request_conductorship(BoardHandler* self, int unused);
+void request_conductorship(BoardHandler* self, int unused);
 
 /**
  * @brief Updates board state with who is conductor
