@@ -28,6 +28,11 @@ void handle_node_timeout(BoardHandler* self, int index)
 
 void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p)
 {
+    if (self->node_states[RANK] != DISCONNECTED)
+    {
+        ASYNC(self, check_stepup, 0);
+    }
+
     HeartBeat* heart_beat_msg_p = (HeartBeat*)raw_heart_beat_msg_p;
     if (self->node_states[heart_beat_msg_p->id] == DISCONNECTED)
     {
@@ -127,7 +132,6 @@ int number_of_boards(BoardHandler* self, int unused)
 
 void check_stepup(BoardHandler* self, int unused)
 {
-
     int boards_connected = 0;
     int conductor = 0;
     int lowest_id = 10;
