@@ -143,10 +143,14 @@ void keyHandler(App* self, int c)
             recieveBPM();
         }
         break;
-    case 'R':
-        ASYNC(&musicPlayer, change_key, DEFAULT_KEY);
-        ASYNC(&musicPlayer, change_bpm, DEFAULT_BPM);
+    case 'R': {
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            ASYNC(&musicPlayer, change_key, DEFAULT_KEY);
+            ASYNC(&musicPlayer, change_bpm, DEFAULT_BPM);
+        }
         break;
+    }
     case 'T':
         self->print_bpm ^= 1;
         break;
