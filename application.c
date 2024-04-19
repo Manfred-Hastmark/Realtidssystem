@@ -175,7 +175,7 @@ void keyHandler(App* self, int c)
             self->to_heart_beat = 1;
             silent_failure = 1;
             musicPlayer.index = 0;
-            board_handler.node_states[RANK] = MUSICIAN;
+            board_handler.node_states[RANK] = DISCONNECTED;
         }
         else
         {
@@ -183,6 +183,7 @@ void keyHandler(App* self, int c)
             self->ack_notes = 1;
             self->to_heart_beat = 0;
             silent_failure = 0;
+            board_handler.node_states[RANK] = MUSICIAN;
         }
     }
     break;
@@ -193,7 +194,7 @@ void keyHandler(App* self, int c)
         self->to_heart_beat = 1;
         silent_failure = 1;
         musicPlayer.index = 0;
-        board_handler.node_states[RANK] = MUSICIAN;
+        board_handler.node_states[RANK] = DISCONNECTED;
         AFTER(MSEC(5000), self, reset_fail2, 0);
     }
     break;
@@ -242,6 +243,7 @@ void reset_fail2(App* self, int unused)
     self->ack_notes = 1;
     self->to_heart_beat = 0;
     silent_failure = 0;
+    board_handler.node_states[RANK] = MUSICIAN;
 }
 
 void print(char* string, int val)

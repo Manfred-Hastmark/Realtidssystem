@@ -4,7 +4,7 @@
 #include "board_handler.h"
 #include "canMsgs.h"
 
-#define NOTE_TO MSEC(10)
+#define NOTE_TO MSEC(15)
 
 typedef struct
 {
