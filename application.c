@@ -125,6 +125,15 @@ void start_playing(App* self, int unused)
     SYNC(&musicPlayer, togglePlaying, 0);
 }
 
+void printTempo(App* self, int unused)
+{
+    if (board_handler.node_states[RANK] == CONDUCTOR && self->print_bpm)
+    {
+        print("Bpm: %i\n", 60000 / musicPlayer.tempo);
+        SEND(SEC(5), SEC(5) + MSEC(500), self, printTempo, 0);
+    }
+}
+
 void reader(App* self, int c)
 {
     SCI_WRITE(&sci0, "Rcv: \'");
@@ -145,12 +154,39 @@ void keyHandler(App* self, int c)
     }
     case 'z': {
         board_handler.node_states[RANK] = CONDUCTOR;
+        SEND(SEC(5), SEC(5) + MSEC(500), &musicPlayer, printTempo, 0);
         break;
     }
     case 'x': {
         board_handler.node_states[RANK] = MUSICIAN;
         break;
     }
+    case 'K':
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            receiveKey();
+        }
+        break;
+    case 'B':
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            recieveBPM();
+        }
+        break;
+    case 'R': {
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            ASYNC(&musicPlayer, change_key, 0);
+            ASYNC(&musicPlayer, change_bpm, 120);
+        }
+        break;
+    }
+    case 'T':
+        self->print_bpm ^= 1;
+        break;
+    case 'h':
+        self->to_heart_beat ^= 1;
+        break;
     case 'k':
         self->to_heart_beat ^= 1;
         break;

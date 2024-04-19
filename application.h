@@ -14,6 +14,7 @@ typedef struct
     char c;
     int to_heart_beat;
     int ack_notes;
+    int print_bpm;
 } App;
 
 void print(char*, int);
