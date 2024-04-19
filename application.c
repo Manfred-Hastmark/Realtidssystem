@@ -70,6 +70,7 @@ void send(App* self, int msg_p)
     if (CAN_SEND(&can0, (CANMsg*)msg_p) == 0 && SYNC(&board_handler, number_of_boards, 0) > 2)
     {
         board_handler.node_states[RANK] = MUSICIAN;
+        musicPlayer.index = 0;
         print("Conductorship Void Due To Failure\n", 0);
     }
 }
@@ -150,9 +151,11 @@ void keyHandler(App* self, int c)
         if (silent_failure == 0)
         {
             print("Silent Failure\n", 0);
+            print("Conductorship Void Due To Failure\n", 0);
             self->ack_notes = 0;
             self->to_heart_beat = 1;
             silent_failure = 1;
+            musicPlayer.index = 0;
             board_handler.node_states[RANK] = MUSICIAN;
         }
         else
@@ -166,9 +169,11 @@ void keyHandler(App* self, int c)
     break;
     case 'q': {
         print("Silent Failure\n", 0);
+        print("Conductorship Void Due To Failure\n", 0);
         self->ack_notes = 0;
         self->to_heart_beat = 1;
         silent_failure = 1;
+        musicPlayer.index = 0;
         board_handler.node_states[RANK] = MUSICIAN;
         AFTER(MSEC(5000), self, reset_fail2, 0);
     }
