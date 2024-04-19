@@ -47,6 +47,7 @@ void keyHandler(App*, int);
 void send_heart_beat(App*, int);
 void reset_fail2(App* self, int unused);
 
+Time start;
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
 App app = {initObject(), 0, 'X', 0, 1};
@@ -164,7 +165,9 @@ void keyHandler(App* self, int c)
         self->ack_notes = 0;
         self->to_heart_beat = 1;
         silent_failure = 1;
-        AFTER(MSEC(5000), self, reset_fail2, 0);
+        int random = (T_SAMPLE(&start) % 5000) + 5000;
+
+        AFTER(MSEC(random), self, reset_fail2, 0);
     }
     break;
 
