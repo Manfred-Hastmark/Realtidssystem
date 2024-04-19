@@ -32,6 +32,8 @@
  */
 
 #define UNUSED 0
+#define DEFAULT_KEY 0
+#define DEFAULT_BPM 120
 
 // Brother John melody
 const int brotherJohn[LENGTH] = {0, 2, 4, 0, 0, 2, 4, 0, 4, 5, 7, 4, 5, 7, 7, 9, 7, 5, 4, 0, 7, 9, 7, 5, 4, 0, 0, -5, 0, 0, -5, 0};
@@ -143,6 +145,30 @@ void keyHandler(App* self, int c)
 {
     switch (c)
     {
+    case 'R': {
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            ASYNC(&musicPlayer, change_key, DEFAULT_KEY);
+            ASYNC(&musicPlayer, change_bpm, DEFAULT_BPM);
+        }
+        break;
+    }
+    case '0' ... '9': // Add character to readbuffer
+    case '-':
+        ASYNC(&readBuffer, readBufferAdd, c);
+        break;
+    case 'b':
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            recieveBPM();
+        }
+        break;
+    case 'k':
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            receiveKey();
+        }
+        break;
     case 'w': {
         if (silent_failure == 0)
         {
@@ -183,7 +209,7 @@ void keyHandler(App* self, int c)
         board_handler.node_states[RANK] = MUSICIAN;
         break;
     }
-    case 'k':
+    case 'o':
         self->to_heart_beat ^= 1;
         break;
     case 's': {
@@ -207,6 +233,16 @@ void keyHandler(App* self, int c)
     case 'm':
         ASYNC(&board_handler, print_status, 0);
         break;
+    case 'c': // Lower volume
+        print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, -1));
+        break;
+    case 'v': // Raise volume
+        print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, 1));
+        break;
+    case 'l': {
+        tone_generator.mute ^= 1;
+        break;
+    }
     }
 }
 
