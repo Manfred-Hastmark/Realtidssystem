@@ -16,7 +16,6 @@ typedef struct
     int msg_recv;
     int app_ready;
     int inter_arrival;
-    int print_out;
 } Regulator;
 
 
@@ -25,6 +24,7 @@ typedef struct
     Object super;
     int burst_mode;
     int msg_id;
+    int print_out;
 } Transmitter;
 
 typedef struct
@@ -38,8 +38,8 @@ typedef struct
 
 
 
-#define initRegulator() {initObject(), {}, 0, 0, 1, 1, 0}
-#define initTransmitter() {initObject(), 0, 0}
+#define initRegulator() {initObject(), {}, 0, 0, 1, 1}
+#define initTransmitter() {initObject(), 0, 0, 0}
 #define initReadBuffer() { initObject(), {}, 0 }
 
 

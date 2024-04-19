@@ -18,8 +18,8 @@ void receive(Regulator* self, int unused)
     if(buffer_full(self, UNUSED)) //Discard if buffer is full
     {
         CANMsg msg;
-        CAN_RECEIVE(&can0, &msg);
-        if(self->print_out)
+        CAN_RECEIVE(&can0, &msg); //Receive and discard
+        if(transmitter.print_out)
         {
             print("Buffer full, CAN message discarded\n", 0);
         }
@@ -30,12 +30,9 @@ void receive(Regulator* self, int unused)
     CAN_RECEIVE(&can0, msg);
     self->msg_recv = (self->msg_recv + 1) % MAX_BUFFER;
     
-    if(self->print_out)
-    {
-        print("CAN recv: %i\n", msg->msgId);
-    }
     if(self->app_ready)
     {
+        self->app_ready = 0;
         ASYNC(self, handle_msg, UNUSED);
     }
 }
@@ -43,9 +40,9 @@ void receive(Regulator* self, int unused)
 void set_ready(Regulator* self, int unused)
 {
     self->app_ready = 1;
-    //print("App is ready and next message will be handled\n", 0);
     if(self->msg_to_handle != self->msg_recv) //If there is new message handle it
     {
+        self->app_ready = 0;
         ASYNC(self, handle_msg, UNUSED);
     }
 }
@@ -55,9 +52,17 @@ void handle_msg(Regulator* self, int unused)
     //Do msg handling
     print("Message %i delivered at time: ", self->buffer[self->msg_to_handle].msgId);
     print("%i\n", SEC_OF(T_SAMPLE(&timer)));
-    self->msg_to_handle = (self->msg_to_handle + 1) % MAX_BUFFER;
-    self->app_ready = 0;
-    AFTER(SEC(self->inter_arrival), self, set_ready, UNUSED);
+
+    self->msg_to_handle = (self->msg_to_handle + 1) % MAX_BUFFER;    
+    if(self->inter_arrival != 0)
+    {
+        SEND(SEC(self->inter_arrival), SEC(self->inter_arrival) + USEC(100), self, set_ready, UNUSED);
+    }
+    else
+    {
+        ASYNC(self, set_ready, UNUSED);
+    }
+
 }
 
 int buffer_full(Regulator* self, int unused)
@@ -73,6 +78,10 @@ void send(Transmitter* self, int unused)
     msg.msgId = self->msg_id;
     self->msg_id = (self->msg_id + 1) % 128;
     CAN_SEND(&can0, &msg);
+    if(self->print_out)
+    {
+        print("CAN msg %i sent\n", msg.msgId);
+    }
     if(self->burst_mode)
     {
         AFTER(BURST_INTERVAL, self, send, UNUSED);
@@ -95,30 +104,31 @@ void keyHandler(Regulator* self, int c)
     switch (c)
     {
         case 'O':
-        ASYNC(&transmitter, send, UNUSED);
-        break;
+            ASYNC(&transmitter, send, UNUSED);
+            break;
         case 'B':
-        transmitter.burst_mode = 1;
-        ASYNC(&transmitter, send, UNUSED);
-        break;
+            transmitter.burst_mode = 1;
+            ASYNC(&transmitter, send, UNUSED);
+            break;
         case 'X':
-        transmitter.burst_mode = 0;
-        break;
+            transmitter.burst_mode = 0;
+            break;
         case 's':
-        print("To handle: %i\n", self->msg_to_handle);
-        print("Recv: %i\n", self->msg_recv);
-        print("Appready: %i\n", self->app_ready);
-        break;
+            print("To handle: %i\n", self->msg_to_handle);
+            print("Recv: %i\n", self->msg_recv);
+            print("Appready: %i\n", self->app_ready);
+            print("Inter: %i\n", self->inter_arrival);
+            break;
         case '0' ... '9': // Add character to readbuffer
-        case '-':
-        ASYNC(&readBuffer, readBufferAdd, c);
-        break;
+            ASYNC(&readBuffer, readBufferAdd, c);
+            break;
         case 'a':
-        self->inter_arrival = SYNC(&readBuffer, endBuffer, UNUSED);
-        break;
+            self->inter_arrival = SYNC(&readBuffer, endBuffer, UNUSED);
+            print("Delta set to: %i s\n", self->inter_arrival);
+            break;
         case 'p':
-        self->print_out ^= 1;
-        break;
+            transmitter.print_out ^= 1;
+            break;
         default:
         break;
     }
