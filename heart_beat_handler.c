@@ -38,7 +38,7 @@ void heart_beat_received(HeartBeatHandler* self, int raw_msg_p)
 
 void heart_beat(HeartBeatHandler* self, int unused)
 {
-    if (!self->m_app_p->to_heart_beat)
+    if (!self->m_app_p->to_heart_beat && self->m_board_handler_p->node_states[RANK] != DISCONNECTED)
     {
         ASYNC(self->m_app_p, send_heart_beat, self->m_board_handler_p->node_states[RANK]);
     }

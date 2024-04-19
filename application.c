@@ -117,18 +117,12 @@ void keyHandler(App* self, int c)
     case '-':
         ASYNC(&readBuffer, readBufferAdd, c);
     case 'z': {
-        if (board_handler.node_states[RANK] == DISCONNECTED)
-        {
-            board_handler.node_states[RANK] = CONDUCTOR;
-            SEND(SEC(5), SEC(5) + MSEC(500), &musicPlayer, printTempo, 0);
-        }
+        board_handler.node_states[RANK] = CONDUCTOR;
+        SEND(SEC(5), SEC(5) + MSEC(500), &musicPlayer, printTempo, 0);
         break;
     }
     case 'x': {
-        if (board_handler.node_states[RANK] == DISCONNECTED)
-        {
-            board_handler.node_states[RANK] = MUSICIAN;
-        }
+        board_handler.node_states[RANK] = MUSICIAN;
         break;
     }
     case 'k':
@@ -227,6 +221,7 @@ void startApp(App* self, int arg)
     SCI_WRITE(&sci0, "Hello, hello...\n");
     ASYNC(&musicPlayer, nextBeat, 0);
     ASYNC(&heart_beat_handler, init, 0);
+    board_handler.node_states[RANK] = MUSICIAN;
 }
 
 int main()
