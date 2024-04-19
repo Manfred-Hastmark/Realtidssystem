@@ -59,7 +59,6 @@ CanHandler can_handler = initCanHandler(&app, &heart_beat_handler, &musicPlayer)
 Can can0 = initCan(CAN_PORT0, &app, receive);
 Serial sci0 = initSerial(SCI_PORT0, &app, reader);
 
-
 void receive(App* self, int unused)
 {
     static CANMsg msg;
@@ -190,25 +189,11 @@ void print(char* string, int val)
 
 void printTempo(App* self, int unused)
 {
-    if(board_handler.node_states[RANK] == CONDUCTOR && self->print_bpm)
+    if (board_handler.node_states[RANK] == CONDUCTOR && self->print_bpm)
     {
         print("Bpm: %i\n", 60000 / musicPlayer.tempo);
         SEND(SEC(5), SEC(5) + MSEC(500), self, printTempo, 0);
     }
-}
-
-void printInfo(App* self, int unused)
-{
-    for(int i = 0; i < MAX_BOARDS; i++)
-    {
-        if(board_handler.node_states[i] != DISCONNECTED)
-        {
-            print(" Board %i is: ", i);
-            SCI_WRITE(&sci0, '0' + board_handler.node_states[i]);
-        }
-    }
-    SCI_WRITECHAR(&sci0, '\n');
-    SEND(SEC(1), SEC(1) + MSEC(200), self, printInfo, 0);
 }
 
 void receiveKey()
@@ -238,7 +223,6 @@ void startApp(App* self, int arg)
     SCI_WRITE(&sci0, "Hello, hello...\n");
     ASYNC(&musicPlayer, nextBeat, 0);
     ASYNC(&heart_beat_handler, init, 0);
-    ASYNC(&app, printInfo, 0);
 }
 
 int main()
