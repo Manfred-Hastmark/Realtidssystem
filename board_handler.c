@@ -63,6 +63,7 @@ void request_conductorship(BoardHandler* self, int unused)
 {
     if (!SYNC(self, has_conductor, 0))
     {
+        print("Instaclaim %i\n", 0);
         self->node_states[RANK] = CONDUCTOR;
         return;
     }
