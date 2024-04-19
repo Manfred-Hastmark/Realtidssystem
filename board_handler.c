@@ -6,9 +6,6 @@
 
 #define CLAIM_WAIT_TIME MSEC(1000)
 
-int request_index;
-int request_ongoing;
-
 void commit_claim_request(BoardHandler* self, int unused);
 
 void handle_node_timeout(BoardHandler* self, int index)
@@ -92,10 +89,13 @@ void handle_conductorship_handout(BoardHandler* self, int index)
 
 void handle_conductorship_request(BoardHandler* self, int index)
 {
-    request_index = index;
-    if (!request_ongoing)
+    if (index < self->request_index)
     {
-        request_ongoing = 1;
+        self->request_index = index;
+    }
+    if (!self->request_ongoing)
+    {
+        self->request_ongoing = 1;
         AFTER(CLAIM_WAIT_TIME, self, commit_claim_request, 0);
     }
 }
@@ -103,9 +103,10 @@ void handle_conductorship_request(BoardHandler* self, int index)
 void commit_claim_request(BoardHandler* self, int unused)
 {
     self->node_states[RANK] = MUSICIAN;
-    request_ongoing = 0;
+    self->request_ongoing = 0;
     self->conductor_change = 1;
-    self->new_conductor_index = request_index;
+    self->new_conductor_index = self->request_index;
+    self->request_index = DEFAULT_REQUEST_INDEX;
 }
 
 void print_status(BoardHandler* self, int unused)
@@ -153,7 +154,7 @@ void check_stepup(BoardHandler* self, int unused)
         }
     }
 
-    if (conductor == 0 && lowest_id == RANK && boards_connected != 1)
+    if (!self->request_ongoing && conductor == 0 && lowest_id == RANK && boards_connected != 1)
     {
         self->node_states[RANK] = CONDUCTOR;
         ASYNC(self->m_app_p, start_playing, 0);

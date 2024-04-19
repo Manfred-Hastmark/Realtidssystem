@@ -128,8 +128,6 @@ void start_playing(App* self, int unused)
         SYNC(&musicPlayer, togglePlaying, 0);
         return;
     }
-    SYNC(&musicPlayer, togglePlaying, 0);
-    SYNC(&musicPlayer, togglePlaying, 0);
 }
 
 void reader(App* self, int c)

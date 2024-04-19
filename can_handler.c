@@ -45,6 +45,7 @@ void can_receiver(CanHandler* self, int raw_msg_p)
         break;
     }
     case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_BOARDS - 1: {
+
         if (self->m_board_handler_p->node_states[RANK] == CONDUCTOR)
         {
             ASYNC(self->m_board_handler_p, handle_conductorship_request, msg_p->msgId - CLAIMCONDUCTORID);

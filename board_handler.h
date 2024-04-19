@@ -5,6 +5,8 @@
 #include "TinyTimber.h"
 #include "application.h"
 
+#define DEFAULT_REQUEST_INDEX 100
+
 enum NodeState
 {
     CONDUCTOR = 0,
@@ -20,6 +22,8 @@ typedef struct
     int nodes_connected;
     int conductor_change;
     int new_conductor_index;
+    int request_ongoing;
+    int request_index;
 } BoardHandler;
 
 #define initBoardHandler(app_p)                                                                                                            \
@@ -35,7 +39,7 @@ typedef struct
                 DISCONNECTED,                                                                                                              \
                 DISCONNECTED,                                                                                                              \
             },                                                                                                                             \
-            0, 0, 0                                                                                                                        \
+            0, 0, 0, 0, DEFAULT_REQUEST_INDEX                                                                                              \
     }
 
 /**
