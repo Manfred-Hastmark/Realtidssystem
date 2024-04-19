@@ -116,6 +116,7 @@ void keyHandler(App* self, int c)
     case '0' ... '9': // Add character to readbuffer
     case '-':
         ASYNC(&readBuffer, readBufferAdd, c);
+        break;
     case 'z': {
         board_handler.node_states[RANK] = CONDUCTOR;
         SEND(SEC(5), SEC(5) + MSEC(500), &musicPlayer, printTempo, 0);
