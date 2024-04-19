@@ -3,7 +3,7 @@
 
 #include "TinyTimber.h"
 
-#define RANK 1
+#define RANK 2
 #define LENGTH 32
 #define MAX_BOARDS 8
 
