@@ -26,10 +26,6 @@ void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p)
     HeartBeat* heart_beat_msg_p = (HeartBeat*)raw_heart_beat_msg_p;
     if (self->node_states[heart_beat_msg_p->id] == DISCONNECTED)
     {
-        if (self->nodes_connected == 1 && self->node_states[RANK] == MUSICIAN)
-        {
-            print("I Now Join As A Musician\n", 0);
-        }
         self->nodes_connected++;
     }
     self->node_states[heart_beat_msg_p->id] = heart_beat_msg_p->role;
