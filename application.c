@@ -144,17 +144,11 @@ void keyHandler(App* self, int c)
         break;
     }
     case 'z': {
-        if (board_handler.node_states[RANK] == DISCONNECTED)
-        {
-            board_handler.node_states[RANK] = CONDUCTOR;
-        }
+        board_handler.node_states[RANK] = CONDUCTOR;
         break;
     }
     case 'x': {
-        if (board_handler.node_states[RANK] == DISCONNECTED)
-        {
-            board_handler.node_states[RANK] = MUSICIAN;
-        }
+        board_handler.node_states[RANK] = MUSICIAN;
         break;
     }
     case 'k':
