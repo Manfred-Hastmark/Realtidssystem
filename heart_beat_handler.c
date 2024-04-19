@@ -40,7 +40,14 @@ void heart_beat(HeartBeatHandler* self, int unused)
 {
     if (!self->m_app_p->to_heart_beat)
     {
-        ASYNC(self->m_app_p, send_heart_beat, self->m_board_handler_p->node_states[RANK]);
+        if (self->m_board_handler_p->node_states[RANK] == DISCONNECTED)
+        {
+            ASYNC(self->m_app_p, send_heart_beat, MUSICIAN);
+        }
+        else
+        {
+            ASYNC(self->m_app_p, send_heart_beat, self->m_board_handler_p->node_states[RANK]);
+        }
     }
     AFTER(MSEC(100), self, heart_beat, unused);
 }
