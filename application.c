@@ -67,7 +67,7 @@ void receive(App* self, int unused)
 
 void send(App* self, int msg_p)
 {
-    if (CAN_SEND(&can0, (CANMsg*)msg_p) == 0 && SYNC(&board_handler, number_of_boards, 0) > 2 &&
+    if (CAN_SEND(&can0, (CANMsg*)msg_p) != 0 && SYNC(&board_handler, number_of_boards, 0) > 2 &&
         board_handler.node_states[RANK] != MUSICIAN)
     {
         board_handler.node_states[RANK] = MUSICIAN;
