@@ -176,6 +176,10 @@ void keyHandler(App* self, int c)
     case 'v': // Raise volume
         print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, 1));
         break;
+    case 'm': {
+        tone_generator.mute ^= 1;
+        break;
+    }
     }
 }
 
