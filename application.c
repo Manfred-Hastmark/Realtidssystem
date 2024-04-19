@@ -240,7 +240,7 @@ void keyHandler(App* self, int c)
         print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, 1));
         break;
     case 'l': {
-        tone_generator.mute ^= 1;
+        SYNC(&tone_generator, toggleMute, 0);
         break;
     }
     }
