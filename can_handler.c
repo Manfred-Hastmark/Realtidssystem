@@ -30,6 +30,7 @@ void can_receiver(CanHandler* self, int raw_msg_p)
         {
             if (self->m_app_p->ack_notes)
             {
+                print("Playing note with index %i\n", notes_msg.note_index);
                 ASYNC(self->m_music_player_p, play_note, notes_msg.note_index);
                 ASYNC(self->m_app_p, send_note_ack, notes_msg.note_index);
             }

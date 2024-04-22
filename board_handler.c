@@ -135,34 +135,32 @@ int number_of_boards(BoardHandler* self, int unused)
 void check_stepup(BoardHandler* self, int unused)
 {
     int num_boards = 0;
-    for(int i = 0; i < MAX_BOARDS; i++)
+    for (int i = 0; i < MAX_BOARDS; i++)
     {
-        if(self->node_states[i] == CONDUCTOR)
+        if (self->node_states[i] == CONDUCTOR)
         {
-            return; //We won't step up, since a conductor is already present
+            return; // We won't step up, since a conductor is already present
         }
-        if(self->node_states[i] == MUSICIAN)
+        if (self->node_states[i] == MUSICIAN)
         {
             num_boards++;
         }
     }
 
-    if(num_boards > 1) //If there are more than 1 musicians and no conductors a step-up should be made
+    if (num_boards > 1) // If there are more than 1 musicians and no conductors a step-up should be made
     {
-        if(RANK < self->request_index)
+        if (RANK < self->request_index)
         {
             self->request_index = RANK;
         }
-        AFTER(CLAIM_WAIT_TIME, self, set_conductor, 0); //Lowest rank will get conductor
+        AFTER(CLAIM_WAIT_TIME, self, set_conductor, 0); // Lowest rank will get conductor
     }
-    
-    
 }
 
 void set_conductor(BoardHandler* self, int unused)
 {
     self->node_states[self->request_index] = CONDUCTOR;
-    if(RANK == self->request_index)
+    if (RANK == self->request_index)
     {
         ASYNC(self->m_app_p, start_playing, 0);
         print("I Am The New Conductor\n", 0);
@@ -170,10 +168,9 @@ void set_conductor(BoardHandler* self, int unused)
     self->request_index = DEFAULT_REQUEST_INDEX;
 }
 
-        
 void lowest_request_index(BoardHandler* self, int index)
 {
-    if(index < self->request_index)
+    if (index < self->request_index)
     {
         self->request_index = index;
     }
