@@ -37,7 +37,6 @@ void can_receiver(CanHandler* self, int raw_msg_p)
         break;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_BOARDS - 1: {
-        ASYNC(self->m_music_player_p, note_ack_received, msg_p->buff[0]);
         print("Recv note ack id: %i\n", msg_p->buff[0]);
         break;
     }

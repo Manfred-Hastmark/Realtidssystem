@@ -49,11 +49,6 @@ typedef struct
     }
 
 /**
- * @brief Call when an ack on a note is received
- */
-void note_ack_received(MusicPlayer* self, int index);
-
-/**
  * @brief Looks up the frequency for the next note and applies it to the tone generator. Turns on the tone generator and sleeps until
  * the note ends.
  *

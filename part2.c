@@ -19,12 +19,14 @@ void nextBeat(MusicPlayer* self, int unused)
         int player_index = SYNC(self->m_board_handler_p, get_next_player, 0);
         if (player_index == RANK)
         {
+            print("Playing note with index %i\n", self->index);
             self->m_tone_generator_p->silence = 0;
             self->m_tone_generator_p->period = self->notePeriods[self->index];
             ASYNC(self->m_tone_generator_p, setDAC, 0xFFFFFFFF);
         }
         if (player_index != -1)
         {
+            print("Sending note with index %i\n", self->index);
             static Notes notes_msg;
             notes_msg.note_index = self->index;
             notes_msg.player = player_index;
