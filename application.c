@@ -90,7 +90,7 @@ void send(App* self, int msg_p)
             static HeartBeat hb_msg;
             hb_msg.id = RANK;
             hb_msg.role = MUSICIAN;
-            AFTER(SEC(1), &board_handler, handle_node_alive, (int)&hb_msg);
+            ASYNC(&board_handler, handle_node_alive, (int)&hb_msg);
             conn = 1;
         }
     }

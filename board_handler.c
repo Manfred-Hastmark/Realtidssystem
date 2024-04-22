@@ -7,6 +7,7 @@
 #define CLAIM_WAIT_TIME MSEC(1000)
 
 void commit_claim_request(BoardHandler* self, int unused);
+void claim_if_no_conductor(BoardHandler* self, int unused);
 
 void handle_node_timeout(BoardHandler* self, int index)
 {
@@ -17,7 +18,7 @@ void handle_node_timeout(BoardHandler* self, int index)
     }
     self->node_states[index] = DISCONNECTED;
 
-    if (self->node_states[RANK] != DISCONNECTED)
+    if (self->node_states[RANK] == MUSICIAN)
     {
         ASYNC(self, check_stepup, 0);
     }
@@ -25,7 +26,7 @@ void handle_node_timeout(BoardHandler* self, int index)
 
 void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p)
 {
-    if (self->node_states[RANK] != DISCONNECTED)
+    if (self->node_states[RANK] == MUSICIAN)
     {
         ASYNC(self, check_stepup, 0);
     }
@@ -132,37 +133,69 @@ int number_of_boards(BoardHandler* self, int unused)
     return boards_connected;
 }
 
+int claim_ongoing = 0;
+
 void check_stepup(BoardHandler* self, int unused)
 {
     int num_boards = 0;
-    for(int i = 0; i < MAX_BOARDS; i++)
+    int lowest_idx = 10;
+    for (int i = 0; i < MAX_BOARDS; i++)
     {
-        if(self->node_states[i] == CONDUCTOR)
+        if (self->node_states[i] == CONDUCTOR)
         {
-            return; //We won't step up, since a conductor is already present
+            return; // We won't step up, since a conductor is already present
         }
-        if(self->node_states[i] == MUSICIAN)
+        if (self->node_states[i] == MUSICIAN)
         {
             num_boards++;
+            if (i < lowest_idx)
+            {
+                lowest_idx = i;
+            }
         }
     }
 
-    if(num_boards > 1) //If there are more than 1 musicians and no conductors a step-up should be made
+    if (num_boards > 1 && lowest_idx == RANK && !claim_ongoing)
     {
-        if(RANK < self->request_index)
-        {
-            self->request_index = RANK;
-        }
-        AFTER(CLAIM_WAIT_TIME, self, set_conductor, 0); //Lowest rank will get conductor
+        claim_ongoing = 1;
+        AFTER(MSEC(500), self, claim_if_no_conductor, 0); // Lowest rank will get conductor
     }
-    
-    
+}
+
+void claim_if_no_conductor(BoardHandler* self, int unused)
+{
+    int num_boards = 0;
+    int lowest_idx = 10;
+    for (int i = 0; i < MAX_BOARDS; i++)
+    {
+        if (self->node_states[i] == CONDUCTOR)
+        {
+            claim_ongoing = 0;
+            return; // We won't step up, since a conductor is already present
+        }
+        if (self->node_states[i] == MUSICIAN)
+        {
+            num_boards++;
+            if (i < lowest_idx)
+            {
+                lowest_idx = i;
+            }
+        }
+    }
+
+    if (num_boards > 1 && lowest_idx == RANK)
+    {
+        claim_ongoing = 0;
+        self->node_states[RANK] == CONDUCTOR;
+        ASYNC(self->m_app_p, start_playing, 0);
+        print("I Am The New Conductor\n", 0);
+    }
 }
 
 void set_conductor(BoardHandler* self, int unused)
 {
     self->node_states[self->request_index] = CONDUCTOR;
-    if(RANK == self->request_index)
+    if (RANK == self->request_index)
     {
         ASYNC(self->m_app_p, start_playing, 0);
         print("I Am The New Conductor\n", 0);
@@ -170,10 +203,9 @@ void set_conductor(BoardHandler* self, int unused)
     self->request_index = DEFAULT_REQUEST_INDEX;
 }
 
-        
 void lowest_request_index(BoardHandler* self, int index)
 {
-    if(index < self->request_index)
+    if (index < self->request_index)
     {
         self->request_index = index;
     }
