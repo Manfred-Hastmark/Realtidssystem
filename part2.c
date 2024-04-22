@@ -4,17 +4,11 @@
 #include "board_handler.h"
 #include "canMsgs.h"
 
-#define NOTE_TO MSEC(15)
-
 typedef struct
 {
     unsigned short timeout;
     unsigned short id;
 } TOContainer;
-
-int notes_timeouts[LENGTH];
-
-void handle_notes_timeout(MusicPlayer* self, int raw_to_container);
 
 void nextBeat(MusicPlayer* self, int unused)
 {
@@ -38,16 +32,8 @@ void nextBeat(MusicPlayer* self, int unused)
             notes_msg.key = self->m_melody_p->key;
             notes_msg.id = NOTESID;
             ASYNC(self->m_app_p, send_notes_msg, (int)&notes_msg);
-            TOContainer to_container;
-            to_container.id = self->index;
-            to_container.timeout = notes_timeouts[self->index];
-            if (player_index != RANK)
-            {
-                AFTER(NOTE_TO, self, handle_notes_timeout, *(int*)&to_container);
-            }
         }
     }
-
     const int toneDuration = MSEC(getBeatLenght(self->beatLength[self->index], self->tempo, self->silenceDuration));
     SEND(toneDuration, toneDuration + USEC(100), self, nextSilence, 0);
 }
@@ -134,22 +120,4 @@ int togglePlaying(MusicPlayer* self, int unused)
         self->playing = 0;
     }
     return self->playing;
-}
-
-void handle_notes_timeout(MusicPlayer* self, int raw_to_container)
-{
-    TOContainer to_container = *(TOContainer*)&raw_to_container;
-    if (to_container.timeout == notes_timeouts[to_container.id])
-    {
-        print("Notes timeout on note %i\n", to_container.id);
-        if (self->index == to_container.id)
-        {
-            ASYNC(self, play_note, to_container.id);
-        }
-    }
-}
-
-void note_ack_received(MusicPlayer* self, int index)
-{
-    notes_timeouts[index]++;
 }
