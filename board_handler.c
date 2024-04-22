@@ -116,7 +116,7 @@ void print_status(BoardHandler* self, int unused)
     {
         print("%i ", self->node_states[i]);
     }
-    print("\n ", 0);
+    print("\n", 0);
 }
 
 int number_of_boards(BoardHandler* self, int unused)
@@ -129,35 +129,52 @@ int number_of_boards(BoardHandler* self, int unused)
             boards_connected++;
         }
     }
+    return boards_connected;
 }
 
 void check_stepup(BoardHandler* self, int unused)
 {
-    int boards_connected = 0;
-    int conductor = 0;
-    int lowest_id = 10;
-
-    for (int i = 0; i < MAX_BOARDS; i++)
+    int num_boards = 0;
+    for(int i = 0; i < MAX_BOARDS; i++)
     {
-        if (self->node_states[i] == CONDUCTOR)
+        if(self->node_states[i] == CONDUCTOR)
         {
-            conductor = 1;
+            return; //We won't step up, since a conductor is already present
         }
-
-        if (self->node_states[i] != DISCONNECTED)
+        if(self->node_states[i] == MUSICIAN)
         {
-            if (lowest_id > i)
-            {
-                lowest_id = i;
-            }
-            boards_connected++;
+            num_boards++;
         }
     }
 
-    if (!self->request_ongoing && conductor == 0 && lowest_id == RANK && boards_connected != 1)
+    if(num_boards > 1) //If there are more than 1 musicians and no conductors a step-up should be made
     {
-        self->node_states[RANK] = CONDUCTOR;
+        if(RANK < self->request_index)
+        {
+            self->request_index = RANK;
+        }
+        AFTER(CLAIM_WAIT_TIME, self, set_conductor, 0); //Lowest rank will get conductor
+    }
+    
+    
+}
+
+void set_conductor(BoardHandler* self, int unused)
+{
+    self->node_states[self->request_index] = CONDUCTOR;
+    if(RANK == self->request_index)
+    {
         ASYNC(self->m_app_p, start_playing, 0);
-        print("Am The New Conductor\n", 0);
+        print("I Am The New Conductor\n", 0);
+    }
+    self->request_index = DEFAULT_REQUEST_INDEX;
+}
+
+        
+void lowest_request_index(BoardHandler* self, int index)
+{
+    if(index < self->request_index)
+    {
+        self->request_index = index;
     }
 }
