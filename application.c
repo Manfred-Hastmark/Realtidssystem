@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define DEFAULT_KEY 0
+#define DEFAULT_BPM 120
+
 /* HOW TO USE
  * LAB0
  * 'F' clears the threeHist
@@ -166,6 +169,40 @@ void keyHandler(App* self, int c)
 {
     switch (c)
     {
+    case 'x': {
+        print("Forced musician\n", 0);
+        board_handler.node_states[RANK] = MUSICIAN;
+        break;
+    }
+    case 'z': {
+        print("Forced conductor\n", 0);
+        board_handler.node_states[RANK] = CONDUCTOR;
+        break;
+    }
+    case 'R': {
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            ASYNC(&musicPlayer, change_key, DEFAULT_KEY);
+            ASYNC(&musicPlayer, change_bpm, DEFAULT_BPM);
+        }
+        break;
+    }
+    case '0' ... '9': // Add character to readbuffer
+    case '-':
+        ASYNC(&readBuffer, readBufferAdd, c);
+        break;
+    case 'b':
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            recieveBPM();
+        }
+        break;
+    case 'k':
+        if (board_handler.node_states[RANK] == CONDUCTOR)
+        {
+            receiveKey();
+        }
+        break;
     case 'w': {
         if (silent_failure == 0)
         {
@@ -198,30 +235,16 @@ void keyHandler(App* self, int c)
         AFTER(MSEC(5000), self, reset_fail2, 0);
     }
     break;
+
     case 'p': {
         ASYNC(&board_handler, request_conductorship, 0);
         break;
     }
-    case 'z': {
-        board_handler.node_states[RANK] = CONDUCTOR;
-        break;
-    }
-    case 'x': {
-        board_handler.node_states[RANK] = MUSICIAN;
-        break;
-    }
-    case 'k':
-        self->to_heart_beat ^= 1;
-        break;
     case 's': {
         if (board_handler.node_states[RANK] == CONDUCTOR)
         {
             ASYNC(&musicPlayer, togglePlaying, 0);
         }
-        break;
-    }
-    case 'a': {
-        self->ack_notes ^= 1;
         break;
     }
     case 'r': {
@@ -234,6 +257,16 @@ void keyHandler(App* self, int c)
     case 'm':
         ASYNC(&board_handler, print_status, 0);
         break;
+    case 'c': // Lower volume
+        print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, -1));
+        break;
+    case 'v': // Raise volume
+        print("Volume changed to: %d\n", SYNC(musicPlayer.m_tone_generator_p, volume, 1));
+        break;
+    case 'l': {
+        SYNC(&tone_generator, toggleMute, 0);
+        break;
+    }
     }
 }
 

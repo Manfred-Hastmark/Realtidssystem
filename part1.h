@@ -21,7 +21,7 @@ typedef struct
 
 #define initToneGenerator(period)                                                                                                          \
     {                                                                                                                                      \
-        initObject(), period >> 1, 5, 0xFFFFFFFF, 1, 0                                                                                     \
+        initObject(), period >> 1, 10, 0xFFFFFFFF, 1, 0                                                                                    \
     }
 
 int toggleDeadlinesToneGenerator(ToneGenerator*, int);
