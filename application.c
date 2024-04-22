@@ -137,6 +137,7 @@ void send_claim_conductorship(App* self, int unused)
 
 void send_handout_conductor(App* self, int index)
 {
+    print("Sending handout to %i\n", index);
     static CANMsg msg;
     msg.msgId = HANDOUTCONDUCTORID + RANK;
     msg.buff[0] = index;
