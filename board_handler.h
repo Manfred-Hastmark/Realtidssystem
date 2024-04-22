@@ -91,4 +91,14 @@ void print_status(BoardHandler* self, int unused);
  * @brief Checks if the network has a conductor and if we should step up
  */
 void check_stepup(BoardHandler* self, int unused);
+
+/**
+ * @brief Updates the the index of the lowest RANK requesting CONDUCTOR
+ */
+void lowest_request_index(BoardHandler* self, int index);
+
+/**
+ * @brief Sets conductor to lowest requested index after claim time and starts playing if it is current board
+ */
+void set_conductor(BoardHandler* self, int unused);
 #endif
