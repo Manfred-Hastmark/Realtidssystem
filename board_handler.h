@@ -97,8 +97,4 @@ void check_stepup(BoardHandler* self, int unused);
  */
 void lowest_request_index(BoardHandler* self, int index);
 
-/**
- * @brief Sets conductor to lowest requested index after claim time and starts playing if it is current board
- */
-void set_conductor(BoardHandler* self, int unused);
 #endif

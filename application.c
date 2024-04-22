@@ -68,33 +68,15 @@ void receive(App* self, int unused)
     ASYNC(&can_handler, can_receiver, (int)&msg);
 }
 
-int conn = 0;
 void send(App* self, int msg_p)
 {
     if (CAN_SEND(&can0, (CANMsg*)msg_p) != 0)
     {
-        if (conn == 1)
+        if (SYNC(&board_handler, number_of_boards, 0) > 2)
         {
-            // Got disconnected
-            conn = 0;
-        }
-        if (SYNC(&board_handler, number_of_boards, 0) > 2 && board_handler.node_states[RANK] != MUSICIAN)
-        {
-            board_handler.node_states[RANK] = DISCONNECTED;
+            board_handler.node_states[RANK] = MUSICIAN;
             musicPlayer.index = 0;
             print("Conductorship Void Due To Failure\n", 0);
-        }
-    }
-    else
-    {
-        if (conn == 0)
-        {
-            // Got connected
-            static HeartBeat hb_msg;
-            hb_msg.id = RANK;
-            hb_msg.role = MUSICIAN;
-            ASYNC(&board_handler, handle_node_alive, (int)&hb_msg);
-            conn = 1;
         }
     }
 }
@@ -152,6 +134,8 @@ void start_playing(App* self, int unused)
         SYNC(&musicPlayer, togglePlaying, 0);
         return;
     }
+    SYNC(&musicPlayer, togglePlaying, 0);
+    SYNC(&musicPlayer, togglePlaying, 0);
 }
 
 void reader(App* self, int c)

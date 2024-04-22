@@ -38,22 +38,18 @@ void can_receiver(CanHandler* self, int raw_msg_p)
         break;
     }
     case NOTEACKSID ... NOTEACKSID + MAX_BOARDS - 1: {
-        print("Recv note ack id: %i\n", msg_p->buff[0]);
         break;
     }
     case HANDOUTCONDUCTORID ... HANDOUTCONDUCTORID + MAX_BOARDS - 1: {
         ASYNC(self->m_board_handler_p, handle_conductorship_handout, msg_p->buff[0]);
         print("Recv handout id: %i\n", msg_p->buff[0]);
+        print("Handout was from %i\n", msg_p->msgId);
         break;
     }
     case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_BOARDS - 1: {
         if (self->m_board_handler_p->node_states[RANK] == CONDUCTOR)
         {
             ASYNC(self->m_board_handler_p, handle_conductorship_request, msg_p->msgId - CLAIMCONDUCTORID);
-        }
-        else
-        {
-            ASYNC(self->m_board_handler_p, lowest_request_index, msg_p->msgId - CLAIMCONDUCTORID);
         }
         break;
     }

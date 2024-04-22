@@ -11,26 +11,25 @@ void claim_if_no_conductor(BoardHandler* self, int unused);
 
 void handle_node_timeout(BoardHandler* self, int index)
 {
-    print("Node with id %i disconnected\n", index);
-    if (self->node_states[index] != DISCONNECTED)
+    if (RANK != index)
     {
-        self->nodes_connected--;
-    }
-    self->node_states[index] = DISCONNECTED;
+        print("Node with id %i disconnected\n", index);
+        if (self->node_states[index] != DISCONNECTED)
+        {
+            self->nodes_connected--;
+        }
+        self->node_states[index] = DISCONNECTED;
 
-    if (self->node_states[RANK] == MUSICIAN)
-    {
-        ASYNC(self, check_stepup, 0);
+        if (self->node_states[RANK] == MUSICIAN)
+        {
+            ASYNC(self, check_stepup, 0);
+        }
     }
 }
 
 void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p)
 {
-    if (self->node_states[RANK] == MUSICIAN)
-    {
-        ASYNC(self, check_stepup, 0);
-    }
-
+    ASYNC(self, check_stepup, 0);
     HeartBeat* heart_beat_msg_p = (HeartBeat*)raw_heart_beat_msg_p;
     if (self->node_states[heart_beat_msg_p->id] == DISCONNECTED)
     {
@@ -134,7 +133,6 @@ int number_of_boards(BoardHandler* self, int unused)
 }
 
 int claim_ongoing = 0;
-
 void check_stepup(BoardHandler* self, int unused)
 {
     int num_boards = 0;
@@ -157,6 +155,7 @@ void check_stepup(BoardHandler* self, int unused)
 
     if (num_boards > 1 && lowest_idx == RANK && !claim_ongoing)
     {
+        print("Trying to claim conductor\n", 0);
         claim_ongoing = 1;
         AFTER(MSEC(500), self, claim_if_no_conductor, 0); // Lowest rank will get conductor
     }
@@ -186,21 +185,10 @@ void claim_if_no_conductor(BoardHandler* self, int unused)
     if (num_boards > 1 && lowest_idx == RANK)
     {
         claim_ongoing = 0;
-        self->node_states[RANK] == CONDUCTOR;
+        self->node_states[RANK] = CONDUCTOR;
         ASYNC(self->m_app_p, start_playing, 0);
         print("I Am The New Conductor\n", 0);
     }
-}
-
-void set_conductor(BoardHandler* self, int unused)
-{
-    self->node_states[self->request_index] = CONDUCTOR;
-    if (RANK == self->request_index)
-    {
-        ASYNC(self->m_app_p, start_playing, 0);
-        print("I Am The New Conductor\n", 0);
-    }
-    self->request_index = DEFAULT_REQUEST_INDEX;
 }
 
 void lowest_request_index(BoardHandler* self, int index)
