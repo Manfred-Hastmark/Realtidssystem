@@ -7,4 +7,4 @@ clean:
 	@echo "----------Cleaning project:[ RTS-Lab - Debug ]----------"
 	@"$(MAKE)" -f  "RTS-Lab.mk" clean
 copy:
-	cp ./Debug/RTS-Lab.s19 /mnt/c/Users/axel0/Desktop/Build/bin.s19
+	cp ./Debug/RTS-Lab.s19 /mnt/c/Users/axel0/Desktop/BuildCoolterm/bin.s19

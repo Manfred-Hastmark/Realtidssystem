@@ -102,7 +102,6 @@ void print_status(BoardHandler* self, int unused)
         print("%i ", self->node_states[i]);
     }
     print("\n", 0);
-    print("Nodes connected: %i\n", self->nodes_connected);
 }
 
 int handle_conductor_disconnect(BoardHandler* self, int unused)

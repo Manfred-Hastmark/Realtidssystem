@@ -200,6 +200,7 @@ void keyHandler(App* self, int c)
         {
             print("Silent Failure\n", 0);
             print("Conductorship Void Due To Failure\n", 0);
+            SYNC(&board_handler, reset_connection, 0);
             self->ack_notes = 0;
             self->to_heart_beat = 1;
             silent_failure = 1;
@@ -271,6 +272,7 @@ void reset_fail2(App* self, int unused)
     self->to_heart_beat = 0;
     silent_failure = 0;
     board_handler.node_states[RANK] = MUSICIAN;
+    ASYNC(&board_handler, join_choir, 0);
 }
 
 void print(char* string, int val)
