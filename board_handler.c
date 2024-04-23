@@ -67,6 +67,7 @@ void handle_conductorship_handout(BoardHandler* self, int index)
     self->node_states[index] = CONDUCTOR;
     if (index == RANK)
     {
+        print("I Am The New Conductor\n", 0);
         ASYNC(self->m_app_p, start_playing, 0);
     }
 }
@@ -171,12 +172,7 @@ void set_request_ongoing(BoardHandler* self, int set)
 
 void join_choir(BoardHandler* self, int unused)
 {
-    if(self->connection == 1)
-    {
-        return; //Already joined
-    }
     self->connection = 1; //Connection is now fully established
-    self->m_app_p->can_fail = 0;
     for(int i = 0; i < MAX_BOARDS; i++)
     {
         if(self->node_states[i] == CONDUCTOR && i != RANK)
