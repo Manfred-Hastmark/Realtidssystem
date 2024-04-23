@@ -85,7 +85,7 @@ void perform_handout(BoardHandler* self, int unused)
     self->schedule_handout = 0;
     SYNC(self->m_app_p, send_handout_conductor, self->request_index);
     self->node_states[RANK] = MUSICIAN;
-    AFTER(MSEC(500), self, set_request_ongoing, 0); //If the handout is not accepted within 500 ms we will see if we should step up
+    AFTER(MSEC(500), self, set_request_ongoing, 0); //If the handout is not accepted within 500 ms we will see if we will try step up
     self->request_index = DEFAULT_REQUEST_INDEX;
 }
 
@@ -149,7 +149,7 @@ void check_stepup(BoardHandler* self, int unused)
         }
     }
     if (num_boards > 1 && lowest_idx == RANK && self->connection)
-    { //If there is no conductor step up if connection has been fully established
+    { //If there is no conductor step up if connection has been fully established i.e all heartbeats should have been received
         self->node_states[RANK] = CONDUCTOR;
         ASYNC(self->m_app_p, start_playing, 0);
         print("I Am The New Conductor\n", 0);
@@ -173,7 +173,7 @@ void set_request_ongoing(BoardHandler* self, int set)
 void join_choir(BoardHandler* self, int unused)
 {
     self->connection = 1; //Connection is now fully established
-    for(int i = 0; i < MAX_BOARDS; i++)
+    for(int i = 0; i < MAX_BOARDS; i++) //Check if conductor is already present
     {
         if(self->node_states[i] == CONDUCTOR && i != RANK)
         {
@@ -184,7 +184,7 @@ void join_choir(BoardHandler* self, int unused)
 }
 
 void reset_connection(BoardHandler* self, int unused)
-{
+{ //When CAN fails to send
     self->connection = 0; 
     self->nodes_connected = 1;
 }
