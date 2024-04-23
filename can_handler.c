@@ -30,7 +30,7 @@ void can_receiver(CanHandler* self, int raw_msg_p)
         {
             if (self->m_app_p->ack_notes)
             {
-                print("Playing note with index %i\n", notes_msg.note_index);
+                //print("Playing note with index %i\n", notes_msg.note_index);
                 ASYNC(self->m_music_player_p, play_note, notes_msg.note_index);
                 ASYNC(self->m_app_p, send_note_ack, notes_msg.note_index);
             }
@@ -49,7 +49,16 @@ void can_receiver(CanHandler* self, int raw_msg_p)
     case CLAIMCONDUCTORID ... CLAIMCONDUCTORID + MAX_BOARDS - 1: {
         if (self->m_board_handler_p->node_states[RANK] == CONDUCTOR)
         {
-            ASYNC(self->m_board_handler_p, handle_conductorship_request, msg_p->msgId - CLAIMCONDUCTORID);
+            print("Receive claim from: %i\n", msg_p->msgId - CLAIMCONDUCTORID);
+            
+            if(self->m_board_handler_p->request_ongoing == 0) //Initialize request if it is first claim
+            {
+                ASYNC(self->m_board_handler_p, init_claim, msg_p->msgId - CLAIMCONDUCTORID);
+            }
+            else
+            {
+                SYNC(self->m_board_handler_p, lowest_request_index, msg_p->msgId - CLAIMCONDUCTORID);
+            }
         }
         break;
     }

@@ -20,8 +20,8 @@ typedef struct
     App* m_app_p;
     enum NodeState node_states[MAX_BOARDS];
     int nodes_connected;
-    int conductor_change;
-    int new_conductor_index;
+    int schedule_handout;
+    int connection;
     int request_ongoing;
     int request_index;
 } BoardHandler;
@@ -57,15 +57,11 @@ void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p);
  */
 int get_next_player(BoardHandler* self, int unused);
 
-/**
- * @brief Checks if there's a conductor in network
- */
-int has_conductor(BoardHandler* self, int unused);
 
 /**
  * @brief Request to claim conductorship
  */
-int request_conductorship(BoardHandler* self, int unused);
+void request_conductorship(BoardHandler* self, int unused);
 
 /**
  * @brief Updates board state with who is conductor
@@ -73,14 +69,9 @@ int request_conductorship(BoardHandler* self, int unused);
 void handle_conductorship_handout(BoardHandler* self, int index);
 
 /**
- * @brief return nr of board
+ * @brief What to do if can cable is cut
  */
-int number_of_boards(BoardHandler* self, int unused);
-
-/**
- * @brief Handle conductorship request
- */
-void handle_conductorship_request(BoardHandler* self, int index);
+int handle_conductor_disconnect(BoardHandler* self, int unused);
 
 /**
  * @brief print status of all boards
@@ -97,4 +88,33 @@ void check_stepup(BoardHandler* self, int unused);
  */
 void lowest_request_index(BoardHandler* self, int index);
 
+/**
+ * @brief Flags for a handout at the end of the note
+ */
+void commit_claim_request(BoardHandler* self, int unused);
+
+/**
+ * @brief Initialize the claim window
+ */
+void init_claim(BoardHandler* self, int index);
+
+/**
+ * @brief set the ongoing status
+ */
+void set_request_ongoing(BoardHandler* self, int set);
+
+/**
+ * @brief Perform the handout
+ */
+void perform_handout(BoardHandler* self, int unused);
+
+/**
+ * @brief Used to cancel the reconnection fase
+ */
+void join_choir(BoardHandler* self, int unused);
+
+/**
+ * @brief On CAN disconnect reset state variables
+ */
+void reset_connection(BoardHandler* self, int unused);
 #endif

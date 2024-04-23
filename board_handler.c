@@ -6,8 +6,6 @@
 
 #define CLAIM_WAIT_TIME MSEC(1000)
 
-void commit_claim_request(BoardHandler* self, int unused);
-void claim_if_no_conductor(BoardHandler* self, int unused);
 
 void handle_node_timeout(BoardHandler* self, int index)
 {
@@ -33,12 +31,9 @@ void handle_node_alive(BoardHandler* self, int raw_heart_beat_msg_p)
     HeartBeat* heart_beat_msg_p = (HeartBeat*)raw_heart_beat_msg_p;
     if (self->node_states[heart_beat_msg_p->id] == DISCONNECTED)
     {
-        if (self->nodes_connected == 1 && self->node_states[RANK] == MUSICIAN)
-        {
-            print("I Now Join As A Musician\n", 0);
-        }
         self->nodes_connected++;
     }
+    
     self->node_states[heart_beat_msg_p->id] = heart_beat_msg_p->role;
 }
 
@@ -57,19 +52,8 @@ int get_next_player(BoardHandler* self, int unused)
     return -1;
 }
 
-int has_conductor(BoardHandler* self, int unused)
-{
-    for (int i = 0; i < MAX_BOARDS; i++)
-    {
-        if (self->node_states[i] == CONDUCTOR)
-        {
-            return 1;
-        }
-    }
-    return 0;
-}
 
-int request_conductorship(BoardHandler* self, int unused)
+void request_conductorship(BoardHandler* self, int unused)
 {
     ASYNC(self->m_app_p, send_claim_conductorship, unused);
 }
@@ -87,26 +71,26 @@ void handle_conductorship_handout(BoardHandler* self, int index)
     }
 }
 
-void handle_conductorship_request(BoardHandler* self, int index)
+void init_claim(BoardHandler* self, int index)
 {
-    if (index < self->request_index)
-    {
-        self->request_index = index;
-    }
-    if (!self->request_ongoing)
-    {
-        self->request_ongoing = 1;
-        AFTER(CLAIM_WAIT_TIME, self, commit_claim_request, 0);
-    }
+    print("Init claim\n", 0);
+    self->request_ongoing = 1;
+    self->request_index = index;
+    AFTER(CLAIM_WAIT_TIME, self, commit_claim_request, 0);
+}
+
+void perform_handout(BoardHandler* self, int unused)
+{
+    self->schedule_handout = 0;
+    SYNC(self->m_app_p, send_handout_conductor, self->request_index);
+    self->node_states[RANK] = MUSICIAN;
+    AFTER(MSEC(500), self, set_request_ongoing, 0); //If the handout is not accepted within 500 ms we will see if we should step up
+    self->request_index = DEFAULT_REQUEST_INDEX;
 }
 
 void commit_claim_request(BoardHandler* self, int unused)
 {
-    self->node_states[RANK] = MUSICIAN;
-    self->request_ongoing = 0;
-    self->conductor_change = 1;
-    self->new_conductor_index = self->request_index;
-    self->request_index = DEFAULT_REQUEST_INDEX;
+    self->schedule_handout = 1;
 }
 
 void print_status(BoardHandler* self, int unused)
@@ -117,24 +101,35 @@ void print_status(BoardHandler* self, int unused)
         print("%i ", self->node_states[i]);
     }
     print("\n", 0);
+    print("Nodes connected: %i\n", self->nodes_connected);
 }
 
-int number_of_boards(BoardHandler* self, int unused)
+int handle_conductor_disconnect(BoardHandler* self, int unused)
 {
     int boards_connected = 0;
-    for (int i = 0; i < MAX_BOARDS; i++)
+    for (int i = 0; i < MAX_BOARDS; i++) //Count the musician boards
     {
-        if (self->node_states[i] != DISCONNECTED)
+        if (self->node_states[i] == MUSICIAN)
         {
             boards_connected++;
+            self->node_states[i] = DISCONNECTED; //Mark musicians as disconnected to prevent us from stepping up
         }
+        
     }
-    return boards_connected;
+    if(boards_connected > 1) //If atleast two boards we should step down
+    {
+        self->node_states[RANK] = MUSICIAN;
+        print("Conductorship Void Due To Failure\n", 0);
+    }
+    
 }
 
-int claim_ongoing = 0;
 void check_stepup(BoardHandler* self, int unused)
 {
+    if(self->request_ongoing)
+    {
+        return; //We should not step up if someone is trying to claim
+    }
     int num_boards = 0;
     int lowest_idx = 10;
     for (int i = 0; i < MAX_BOARDS; i++)
@@ -152,44 +147,14 @@ void check_stepup(BoardHandler* self, int unused)
             }
         }
     }
-
-    if (num_boards > 1 && lowest_idx == RANK && !claim_ongoing)
-    {
-        print("Trying to claim conductor\n", 0);
-        claim_ongoing = 1;
-        AFTER(MSEC(500), self, claim_if_no_conductor, 0); // Lowest rank will get conductor
-    }
-}
-
-void claim_if_no_conductor(BoardHandler* self, int unused)
-{
-    int num_boards = 0;
-    int lowest_idx = 10;
-    for (int i = 0; i < MAX_BOARDS; i++)
-    {
-        if (self->node_states[i] == CONDUCTOR)
-        {
-            claim_ongoing = 0;
-            return; // We won't step up, since a conductor is already present
-        }
-        if (self->node_states[i] == MUSICIAN)
-        {
-            num_boards++;
-            if (i < lowest_idx)
-            {
-                lowest_idx = i;
-            }
-        }
-    }
-
-    if (num_boards > 1 && lowest_idx == RANK)
-    {
-        claim_ongoing = 0;
+    if (num_boards > 1 && lowest_idx == RANK && self->connection)
+    { //If there is no conductor step up if connection has been fully established
         self->node_states[RANK] = CONDUCTOR;
         ASYNC(self->m_app_p, start_playing, 0);
         print("I Am The New Conductor\n", 0);
     }
 }
+
 
 void lowest_request_index(BoardHandler* self, int index)
 {
@@ -198,3 +163,33 @@ void lowest_request_index(BoardHandler* self, int index)
         self->request_index = index;
     }
 }
+
+void set_request_ongoing(BoardHandler* self, int set)
+{
+    self->request_ongoing = set;
+}
+
+void join_choir(BoardHandler* self, int unused)
+{
+    if(self->connection == 1)
+    {
+        return; //Already joined
+    }
+    self->connection = 1; //Connection is now fully established
+    self->m_app_p->can_fail = 0;
+    for(int i = 0; i < MAX_BOARDS; i++)
+    {
+        if(self->node_states[i] == CONDUCTOR && i != RANK)
+        {
+            print("I Now Join As A Musician\n", 0);
+            return;
+        }
+    }
+}
+
+void reset_connection(BoardHandler* self, int unused)
+{
+    self->connection = 0; 
+    self->nodes_connected = 1;
+}
+

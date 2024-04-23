@@ -32,7 +32,6 @@ void heart_beat_received(HeartBeatHandler* self, int raw_msg_p)
     to_container.id = msg_p->id;
     to_container.timeout = hb_timeouts[msg_p->id];
     AFTER(HEARTBEAT_TO, self, handle_timeout, *(int*)&to_container);
-
     ASYNC(self->m_board_handler_p, handle_node_alive, raw_msg_p);
 }
 

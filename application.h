@@ -3,7 +3,7 @@
 
 #include "TinyTimber.h"
 
-#define RANK 0
+#define RANK 2
 #define LENGTH 32
 #define MAX_BOARDS 8
 
@@ -14,6 +14,7 @@ typedef struct
     char c;
     int to_heart_beat;
     int ack_notes;
+    int can_fail;
 } App;
 
 void print(char*, int);

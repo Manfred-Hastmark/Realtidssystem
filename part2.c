@@ -19,14 +19,14 @@ void nextBeat(MusicPlayer* self, int unused)
         int player_index = SYNC(self->m_board_handler_p, get_next_player, 0);
         if (player_index == RANK)
         {
-            print("Playing note with index %i\n", self->index);
+            //print("Playing note with index %i\n", self->index);
             self->m_tone_generator_p->silence = 0;
             self->m_tone_generator_p->period = self->notePeriods[self->index];
             ASYNC(self->m_tone_generator_p, setDAC, 0xFFFFFFFF);
         }
-        if (player_index != -1)
+        else if (player_index != -1)
         {
-            print("Sending note with index %i\n", self->index);
+            //print("Sending note with index %i\n", self->index);
             static Notes notes_msg;
             notes_msg.note_index = self->index;
             notes_msg.player = player_index;
@@ -44,19 +44,18 @@ void nextSilence(MusicPlayer* self, int unused)
 {
     // Turns of the tone generator
     self->m_tone_generator_p->silence = 1;
+    const int silenceDuration = MSEC(self->silenceDuration);
 
-    if (self->m_board_handler_p->conductor_change)
+    if(self->m_board_handler_p->schedule_handout)
     {
-        self->m_board_handler_p->conductor_change = 0;
-        const int silenceDuration = MSEC(self->silenceDuration);
-        AFTER(silenceDuration, self->m_app_p, send_handout_conductor, self->m_board_handler_p->new_conductor_index);
+        SEND(silenceDuration, silenceDuration + USEC(100), self->m_board_handler_p, perform_handout, 0);
         return;
     }
 
     // Sleep until the next note
     if (self->playing == 1 && self->m_board_handler_p->node_states[RANK] == CONDUCTOR)
     {
-        const int silenceDuration = MSEC(self->silenceDuration);
+        
         SEND(silenceDuration, silenceDuration + USEC(100), self, nextBeat, 0);
         return;
     }

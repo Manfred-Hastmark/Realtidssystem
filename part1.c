@@ -2,6 +2,7 @@
 
 // Functions for class ToneGenerator
 
+
 int toggleDeadlinesToneGenerator(ToneGenerator* self, int unused)
 {
     self->deadline ^= 1;
@@ -25,7 +26,6 @@ int volume(ToneGenerator* self, int change)
 
 void setDAC(ToneGenerator* self, int val)
 {
-
     if (self->silence)
     {
         DAC_DATA = 0;

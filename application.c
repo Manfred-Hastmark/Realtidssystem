@@ -52,7 +52,7 @@ void reset_fail2(App* self, int unused);
 
 Melody melody = initMelody(brotherJohn, LENGTH);
 ToneGenerator tone_generator = initToneGenerator(1000);
-App app = {initObject(), 0, 'X', 0, 1};
+App app = {initObject(), 0, 'X', 0, 1, 1};
 BoardHandler board_handler = initBoardHandler(&app);
 MusicPlayer musicPlayer = initMusicPlayer(120, brotherJohnBeatLength, &tone_generator, &melody, &app, &board_handler);
 ReadBuffer readBuffer = initReadBuffer();
@@ -72,12 +72,19 @@ void send(App* self, int msg_p)
 {
     if (CAN_SEND(&can0, (CANMsg*)msg_p) != 0)
     {
-        if (SYNC(&board_handler, number_of_boards, 0) > 2)
+        self->can_fail = 1;
+        SYNC(&board_handler, reset_connection, UNUSED);
+
+        if(board_handler.node_states[RANK] == CONDUCTOR)
         {
-            board_handler.node_states[RANK] = MUSICIAN;
-            musicPlayer.index = 0;
-            print("Conductorship Void Due To Failure\n", 0);
+            SYNC(&board_handler, handle_conductor_disconnect, UNUSED);
         }
+        
+    }
+    else if(self->can_fail)
+    {
+        self->can_fail = 0;
+        AFTER(MSEC(500), &board_handler, join_choir, UNUSED); //Join after heartbeats should have arrived
     }
 }
 
@@ -202,10 +209,12 @@ void keyHandler(App* self, int c)
         else
         {
             print("Leave Silent Failure\n", 0);
+            board_handler.node_states[RANK] = MUSICIAN;
             self->ack_notes = 1;
             self->to_heart_beat = 0;
             silent_failure = 0;
-            board_handler.node_states[RANK] = MUSICIAN;
+            AFTER(MSEC(500), &board_handler, join_choir, UNUSED);
+            
         }
     }
     break;
